@@ -1,0 +1,54 @@
+---
+description: ClinRoma — arquitetura de features, dados e Supabase
+globs: src/**/*
+alwaysApply: false
+---
+
+# Arquitetura ClinRoma
+
+## Estrutura alvo
+
+```text
+src/
+  app/
+    (app)/          rotas autenticadas
+    (auth)/login/   autenticação
+    fila/resposta/  link público do paciente
+    api/            webhooks e jobs
+  features/
+    agenda/ · patients/ · records/ · stock/ · waitlist/ · reminders/
+      components/ · actions.ts · queries.ts · schemas.ts
+  components/ui/    shadcn
+  lib/
+    supabase/       client · server · admin
+    auth/           sessão e guarda por papel
+    audit/          escrita no audit_log
+supabase/migrations/
+```
+
+## Padrões por feature
+
+1. **Server-first:** leitura em `queries.ts` (RSC); escrita em `actions.ts` (Server Actions).
+2. **Validação:** Zod na borda de toda action.
+3. **Autorização:** revalidar papel server-side; RLS sempre ativa (defense in depth).
+4. **Tipos:** prefira `interface` sobre `type`. Sem `enum` — use mapas/const objects.
+5. **Componentes:** funcionais, exports nomeados, pastas `kebab-case`, `function` para funções puras.
+6. **Client:** `use client` só para interação de navegador; envolver em Suspense com fallback.
+
+## Papéis
+
+`admin` · `dentist` · `reception` · `room_assistant` · `viewer`
+
+Guarda de rota no layout `(app)`; políticas RLS por papel na Fase 1.
+
+## Dados sensíveis
+
+- Token da fila: aleatório, só hash no banco, expira em 40 min
+- IP do paciente: hash, nunca texto claro
+- Buckets Storage privados: `record-photos`, `record-audio`, `supply-sheets`, `supply-labels`
+- Audit log em leitura/escrita de prontuário
+- `service_role` só em route handlers / jobs confiáveis — nunca no client
+
+## Calendário
+
+Toda dependência de calendário fica atrás de `agenda-calendar.tsx` com tipo de evento do domínio. No mobile, calendário só via import dinâmico a partir de `md`; lista do dia agrupada por dentista.

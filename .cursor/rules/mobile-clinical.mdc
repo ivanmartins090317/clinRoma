@@ -1,0 +1,36 @@
+---
+description: ClinRoma — mobile-first, áudio, QR e padrões de toque
+globs: src/**/*.{tsx,css}
+alwaysApply: false
+---
+
+# Mobile clínico
+
+Celular não é versão reduzida: é dispositivo **primário** para gravação de áudio (dentista) e scan de QR (auxiliar).
+
+## Interface
+
+- Alvos de toque ≥ 44×44 px em ações clínicas
+- `font-size: 16px` em campos (evita zoom no iOS ao focar)
+- Respeitar `safe-area-inset` (notch e barra de gestos)
+- Ações primárias na metade inferior da tela
+- Estados de loading/erro visíveis sem hover
+- Navegação mobile: barra inferior em telas pequenas; sidebar a partir de `md`
+
+## Áudio (evolução)
+
+- Formato via `MediaRecorder.isTypeSupported()` em runtime — nunca fixar mp4 ou webm
+- iOS: `audio/mp4` (AAC); Android: WebM/Opus; backend aceita ambos
+- Exige HTTPS (ou localhost) e gesto do usuário para iniciar
+- Gravar em blocos durante a captura (iOS interrompe em segundo plano)
+- Botão grande, cronômetro e indicador de nível; retomar upload se a rede cair
+
+## QR (estoque)
+
+- Detectar `BarcodeDetector`; fallback `zxing-wasm` no Safari/iPhone
+- Câmera traseira por padrão; lanterna quando suportada; área de leitura recortada
+- Modo leitura contínua: vários pacotes seguidos com feedback sonoro/tátil
+
+## Dev
+
+Microfone e câmera exigem contexto seguro. `npm run dev` deve subir com HTTPS para teste em celular real na rede local.

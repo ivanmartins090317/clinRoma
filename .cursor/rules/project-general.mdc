@@ -1,0 +1,59 @@
+---
+description: ClinRoma — identidade, escopo e convenções (sempre ativa)
+alwaysApply: true
+---
+
+# ClinRoma — Regras Gerais
+
+Idioma: **sempre responda em português (pt-BR)**.
+
+Sistema clínico odontológico (agenda, prontuário, estoque, fila Kanban).
+Piloto: **Clínica Neo Roma**.
+
+## Docs de referência
+
+- Escopo e fases: `docs/PLANO.md`
+- Convenções do repo: `AGENTS.md`
+- Segurança e DoD: `docs/SECURITY.md`
+- PRD (vault): `segundo-cerebro/10 Dev/Clientes/clinica-neo-roma-dev/Projetos/operacional/prd-mvp.md`
+
+Antes de marcar feature como pronta, cumprir o checklist de `docs/SECURITY.md`.
+
+## Stack
+
+Next.js App Router · React 19 · TypeScript · Tailwind 4 · shadcn/ui · Supabase (Auth, Postgres, Storage, RLS) · Vercel.
+
+## Escopo v1
+
+- Agenda (5 dentistas), react-big-calendar isolado em `src/features/agenda/components/agenda-calendar.tsx`
+- Prontuário (anamnese, odontograma, evolução + foto + áudio + Whisper)
+- Insumos: foto planilha + digitação manual (sem OCR) + QR por pacote + scan retirada
+- Fila Kanban (Vermelho/Amarelo/Verde), 40 min, link paciente LGPD
+- Lembrete pós-consulta por e-mail (Resend). WhatsApp fica para depois
+
+## Fora deste repo
+
+DeskcommCRM / WhatsApp paciente (Projeto 1).
+
+## Decisões fechadas
+
+- **Tenancy:** single-tenant; sem `clinic_id`; RLS por sessão e papel
+- **Ordem de entrega:** agenda → prontuário → fila → estoque → lembrete/piloto
+- **Mobile-first:** celular é dispositivo primário do dentista (áudio) e da auxiliar (QR)
+
+## Convenções
+
+- UI em pt-BR; schema DB em inglês
+- Features em `src/features/<dominio>/`
+- Server Components por padrão; `use client` mínimo
+- Nunca travessão "—" em copy
+- Arquivo > 300 linhas: dividir por domínio
+- Sem mocks em dev/prod (só testes)
+- Secrets só em `.env` / Vercel. **Nunca sobrescreva `.env` sem confirmar.**
+
+## Qualidade
+
+- Vitest: regras de domínio (conflito de agenda, expiração de token, saldo de estoque)
+- Playwright: login, marcar consulta, aceitar oferta pública, baixa por scan (incluir viewport mobile nos fluxos críticos)
+- Meta ~80% de cobertura em domínio e actions
+- Fases 3 e 5: teste manual obrigatório em iPhone e Android real antes de fechar
