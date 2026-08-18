@@ -1,0 +1,19 @@
+# Implementação por fase
+
+Registro do que **já foi entregue** em cada fase do `docs/PLANO.md`.
+
+| Fase | Documento | Status |
+| ---- | --------- | ------ |
+| 0 · Fundação | [F0-fundacao.md](./F0-fundacao.md) | concluída |
+| 1 · Dados, auth e papéis | [F1-dados-auth-papeis.md](./F1-dados-auth-papeis.md) | concluída |
+| 2 · Agenda | — | pendente |
+| 3 · Pacientes e prontuário | — | pendente |
+| 4 · Fila Kanban | — | pendente |
+| 5 · Insumos e estoque | — | pendente |
+| 6 · Lembrete e piloto | — | pendente |
+
+**Complemento:** o que falta implementar ou validar está em [`docs/state/PENDENCIAS.md`](../state/PENDENCIAS.md).
+
+**Manual do dev** (arquitetura, fases, contas de teste): [`docs/manual-dev/`](../manual-dev/README.md).
+
+**Regra:** ao fechar cada fase, adicionar arquivo em `docs/implementation/`, capítulo em `docs/manual-dev/` e atualizar `docs/state/PENDENCIAS.md`.

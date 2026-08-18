@@ -12,7 +12,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "db:push": "node .cursor/skills/supabase-migrations/scripts/push-migrations.mjs",
-    "db:push:dry": "node .cursor/skills/supabase-migrations/scripts/push-migrations.mjs --dry-run"
+    "db:push:dry": "node .cursor/skills/supabase-migrations/scripts/push-migrations.mjs --dry-run",
+    "db:types": "node .cursor/skills/supabase-migrations/scripts/gen-types.mjs"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.3.3",

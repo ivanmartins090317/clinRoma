@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 
-import { getMobileNavModules } from "@/components/app-shell";
+import {
+  filterModulesByAccess,
+  getMobileNavModules,
+} from "@/components/app-shell";
 import { CLINROMA_MODULES } from "@/types/clinroma";
 
 describe("getMobileNavModules", () => {
@@ -21,5 +24,16 @@ describe("getMobileNavModules", () => {
     const modules = getMobileNavModules(CLINROMA_MODULES);
 
     expect(modules.some((module) => module.id === "stock-scan")).toBe(false);
+  });
+});
+
+describe("filterModulesByAccess", () => {
+  it("filtra módulos pelo papel da sessão", () => {
+    const modules = filterModulesByAccess(CLINROMA_MODULES, [
+      "stock",
+      "stock-scan",
+    ]);
+
+    expect(modules.map((module) => module.id)).toEqual(["stock", "stock-scan"]);
   });
 });

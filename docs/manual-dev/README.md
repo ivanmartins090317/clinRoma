@@ -1,0 +1,57 @@
+# Manual do desenvolvedor · ClinRoma
+
+Guia de arquitetura, fases implementadas e operação do ambiente de desenvolvimento.
+
+**Piloto:** Clínica Neo Roma · **Stack:** Next.js 16 · React 19 · Supabase · Tailwind 4 · shadcn/ui
+
+---
+
+## Índice
+
+| Documento | Conteúdo |
+| --------- | -------- |
+| [01-arquitetura.md](./01-arquitetura.md) | Visão geral, pastas, fluxos, padrões de código |
+| [02-fase-0-fundacao.md](./02-fase-0-fundacao.md) | Fase 0: shell, HTTPS, shadcn, middleware base |
+| [03-fase-1-dados-auth-papeis.md](./03-fase-1-dados-auth-papeis.md) | Fase 1: banco, auth, papéis, **contas de teste** |
+
+## Documentos relacionados
+
+| Onde | Para quê |
+| ---- | -------- |
+| [`docs/PLANO.md`](../PLANO.md) | Roadmap completo (Fases 0–6) |
+| [`docs/implementation/`](../implementation/) | Registro objetivo do que foi entregue por fase |
+| [`docs/state/PENDENCIAS.md`](../state/PENDENCIAS.md) | O que falta implementar ou validar |
+| [`docs/SECURITY.md`](../SECURITY.md) | Checklist de segurança por feature |
+| [`README.md`](../../README.md) | Setup rápido (clone, env, scripts) |
+
+## Fases do projeto
+
+| Fase | Status | Manual |
+| ---- | ------ | ------ |
+| 0 · Fundação | concluída | [02-fase-0-fundacao.md](./02-fase-0-fundacao.md) |
+| 1 · Dados, auth e papéis | concluída | [03-fase-1-dados-auth-papeis.md](./03-fase-1-dados-auth-papeis.md) |
+| 2 · Agenda | pendente | (será adicionado ao fechar F2) |
+| 3 · Pacientes e prontuário | pendente | — |
+| 4 · Fila Kanban | pendente | — |
+| 5 · Insumos e estoque | pendente | — |
+| 6 · Lembrete e piloto | pendente | — |
+
+## Comandos do dia a dia
+
+```bash
+npm run dev              # HTTPS local (https://localhost:3000)
+npm run db:push          # aplicar migrations no Supabase de dev
+npm run db:push:dry      # preview do delta
+npm run db:types         # regenerar database.types.ts (requer Docker)
+npm run test             # Vitest
+npm run lint             # ESLint
+npm run build            # build de produção
+```
+
+## Regra de manutenção
+
+Ao **fechar cada fase**:
+
+1. Adicionar capítulo em `docs/manual-dev/` (este manual)
+2. Registrar entregáveis em `docs/implementation/`
+3. Atualizar pendências em `docs/state/PENDENCIAS.md`
