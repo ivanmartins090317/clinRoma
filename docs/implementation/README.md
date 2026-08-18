@@ -2,15 +2,15 @@
 
 Registro do que **já foi entregue** em cada fase do `docs/PLANO.md`.
 
-| Fase | Documento | Status |
-| ---- | --------- | ------ |
-| 0 · Fundação | [F0-fundacao.md](./F0-fundacao.md) | concluída |
-| 1 · Dados, auth e papéis | [F1-dados-auth-papeis.md](./F1-dados-auth-papeis.md) | concluída |
-| 2 · Agenda | — | pendente |
-| 3 · Pacientes e prontuário | — | pendente |
-| 4 · Fila Kanban | — | pendente |
-| 5 · Insumos e estoque | — | pendente |
-| 6 · Lembrete e piloto | — | pendente |
+| Fase                       | Documento                                            | Status             |
+| -------------------------- | ---------------------------------------------------- | ------------------ |
+| 0 · Fundação               | [F0-fundacao.md](./F0-fundacao.md)                   | concluída          |
+| 1 · Dados, auth e papéis   | [F1-dados-auth-papeis.md](./F1-dados-auth-papeis.md) | concluída          |
+| 2 · Agenda                 | [F2-agenda.md](./F2-agenda.md)                       | concluída (código) |
+| 3 · Pacientes e prontuário | [F3-pacientes-prontuario.md](./F3-pacientes-prontuario.md) | concluída (código) |
+| 4 · Fila Kanban            | —                                                    | pendente           |
+| 5 · Insumos e estoque      | —                                                    | pendente           |
+| 6 · Lembrete e piloto      | —                                                    | pendente           |
 
 **Complemento:** o que falta implementar ou validar está em [`docs/state/PENDENCIAS.md`](../state/PENDENCIAS.md).
 

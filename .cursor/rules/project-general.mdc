@@ -16,8 +16,21 @@ Piloto: **Clínica Neo Roma**.
 - Convenções do repo: `AGENTS.md`
 - Segurança e DoD: `docs/SECURITY.md`
 - PRD (vault): `segundo-cerebro/10 Dev/Clientes/clinica-neo-roma-dev/Projetos/operacional/prd-mvp.md`
+- Entregas por fase: `docs/implementation/`
+- Pendências vivas: `docs/state/PENDENCIAS.md`
+- Manual do dev: `docs/manual-dev/`
 
 Antes de marcar feature como pronta, cumprir o checklist de `docs/SECURITY.md`.
+
+## Fechamento de implementação (obrigatório)
+
+Ao concluir uma fase ou spec aprovada, **antes** de considerar a entrega fechada:
+
+1. **`docs/implementation/`** — registrar o que foi entregue (ex.: `F2-agenda.md`) e atualizar o índice em `docs/implementation/README.md`
+2. **`docs/manual-dev/`** — capítulo explicativo da fase (ex.: `04-fase-2-agenda.md`) e atualizar `docs/manual-dev/README.md`
+3. **`docs/state/PENDENCIAS.md`** — marcar itens implementados; mover homologação manual para seção própria se ainda pendente
+
+Skill de apoio: `.cursor/skills/close-phase/SKILL.md` (checklist completo).
 
 ## Stack
 

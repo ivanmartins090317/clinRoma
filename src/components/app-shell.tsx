@@ -110,7 +110,7 @@ export function AppShell({
           </div>
         </header>
 
-        <main className="safe-area-top flex-1 py-5 sm:py-6 lg:py-8">
+        <main className="safe-area-top flex-1 overflow-x-hidden py-5 sm:py-6 lg:py-8">
           <div className="page-container">{children}</div>
         </main>
 

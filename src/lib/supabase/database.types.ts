@@ -141,6 +141,78 @@ export type Database = {
         };
         Relationships: [];
       };
+      tooth_findings: {
+        Row: {
+          id: string;
+          patient_id: string;
+          tooth_number: number;
+          tooth_surface: string;
+          condition_code: string;
+          updated_by: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          patient_id: string;
+          tooth_number: number;
+          tooth_surface: string;
+          condition_code: string;
+          updated_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          patient_id?: string;
+          tooth_number?: number;
+          tooth_surface?: string;
+          condition_code?: string;
+          updated_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      record_attachments: {
+        Row: {
+          id: string;
+          medical_record_id: string;
+          storage_path: string;
+          mime_type: string;
+          file_size_bytes: number;
+          attachment_type: Database["public"]["Enums"]["record_attachment_type"];
+          transcription: string | null;
+          transcription_status: Database["public"]["Enums"]["transcription_status"];
+          created_by: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          medical_record_id: string;
+          storage_path: string;
+          mime_type: string;
+          file_size_bytes: number;
+          attachment_type: Database["public"]["Enums"]["record_attachment_type"];
+          transcription?: string | null;
+          transcription_status?: Database["public"]["Enums"]["transcription_status"];
+          created_by?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          medical_record_id?: string;
+          storage_path?: string;
+          mime_type?: string;
+          file_size_bytes?: number;
+          attachment_type?: Database["public"]["Enums"]["record_attachment_type"];
+          transcription?: string | null;
+          transcription_status?: Database["public"]["Enums"]["transcription_status"];
+          created_by?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
       appointments: {
         Row: {
           id: string;
@@ -291,6 +363,12 @@ export type Database = {
         | "cancelled"
         | "rescheduled";
       medical_record_type: "anamnesis" | "evolution";
+      record_attachment_type: "photo" | "audio";
+      transcription_status:
+        | "pending"
+        | "processing"
+        | "completed"
+        | "failed";
       supply_movement_type: "in" | "out" | "adjustment";
       supply_unit: "unit" | "box" | "roll" | "bottle";
     };

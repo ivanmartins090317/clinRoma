@@ -28,3 +28,16 @@ Piloto: Clínica Neo Roma.
 - Server Components por padrão; `use client` mínimo
 - Mobile-first: dentista grava áudio e auxiliar escaneia QR pelo celular
 - Nunca travessão "—" em copy
+
+## DoD de documentação (obrigatório ao fechar fase)
+
+Após implementação técnica e evidências (`lint`, `build`, `test`), atualizar:
+
+| Documento                                                             | Conteúdo                                          |
+| --------------------------------------------------------------------- | ------------------------------------------------- |
+| `docs/implementation/F{N}-*.md`                                       | O que foi entregue (arquivos, migrations, testes) |
+| `docs/manual-dev/{NN}-fase-{N}-*.md`                                  | Como funciona, fluxos, contas de teste da fase    |
+| `docs/state/PENDENCIAS.md`                                            | Marcar implementado; listar homologação pendente  |
+| Índices `docs/implementation/README.md` e `docs/manual-dev/README.md` | Status da fase                                    |
+
+Checklist detalhado: `.cursor/skills/close-phase/SKILL.md`

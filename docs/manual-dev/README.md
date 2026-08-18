@@ -8,33 +8,34 @@ Guia de arquitetura, fases implementadas e operação do ambiente de desenvolvim
 
 ## Índice
 
-| Documento | Conteúdo |
-| --------- | -------- |
-| [01-arquitetura.md](./01-arquitetura.md) | Visão geral, pastas, fluxos, padrões de código |
-| [02-fase-0-fundacao.md](./02-fase-0-fundacao.md) | Fase 0: shell, HTTPS, shadcn, middleware base |
-| [03-fase-1-dados-auth-papeis.md](./03-fase-1-dados-auth-papeis.md) | Fase 1: banco, auth, papéis, **contas de teste** |
+| Documento                                                          | Conteúdo                                                 |
+| ------------------------------------------------------------------ | -------------------------------------------------------- |
+| [01-arquitetura.md](./01-arquitetura.md)                           | Visão geral, pastas, fluxos, padrões de código           |
+| [02-fase-0-fundacao.md](./02-fase-0-fundacao.md)                   | Fase 0: shell, HTTPS, shadcn, middleware base            |
+| [03-fase-1-dados-auth-papeis.md](./03-fase-1-dados-auth-papeis.md) | Fase 1: banco, auth, papéis, **contas de teste**         |
+| [05-fase-3-pacientes-prontuario.md](./05-fase-3-pacientes-prontuario.md) | Fase 3: pacientes, prontuário, áudio, Whisper |
 
 ## Documentos relacionados
 
-| Onde | Para quê |
-| ---- | -------- |
-| [`docs/PLANO.md`](../PLANO.md) | Roadmap completo (Fases 0–6) |
-| [`docs/implementation/`](../implementation/) | Registro objetivo do que foi entregue por fase |
-| [`docs/state/PENDENCIAS.md`](../state/PENDENCIAS.md) | O que falta implementar ou validar |
-| [`docs/SECURITY.md`](../SECURITY.md) | Checklist de segurança por feature |
-| [`README.md`](../../README.md) | Setup rápido (clone, env, scripts) |
+| Onde                                                 | Para quê                                       |
+| ---------------------------------------------------- | ---------------------------------------------- |
+| [`docs/PLANO.md`](../PLANO.md)                       | Roadmap completo (Fases 0–6)                   |
+| [`docs/implementation/`](../implementation/)         | Registro objetivo do que foi entregue por fase |
+| [`docs/state/PENDENCIAS.md`](../state/PENDENCIAS.md) | O que falta implementar ou validar             |
+| [`docs/SECURITY.md`](../SECURITY.md)                 | Checklist de segurança por feature             |
+| [`README.md`](../../README.md)                       | Setup rápido (clone, env, scripts)             |
 
 ## Fases do projeto
 
-| Fase | Status | Manual |
-| ---- | ------ | ------ |
-| 0 · Fundação | concluída | [02-fase-0-fundacao.md](./02-fase-0-fundacao.md) |
-| 1 · Dados, auth e papéis | concluída | [03-fase-1-dados-auth-papeis.md](./03-fase-1-dados-auth-papeis.md) |
-| 2 · Agenda | pendente | (será adicionado ao fechar F2) |
-| 3 · Pacientes e prontuário | pendente | — |
-| 4 · Fila Kanban | pendente | — |
-| 5 · Insumos e estoque | pendente | — |
-| 6 · Lembrete e piloto | pendente | — |
+| Fase                       | Status             | Manual                                                             |
+| -------------------------- | ------------------ | ------------------------------------------------------------------ |
+| 0 · Fundação               | concluída          | [02-fase-0-fundacao.md](./02-fase-0-fundacao.md)                   |
+| 1 · Dados, auth e papéis   | concluída          | [03-fase-1-dados-auth-papeis.md](./03-fase-1-dados-auth-papeis.md) |
+| 2 · Agenda                 | concluída (código) | [04-fase-2-agenda.md](./04-fase-2-agenda.md)                       |
+| 3 · Pacientes e prontuário | concluída (código) | [05-fase-3-pacientes-prontuario.md](./05-fase-3-pacientes-prontuario.md) |
+| 4 · Fila Kanban            | pendente           | —                                                                  |
+| 5 · Insumos e estoque      | pendente           | —                                                                  |
+| 6 · Lembrete e piloto      | pendente           | —                                                                  |
 
 ## Comandos do dia a dia
 

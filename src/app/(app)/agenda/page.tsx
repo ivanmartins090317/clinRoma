@@ -1,26 +1,56 @@
+import { AgendaView } from "@/features/agenda/components/agenda-view";
+import {
+  clinicDateNavigation,
+  clinicDayBounds,
+  clinicWeekBounds,
+  formatClinicDate,
+  getActiveDentists,
+  getAppointmentsInRange,
+  getLinkedDentistId,
+  parseClinicDateParam,
+} from "@/features/agenda/queries";
+import { getModuleAccess } from "@/lib/auth/roles";
+import { requireAuthSession } from "@/lib/auth/session";
+
 export const metadata = { title: "Agenda" };
 
-export default function AgendaPage() {
-  return (
-    <PlaceholderModule
-      title="Agenda"
-      description="Calendário multi-dentista (5 profissionais). Status: agendado, confirmado, em atendimento, faltou, cancelado."
-    />
-  );
+interface AgendaPageProps {
+  searchParams: Promise<{
+    date?: string;
+    dentist?: string;
+  }>;
 }
 
-function PlaceholderModule({
-  title,
-  description,
-}: {
-  title: string;
-  description: string;
-}) {
+export default async function AgendaPage({ searchParams }: AgendaPageProps) {
+  const params = await searchParams;
+  const session = await requireAuthSession("/agenda");
+  const canWrite = getModuleAccess(session.profile.role, "agenda") === "write";
+  const linkedDentistId = await getLinkedDentistId(session.userId);
+  const selectedDate = parseClinicDateParam(params.date);
+  const formattedDate = formatClinicDate(selectedDate);
+  const todayDate = formatClinicDate(parseClinicDateParam(undefined));
+  const dentistFilter = params.dentist ?? "all";
+
+  const dentists = await getActiveDentists();
+  const dayBounds = clinicDayBounds(selectedDate);
+  const weekBounds = clinicWeekBounds(selectedDate);
+
+  const [dayAppointments, weekAppointments] = await Promise.all([
+    getAppointmentsInRange(dayBounds.start, dayBounds.end, null),
+    getAppointmentsInRange(weekBounds.start, weekBounds.end, null),
+  ]);
+
   return (
-    <div className="mx-auto max-w-2xl rounded-xl border border-zinc-200 bg-white p-8">
-      <h2 className="text-2xl font-semibold">{title}</h2>
-      <p className="mt-3 text-zinc-600">{description}</p>
-      <p className="mt-6 text-sm text-zinc-500">Módulo em implementação.</p>
-    </div>
+    <AgendaView
+      canWrite={canWrite}
+      linkedDentistId={linkedDentistId}
+      dentists={dentists}
+      selectedDate={formattedDate}
+      todayDate={todayDate}
+      dentistFilter={dentistFilter}
+      dayAppointments={dayAppointments}
+      weekAppointments={weekAppointments}
+      dateNavigation={clinicDateNavigation(selectedDate)}
+    />
   );
 }

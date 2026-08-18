@@ -1,6 +1,7 @@
 import { headers } from "next/headers";
 
 import { AppShell } from "@/components/app-shell";
+import { Toaster } from "@/components/ui/sonner";
 import { LogoutForm } from "@/features/auth/components/logout-form";
 import { assertRouteAccess } from "@/lib/auth/guard";
 import { getAllowedModuleIds } from "@/lib/auth/roles";
@@ -25,6 +26,7 @@ export default async function AppLayout({ children }: AppLayoutProps) {
       logoutSlot={<LogoutForm />}
     >
       {children}
+      <Toaster />
     </AppShell>
   );
 }

@@ -279,6 +279,6 @@ Arquivos: `src/lib/auth/*.test.ts`, `src/features/auth/schemas.test.ts`, `src/li
 
 ## Próxima fase
 
-[Fase 2 · Agenda](../state/PENDENCIAS.md#fase-2--agenda): calendário, CRUD de consultas, `/hoje` com dados reais.
+[Fase 2 · Agenda](./04-fase-2-agenda.md): calendário, CRUD de consultas, `/hoje` com dados reais.
 
 Registro de entregáveis: [`docs/implementation/F1-dados-auth-papeis.md`](../implementation/F1-dados-auth-papeis.md).

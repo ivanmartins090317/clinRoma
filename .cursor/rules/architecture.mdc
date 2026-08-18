@@ -52,3 +52,11 @@ Guarda de rota no layout `(app)`; políticas RLS por papel na Fase 1.
 ## Calendário
 
 Toda dependência de calendário fica atrás de `agenda-calendar.tsx` com tipo de evento do domínio. No mobile, calendário só via import dinâmico a partir de `md`; lista do dia agrupada por dentista.
+
+## Documentação pós-implementação
+
+Ao fechar uma feature ou fase, sincronizar código com os três docs vivos (detalhes em `AGENTS.md` e `.cursor/skills/close-phase/SKILL.md`):
+
+- `docs/implementation/` — registro objetivo do entregue
+- `docs/manual-dev/` — como funciona e como operar
+- `docs/state/PENDENCIAS.md` — o que ainda falta implementar ou homologar

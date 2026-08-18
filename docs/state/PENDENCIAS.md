@@ -2,7 +2,7 @@
 
 Fonte viva do que **ainda falta implementar ou validar**. Atualizar ao concluir cada fase.
 
-Última revisão: **2026-08-18** (após Fase 1).
+Última revisão: **2026-08-18** (após Fase 3 · código entregue).
 
 ---
 
@@ -20,94 +20,65 @@ Itens da F1 já codificados, mas ainda não homologados manualmente:
 
 ---
 
-## Fase 2 · Agenda
+## Fase 2 · Fechamento operacional
 
-Referência: `docs/PLANO.md` §6 · Fase 2
+Código entregue (ver `docs/implementation/F2-agenda.md`). Homologação manual pendente:
 
-- [ ] `src/features/agenda/` (queries, actions, schemas)
-- [ ] Calendário com coluna por dentista (react-big-calendar atrás de `agenda-calendar.tsx`)
-- [ ] Visões dia e semana (desktop); lista do dia agrupada por dentista (mobile)
-- [ ] CRUD consulta: criar, editar, remarcar, cancelar
-- [ ] Drag-and-drop para remarcar com confirmação
-- [ ] Bloqueio de conflito de horário por dentista (domínio + banco)
-- [ ] Substituir `/hoje` estática por consultas reais do dia
-- [ ] Import dinâmico do calendário só a partir de `md`
+- [ ] Recepção (desktop): criar consulta em slot livre, buscar paciente seed
+- [ ] Recepção: remarcar arrastando com confirmação
+- [ ] Recepção: cancelar consulta (slot liberado)
+- [ ] Recepção: tentar conflito de horário (mesmo dentista) e ver mensagem de bloqueio
+- [ ] Dentista (mobile/viewport estreito): lista do dia filtrada no Dr. Felipe Roma, somente leitura
+- [ ] Visualizador: ver agenda sem ações de escrita
+- [ ] Auxiliar: acesso a `/agenda` negado (403)
+- [ ] Verificar bundle mobile sem `react-big-calendar` (dynamic import só em `md+`)
 
 **Pronto quando:** recepção marca/remarca/cancela consulta; dentista vê agenda do dia no celular.
 
 ---
 
+## Fase 2 · Implementação (concluída)
+
+Referência: `docs/PLANO.md` §6 · `specs/2026-08-18-fase-2-agenda.md`
+
+- [x] `src/features/agenda/` (queries, actions, schemas, domain, componentes)
+- [x] Calendário com coluna por dentista (`agenda-calendar.tsx`)
+- [x] Visões dia e semana (desktop); lista do dia agrupada por dentista (mobile)
+- [x] CRUD consulta: criar, editar, remarcar, cancelar
+- [x] Drag-and-drop para remarcar com confirmação
+- [x] Bloqueio de conflito de horário (domínio + migration 010)
+- [x] `/hoje` com consultas reais do dia
+- [x] Import dinâmico do calendário só a partir de `md`
+- [x] Seed: pacientes fictícios + consultas (`011_seed_agenda_dev.sql`)
+- [x] Documentação: `docs/implementation/F2-agenda.md`, `docs/manual-dev/04-fase-2-agenda.md`
+
+---
+
 ## Fase 3 · Pacientes e prontuário
 
-- [ ] Busca e cadastro de paciente + consentimento LGPD
-- [ ] Anamnese versionada
-- [ ] Odontograma interativo → `tooth_findings`
-- [ ] Evolução: foto (câmera traseira) + áudio (`MediaRecorder`, formato runtime)
-- [ ] Upload em buckets privados (`record-photos`, `record-audio`)
-- [ ] Transcrição Whisper assíncrona + status na UI
-- [ ] Audit log em leitura/escrita de prontuário (consumir helper da F1)
-- [ ] Gravador mobile-first (blocos, retomada de rede, aviso iOS segundo plano)
-- [ ] Odontograma mobile com zoom e toque
-- [ ] Teste manual em iPhone e Android real
+Referência: `specs/2026-08-18-fase-3-pacientes-prontuario.md` · `docs/implementation/F3-pacientes-prontuario.md`
 
-**Pronto quando:** dentista grava áudio no celular e transcrição aparece sem reload.
+### Implementação (concluída)
+
+- [x] `src/features/patients/` (busca, cadastro LGPD, componentes)
+- [x] `src/features/records/` (anamnese, odontograma, evolução, gravador, transcrição)
+- [x] Migrations `012_patients_records_f3.sql`, `013_seed_records_dev.sql`
+- [x] Páginas `/pacientes`, `/pacientes/novo`, `/pacientes/[id]`
+- [x] Link **Abrir prontuário** na agenda e Hoje
+- [x] API `/api/records/audio-chunk` e `/api/records/transcribe`
+- [x] Testes Vitest de domínio (CPF, FDI, anamnese 12m, MIME)
+- [x] Documentação F3 em `docs/implementation/` e `docs/manual-dev/`
+
+### Fechamento operacional (homologação manual)
+
+- [ ] **iPhone real:** fluxo evolução + foto + áudio + transcrição sem reload (§8.5 spec)
+- [ ] **Android real:** mesmo fluxo com WebM/Opus
+- [ ] Desktop: recepção cadastra paciente; dentista anamnese + odontograma
+- [ ] Configurar `OPENAI_API_KEY` no ambiente de dev para transcrição real
+- [ ] Visualizador: só cadastro, sem abas clínicas
+
+**Pronto quando:** dentista documenta atendimento no celular com áudio transcrito; recepção cadastra e localiza pacientes.
 
 ---
 
 ## Fase 4 · Fila Kanban
-
-- [ ] Kanban real (vermelho/amarelo/verde) substituindo demo estático
-- [ ] Drag entre colunas + alternativa mobile (abas/menu)
-- [ ] Oferta de horário com token opaco (hash) e expiração 40 min
-- [ ] Página pública `/fila/resposta/[token]` funcional (consentimento, aceitar/recusar)
-- [ ] Aceite cria consulta na agenda (transação)
-- [ ] Expiração automática da oferta
-
-**Pronto quando:** vaga por cancelamento vira consulta confirmada pelo link, sem ligação da recepção.
-
----
-
-## Fase 5 · Insumos e estoque
-
-- [ ] CRUD insumo + estoque mínimo
-- [ ] Upload planilha + digitação manual (`supply_sheets`)
-- [ ] QR por pacote + folha de etiquetas (`supply-labels`)
-- [ ] `/estoque/scan`: câmera, `BarcodeDetector` + fallback `zxing-wasm`
-- [ ] Baixa de retirada (`supply_movements`) com responsável
-- [ ] Modo leitura contínua (som/tátil entre scans)
-- [ ] Alerta estoque mínimo na `/hoje`
-- [ ] PWA/manifest para scan na tela inicial
-- [ ] Teste manual iPhone + Android real
-
-**Pronto quando:** auxiliar retira pacote pelo celular e saldo atualiza sozinho.
-
----
-
-## Fase 6 · Lembrete e piloto
-
-- [ ] Lembrete pós-consulta por e-mail (Resend) + retry + `reminders`
-- [ ] Deploy Vercel + Supabase produção separado de dev
-- [ ] Revisão checklist `docs/SECURITY.md` em todas as features
-- [ ] Homologação manual completa (`.cursor/skills/manual-report`)
-- [ ] Acompanhamento clínica piloto Neo Roma
-
-**Pronto quando:** relatório HTML de homologação aprovado antes da entrega ao cliente.
-
----
-
-## Dívida técnica transversal
-
-- [ ] Corrigir `docs/SECURITY.md` (menção a `clinic_id` vs single-tenant)
-- [ ] Meta ~80% cobertura em domínio e actions (a partir das features F2+)
-- [ ] Consolidar migration `009` no `008` se houver reset limpo do banco de dev (opcional)
-- [ ] WhatsApp paciente permanece fora deste repo (DeskcommCRM)
-
----
-
-## Fora do escopo v1 (referência)
-
-- OAuth / MFA / convite self-service
-- OCR de planilha
-- Playwright / E2E automatizado
-- Export LGPD automatizado
-- Integração WhatsApp Business completa

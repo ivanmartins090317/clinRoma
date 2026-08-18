@@ -303,6 +303,9 @@ Copy em pt-BR; alvos de toque ≥ 44×44 px; inputs 16 px nos formulários mobil
 - [ ] Zod na borda de todas as actions de agenda.
 - [ ] `npm run lint`, `npm run format:check`, `npm run build`, `npm run test` passam.
 - [ ] Checklist aplicável de `docs/SECURITY.md`: RLS, fail secure, sem `service_role` no client.
+- [ ] `docs/implementation/F2-agenda.md` criado; índice `docs/implementation/README.md` atualizado.
+- [ ] `docs/manual-dev/04-fase-2-agenda.md` criado; índice `docs/manual-dev/README.md` atualizado.
+- [ ] `docs/state/PENDENCIAS.md` atualizado (implementação vs homologação manual).
 
 ### Qualidade
 
