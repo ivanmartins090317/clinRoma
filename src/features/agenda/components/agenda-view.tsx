@@ -20,6 +20,7 @@ import {
   type AgendaCalendarEvent,
   type AgendaDentist,
 } from "@/features/agenda/types";
+import type { ReminderSummary } from "@/features/reminders/queries";
 import { Button } from "@/components/ui/button";
 
 const AgendaCalendar = dynamic(
@@ -51,6 +52,7 @@ interface AgendaViewProps {
     current: string;
     next: string;
   };
+  remindersByAppointmentId: Record<string, ReminderSummary>;
 }
 
 export function AgendaView({
@@ -63,6 +65,7 @@ export function AgendaView({
   dayAppointments,
   weekAppointments,
   dateNavigation,
+  remindersByAppointmentId,
 }: AgendaViewProps) {
   const router = useRouter();
   const [selectedAppointment, setSelectedAppointment] =
@@ -213,6 +216,11 @@ export function AgendaView({
         onOpenChange={setDetailOpen}
         canWrite={canWrite}
         dentists={dentists}
+        reminder={
+          selectedAppointment
+            ? remindersByAppointmentId[selectedAppointment.id]
+            : null
+        }
         onEdit={openEdit}
         onCancelled={refreshAgenda}
       />

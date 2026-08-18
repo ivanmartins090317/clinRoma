@@ -38,6 +38,8 @@ cp .env.example .env.local
 | `OPENAI_API_KEY`                | Fase 3+     | Server-only: transcrição Whisper. Sem ela, áudio salva mas transcrição falha |
 | `CRON_SECRET`                   | Fase 4+     | Proteção do job de expiração da fila                                         |
 | `WAITLIST_IP_HASH_SECRET`       | Fase 4+     | Hash de IP na resposta pública da fila (server-only)                         |
+| `RESEND_API_KEY`                | Fase 6+     | Server-only: lembrete pós-consulta por e-mail                                |
+| `RESEND_FROM_EMAIL`             | Fase 6+     | Remetente verificado no Resend (ex.: ClinRoma &lt;lembretes@dominio&gt;)       |
 
 ### 3. Banco de dados (Fase 1)
 
@@ -47,7 +49,7 @@ npm run db:push       # aplicar migrations + seed de dev
 npm run db:types      # regenerar src/lib/supabase/database.types.ts
 ```
 
-Migrations em `supabase/migrations/` (001 a 017). Seeds idempotentes: `008_seed_dev.sql`, `011_seed_agenda_dev.sql`, `013_seed_records_dev.sql`, `015_seed_waitlist_dev.sql`, `017_seed_stock_dev.sql`.
+Migrations em `supabase/migrations/` (001 a 018). Seeds idempotentes: `008_seed_dev.sql`, `011_seed_agenda_dev.sql`, `013_seed_records_dev.sql`, `015_seed_waitlist_dev.sql`, `017_seed_stock_dev.sql`.
 
 #### Homologação da agenda (Fase 2)
 
@@ -98,6 +100,21 @@ Obrigatório em **iPhone e Android reais** antes de fechar a fase operacionalmen
 QR codes demo: `CR-DEV001`, `CR-DEV002` (luvas), `CR-DEV003` (alginato). Insumo **Anestésico** fica abaixo do mínimo para alerta na Hoje.
 
 Admin: cadastro de insumo, wizard **Registrar compra** (digitação manual, sem OCR) e impressão de etiquetas.
+
+#### Homologação lembrete e piloto (Fase 6)
+
+1. Configurar `RESEND_API_KEY` e `RESEND_FROM_EMAIL` no `.env.local`
+2. Login `reception@clinroma.dev` → marcar consulta como **Concluído**
+3. Verificar badge **Lembrete enviado** e e-mail em `dentist@clinroma.dev`
+4. Homologação integral: `docs/relatorio-testes-manuais.html` + evidências em `docs/evidencias/`
+
+Cron de lembretes (dev):
+
+```bash
+curl -k -H "Authorization: Bearer SEU_CRON_SECRET" https://localhost:3000/api/cron/process-reminders
+```
+
+Deploy produção: checklist em `docs/manual-dev/08-fase-6-lembrete-piloto.md`.
 
 #### Contas de teste (desenvolvimento)
 
@@ -164,6 +181,8 @@ src/
   app/(auth)/login/ autenticação
   app/fila/resposta link público do paciente
   features/auth/    login, logout, schemas
+  features/reminders/ lembrete pós-consulta
+  lib/email/        Resend (server-only)
   lib/auth/         sessão, papéis, guarda
   lib/audit/        registro de auditoria
   lib/supabase/     client, server, admin, types

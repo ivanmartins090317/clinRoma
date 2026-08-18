@@ -11,25 +11,45 @@ import {
   getActiveDentists,
   getTodayAppointments,
 } from "@/features/agenda/queries";
+import { ReminderFailuresPanel } from "@/features/reminders/components/reminder-failures-panel";
+import { ReminderStatusBadge } from "@/features/reminders/components/reminder-status-badge";
+import {
+  getRecentFailedReminders,
+  getRemindersByAppointmentIds,
+} from "@/features/reminders/queries";
 import { getStockAlerts } from "@/features/stock/queries";
 import { SUPPLY_UNIT_LABELS } from "@/features/stock/lib/clinic-date";
 import { getWaitlistSummary } from "@/features/waitlist/queries";
 import { ClinicLogo } from "@/components/clinic-logo";
 import { Button } from "@/components/ui/button";
 import { WAITLIST_COLORS } from "@/types/clinroma";
+import { requireAuthSession } from "@/lib/auth/session";
 
 export const metadata = {
   title: "Hoje",
 };
 
 export default async function HojePage() {
-  const [dentists, appointments, waitlistSummary, stockAlerts] =
-    await Promise.all([
-      getActiveDentists(),
-      getTodayAppointments(),
-      getWaitlistSummary(),
-      getStockAlerts(),
-    ]);
+  const session = await requireAuthSession("/hoje");
+  const isAdmin = session.profile.role === "admin";
+
+  const [
+    dentists,
+    appointments,
+    waitlistSummary,
+    stockAlerts,
+    failedReminders,
+  ] = await Promise.all([
+    getActiveDentists(),
+    getTodayAppointments(),
+    getWaitlistSummary(),
+    getStockAlerts(),
+    isAdmin ? getRecentFailedReminders() : Promise.resolve([]),
+  ]);
+
+  const remindersByAppointmentId = await getRemindersByAppointmentIds(
+    appointments.map((appointment) => appointment.id),
+  );
 
   const grouped = groupAppointmentsByDentist(appointments, dentists);
   const chronological = [...appointments].sort(
@@ -81,6 +101,11 @@ export default async function HojePage() {
               {chronological.map((appointment) => (
                 <div key={appointment.id} className="space-y-2">
                   <AgendaTodaySummaryItem appointment={appointment} />
+                  {appointment.status === "completed" ? (
+                    <ReminderStatusBadge
+                      reminder={remindersByAppointmentId[appointment.id]}
+                    />
+                  ) : null}
                   <Link
                     href={`/pacientes/${appointment.patientId}?consulta=${appointment.id}`}
                     className="inline-flex min-h-11 items-center text-sm font-medium text-primary underline-offset-4 hover:underline"
@@ -124,6 +149,13 @@ export default async function HojePage() {
                           <span className="text-sm text-muted-foreground">
                             {getAppointmentStatusLabel(appointment.status)}
                           </span>
+                          {appointment.status === "completed" ? (
+                            <ReminderStatusBadge
+                              reminder={
+                                remindersByAppointmentId[appointment.id]
+                              }
+                            />
+                          ) : null}
                           <Link
                             href={`/pacientes/${appointment.patientId}?consulta=${appointment.id}`}
                             className="text-sm font-medium text-primary underline-offset-4 hover:underline"
@@ -140,6 +172,8 @@ export default async function HojePage() {
           </div>
         )}
       </section>
+
+      {isAdmin ? <ReminderFailuresPanel failures={failedReminders} /> : null}
 
       <section className="rounded-xl border border-border bg-card p-5 sm:p-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">

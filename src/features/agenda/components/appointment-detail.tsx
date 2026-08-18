@@ -12,6 +12,8 @@ import {
   type AgendaDentist,
 } from "@/features/agenda/types";
 import { WaitlistOfferAfterCancel } from "@/features/waitlist/components/waitlist-offer-after-cancel";
+import { ReminderStatusBadge } from "@/features/reminders/components/reminder-status-badge";
+import type { ReminderSummary } from "@/features/reminders/queries";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -28,6 +30,7 @@ interface AppointmentDetailProps {
   onOpenChange: (open: boolean) => void;
   canWrite: boolean;
   dentists: AgendaDentist[];
+  reminder?: ReminderSummary | null;
   onEdit: (appointment: AgendaAppointment) => void;
   onCancelled: () => void;
 }
@@ -38,6 +41,7 @@ export function AppointmentDetail({
   onOpenChange,
   canWrite,
   dentists,
+  reminder,
   onEdit,
   onCancelled,
 }: AppointmentDetailProps) {
@@ -94,10 +98,13 @@ export function AppointmentDetail({
             </DialogHeader>
 
             <div className="space-y-3 text-sm">
-              <div className="flex items-center gap-2">
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
                 <Badge variant="secondary">
                   {getAppointmentStatusLabel(appointment.status)}
                 </Badge>
+                {appointment.status === "completed" ? (
+                  <ReminderStatusBadge reminder={reminder} />
+                ) : null}
               </div>
               <p>
                 <span className="font-medium">Dentista:</span>{" "}

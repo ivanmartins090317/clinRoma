@@ -2,7 +2,7 @@
 
 Fonte viva do que **ainda falta implementar ou validar**. Atualizar ao concluir cada fase.
 
-Última revisão: **2026-08-18** (após Fase 5 · código entregue).
+Última revisão: **2026-08-18** (após Fase 6 · código entregue).
 
 ---
 
@@ -144,3 +144,36 @@ Referência: `specs/2026-08-18-fase-5-insumos-estoque.md` · `docs/implementatio
 ---
 
 ## Fase 6 · Lembrete e piloto
+
+Referência: `specs/2026-08-18-fase-6-lembrete-piloto.md` · `docs/implementation/F6-lembrete-piloto.md`
+
+### Implementação (concluída)
+
+- [x] `src/features/reminders/` (domínio, lib, queries, actions, UI)
+- [x] Migration `018_reminders_f6.sql`
+- [x] Enfileiramento ao concluir consulta na agenda
+- [x] Integração Resend server-only
+- [x] Cron `/api/cron/process-reminders` + `vercel.json`
+- [x] Badge lembrete (agenda, Hoje) e painel falhas admin
+- [x] Testes Vitest (elegibilidade, retentativa, e-mail)
+- [x] `docs/relatorio-testes-manuais.html` (estrutura Neo Roma)
+- [x] Documentação F6 em `docs/implementation/` e `docs/manual-dev/`
+
+### Fechamento operacional (homologação manual · antes do cliente)
+
+- [ ] Configurar `RESEND_API_KEY` e `RESEND_FROM_EMAIL` no ambiente de teste
+- [ ] **FL-06:** concluir consulta → e-mail em `dentist@clinroma.dev`
+- [ ] Executar FL-01…FL-08 com evidências desktop e mobile
+- [ ] iPhone e Android nos fluxos áudio, scan e lembrete
+- [ ] Preencher `docs/relatorio-testes-manuais.html` e `docs/evidencias/`
+- [ ] Nenhum bug crítico/alto aberto nos fluxos P0
+- [ ] Deploy produção (Supabase prod + Vercel) conforme checklist manual-dev § Deploy
+
+### Pós-piloto
+
+- [ ] Acompanhamento 5 dias úteis pós go-live
+- [ ] Bugs novos rastreados como BG-XX no relatório ou aqui
+
+**Pronto quando:** dentista recebe lembrete por e-mail; homologação manual aprovada; clínica operando em produção.
+
+---

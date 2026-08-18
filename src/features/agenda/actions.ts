@@ -198,6 +198,22 @@ export async function updateAppointmentAction(
       return { error: mapDatabaseError(error ?? {}) };
     }
 
+    if (parsed.data.status === "completed") {
+      try {
+        const { enqueueReminderForAppointment } =
+          await import("@/features/reminders/lib/enqueue-reminder");
+        await enqueueReminderForAppointment(data.id);
+      } catch (enqueueError) {
+        console.error("reminder_enqueue_failed", {
+          appointmentId: data.id,
+          reason:
+            enqueueError instanceof Error
+              ? enqueueError.message
+              : "unknown_error",
+        });
+      }
+    }
+
     revalidatePath("/agenda");
     revalidatePath("/hoje");
 

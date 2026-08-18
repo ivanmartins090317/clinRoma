@@ -15,6 +15,7 @@ Guia de arquitetura, fases implementadas e operação do ambiente de desenvolvim
 | [03-fase-1-dados-auth-papeis.md](./03-fase-1-dados-auth-papeis.md) | Fase 1: banco, auth, papéis, **contas de teste** |
 | [06-fase-4-fila-kanban.md](./06-fase-4-fila-kanban.md)             | Fase 4: fila Kanban, link paciente, cron         |
 | [07-fase-5-insumos-estoque.md](./07-fase-5-insumos-estoque.md)     | Fase 5: estoque, QR, scan mobile, PWA            |
+| [08-fase-6-lembrete-piloto.md](./08-fase-6-lembrete-piloto.md)     | Fase 6: lembrete e-mail, cron, deploy, homologação |
 
 ## Documentos relacionados
 
@@ -36,7 +37,7 @@ Guia de arquitetura, fases implementadas e operação do ambiente de desenvolvim
 | 3 · Pacientes e prontuário | concluída (código) | [05-fase-3-pacientes-prontuario.md](./05-fase-3-pacientes-prontuario.md) |
 | 4 · Fila Kanban            | concluída (código) | [06-fase-4-fila-kanban.md](./06-fase-4-fila-kanban.md)                   |
 | 5 · Insumos e estoque      | concluída (código) | [07-fase-5-insumos-estoque.md](./07-fase-5-insumos-estoque.md)           |
-| 6 · Lembrete e piloto      | pendente           | —                                                                        |
+| 6 · Lembrete e piloto      | concluída (código) | [08-fase-6-lembrete-piloto.md](./08-fase-6-lembrete-piloto.md)           |
 
 ## Comandos do dia a dia
 

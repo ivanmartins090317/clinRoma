@@ -492,6 +492,45 @@ export type Database = {
         };
         Relationships: [];
       };
+      reminders: {
+        Row: {
+          id: string;
+          appointment_id: string;
+          dentist_id: string;
+          channel: Database["public"]["Enums"]["reminder_channel"];
+          status: Database["public"]["Enums"]["reminder_status"];
+          sent_at: string | null;
+          error_message: string | null;
+          attempt_count: number;
+          next_attempt_at: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          appointment_id: string;
+          dentist_id: string;
+          channel?: Database["public"]["Enums"]["reminder_channel"];
+          status?: Database["public"]["Enums"]["reminder_status"];
+          sent_at?: string | null;
+          error_message?: string | null;
+          attempt_count?: number;
+          next_attempt_at?: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          appointment_id?: string;
+          dentist_id?: string;
+          channel?: Database["public"]["Enums"]["reminder_channel"];
+          status?: Database["public"]["Enums"]["reminder_status"];
+          sent_at?: string | null;
+          error_message?: string | null;
+          attempt_count?: number;
+          next_attempt_at?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
       audit_log: {
         Row: {
           id: string;
@@ -560,6 +599,8 @@ export type Database = {
       supply_movement_type: "in" | "out" | "adjustment";
       supply_package_status: "active" | "depleted" | "expired";
       supply_unit: "unit" | "box" | "roll" | "bottle";
+      reminder_channel: "email" | "whatsapp";
+      reminder_status: "pending" | "sent" | "failed";
     };
     CompositeTypes: Record<string, never>;
   };

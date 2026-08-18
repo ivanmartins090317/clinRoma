@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ClinRoma · Homologação manual MVP</title>
+    <style>
+      :root {
+        --bg-page: #f7f0e8;
+        --bg-card: #ffffff;
+        --border: #e8e4df;
+        --primary: #301010;
+        --accent: #d09010;
+        --pass: #3d7a5c;
+        --fail: #b8323a;
+        --pending: #8a8480;
+        --text: #2a2523;
+        --muted: #8a8480;
+        --radius: 12px;
+        --font: system-ui, "Segoe UI", sans-serif;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: var(--font);
+        background: var(--bg-page);
+        color: var(--text);
+        line-height: 1.5;
+      }
+      .wrap {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 24px 16px 48px;
+      }
+      header {
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 20px;
+        margin-bottom: 24px;
+      }
+      h1 {
+        font-size: 1.75rem;
+        margin: 0 0 8px;
+        color: var(--primary);
+      }
+      .scoreboard {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 12px;
+        margin: 20px 0;
+      }
+      .score {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 16px;
+        text-align: center;
+      }
+      .score strong {
+        display: block;
+        font-size: 1.5rem;
+        color: var(--primary);
+      }
+      section {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 20px;
+        margin-bottom: 16px;
+      }
+      h2 {
+        font-size: 1.1rem;
+        margin: 0 0 12px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+      }
+      th,
+      td {
+        border-bottom: 1px solid var(--border);
+        padding: 10px 8px;
+        text-align: left;
+        vertical-align: top;
+      }
+      .status-pendente {
+        color: var(--pending);
+      }
+      .status-aprovado {
+        color: var(--pass);
+        font-weight: 600;
+      }
+      .status-reprovado {
+        color: var(--fail);
+        font-weight: 600;
+      }
+      footer {
+        margin-top: 32px;
+        font-size: 0.85rem;
+        color: var(--muted);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <h1>ClinRoma · Homologação manual MVP</h1>
+        <p>Piloto Clínica Neo Roma · Relatório POP-QA (adaptado) · Status inicial: pendente execução</p>
+        <div class="scoreboard" id="scoreboard"></div>
+      </header>
+
+      <section>
+        <h2>FL-01 · Login e papéis</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>TC</th>
+              <th>Descrição</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr data-flow="auth">
+              <td>TC-01</td>
+              <td>Login admin e acesso a todos os módulos</td>
+              <td class="status-pendente">Pendente</td>
+            </tr>
+            <tr data-flow="auth">
+              <td>TC-02</td>
+              <td>Recepção bloqueada em Scan QR</td>
+              <td class="status-pendente">Pendente</td>
+            </tr>
+            <tr data-flow="auth">
+              <td>TC-03</td>
+              <td>Visualizador sem prontuário clínico</td>
+              <td class="status-pendente">Pendente</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>FL-02 · Agenda</h2>
+        <table>
+          <tbody>
+            <tr data-flow="agenda">
+              <td>TC-04</td>
+              <td>CRUD consulta e conflito de horário</td>
+              <td class="status-pendente">Pendente</td>
+            </tr>
+            <tr data-flow="agenda">
+              <td>TC-05</td>
+              <td>Lista mobile do dia por dentista</td>
+              <td class="status-pendente">Pendente</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>FL-03 · Prontuário (mobile real)</h2>
+        <table>
+          <tbody>
+            <tr data-flow="records">
+              <td>TC-06</td>
+              <td>Evolução + áudio + transcrição iPhone</td>
+              <td class="status-pendente">Pendente</td>
+            </tr>
+            <tr data-flow="records">
+              <td>TC-07</td>
+              <td>Mesmo fluxo Android</td>
+              <td class="status-pendente">Pendente</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>FL-04 · Fila Kanban</h2>
+        <table>
+          <tbody>
+            <tr data-flow="waitlist">
+              <td>TC-08</td>
+              <td>Oferta de horário e link público LGPD</td>
+              <td class="status-pendente">Pendente</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>FL-05 · Estoque e scan</h2>
+        <table>
+          <tbody>
+            <tr data-flow="stock">
+              <td>TC-09</td>
+              <td>Scan CR-DEV001 e saldo atualizado</td>
+              <td class="status-pendente">Pendente</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>FL-06 · Lembrete pós-consulta</h2>
+        <table>
+          <tbody>
+            <tr data-flow="reminders">
+              <td>TC-10</td>
+              <td>Concluir consulta e e-mail ao dentista</td>
+              <td class="status-pendente">Pendente</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>FL-07 · PWA scan</h2>
+        <table>
+          <tbody>
+            <tr data-flow="pwa">
+              <td>TC-11</td>
+              <td>Atalho na tela inicial iOS/Android</td>
+              <td class="status-pendente">Pendente</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>Log de bugs</h2>
+        <p id="bugs">Nenhum bug registrado.</p>
+      </section>
+
+      <footer>ClinRoma · Clínica Neo Roma · Evidências em docs/evidencias/</footer>
+    </div>
+    <script>
+      const testData = {
+        total: 11,
+        pass: 0,
+        fail: 0,
+        block: 0,
+        pending: 11,
+      };
+      const el = document.getElementById("scoreboard");
+      el.innerHTML = `
+        <div class="score"><strong>${testData.total}</strong>Total TCs</div>
+        <div class="score"><strong>${testData.pass}</strong>Aprovados</div>
+        <div class="score"><strong>${testData.fail}</strong>Reprovados</div>
+        <div class="score"><strong>${testData.pending}</strong>Pendentes</div>
+      `;
+    </script>
+  </body>
+</html>

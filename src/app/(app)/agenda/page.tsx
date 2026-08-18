@@ -9,6 +9,7 @@ import {
   getLinkedDentistId,
   parseClinicDateParam,
 } from "@/features/agenda/queries";
+import { getRemindersByAppointmentIds } from "@/features/reminders/queries";
 import { getModuleAccess } from "@/lib/auth/roles";
 import { requireAuthSession } from "@/lib/auth/session";
 
@@ -40,6 +41,16 @@ export default async function AgendaPage({ searchParams }: AgendaPageProps) {
     getAppointmentsInRange(weekBounds.start, weekBounds.end, null),
   ]);
 
+  const appointmentIds = [
+    ...new Set(
+      [...dayAppointments, ...weekAppointments].map(
+        (appointment) => appointment.id,
+      ),
+    ),
+  ];
+  const remindersByAppointmentId =
+    await getRemindersByAppointmentIds(appointmentIds);
+
   return (
     <AgendaView
       canWrite={canWrite}
@@ -51,6 +62,7 @@ export default async function AgendaPage({ searchParams }: AgendaPageProps) {
       dayAppointments={dayAppointments}
       weekAppointments={weekAppointments}
       dateNavigation={clinicDateNavigation(selectedDate)}
+      remindersByAppointmentId={remindersByAppointmentId}
     />
   );
 }
