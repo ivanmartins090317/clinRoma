@@ -36,6 +36,8 @@ cp .env.example .env.local
 | `SUPABASE_DB_PASSWORD`          | Só db:push  | Senha Postgres (Settings → Database no dashboard)                            |
 | `SUPABASE_SERVICE_ROLE_KEY`     | Opcional    | Server-only: seed/jobs, merge de áudio. **Nunca** no client                  |
 | `OPENAI_API_KEY`                | Fase 3+     | Server-only: transcrição Whisper. Sem ela, áudio salva mas transcrição falha |
+| `CRON_SECRET`                   | Fase 4+     | Proteção do job de expiração da fila                                          |
+| `WAITLIST_IP_HASH_SECRET`       | Fase 4+     | Hash de IP na resposta pública da fila (server-only)                           |
 
 ### 3. Banco de dados (Fase 1)
 
@@ -45,7 +47,7 @@ npm run db:push       # aplicar migrations + seed de dev
 npm run db:types      # regenerar src/lib/supabase/database.types.ts
 ```
 
-Migrations em `supabase/migrations/` (001 a 013). Seeds idempotentes: `008_seed_dev.sql`, `011_seed_agenda_dev.sql`, `013_seed_records_dev.sql`.
+Migrations em `supabase/migrations/` (001 a 015). Seeds idempotentes: `008_seed_dev.sql`, `011_seed_agenda_dev.sql`, `013_seed_records_dev.sql`, `015_seed_waitlist_dev.sql`.
 
 #### Homologação da agenda (Fase 2)
 
@@ -61,6 +63,27 @@ Obrigatório em **iPhone e Android reais** antes de fechar a fase operacionalmen
 4. Evolução com foto + gravação de áudio; validar transcrição com `OPENAI_API_KEY` configurada
 
 Paciente seed **Maria Silva** já possui consentimento LGPD, anamnese e achado odontológico demo (migration 013).
+
+#### Homologação da fila (Fase 4)
+
+1. Login como `reception@clinroma.dev` → `/fila`
+2. Incluir paciente ou usar entradas seed (Ana, Pedro, Lucia aguardando)
+3. Oferecer horário e copiar link gerado
+4. Abrir link público de teste (seed):
+
+```
+https://localhost:3000/fila/resposta/clinroma-dev-waitlist-offer-001
+```
+
+Token seed: `clinroma-dev-waitlist-offer-001` (oferta pendente para Carlos Mendes).
+
+Requer `SUPABASE_SERVICE_ROLE_KEY` e `WAITLIST_IP_HASH_SECRET` no `.env.local`.
+
+Simular expiração de ofertas (dev):
+
+```bash
+curl -H "Authorization: Bearer SEU_CRON_SECRET" https://localhost:3000/api/cron/expire-slot-offers
+```
 
 #### Contas de teste (desenvolvimento)
 

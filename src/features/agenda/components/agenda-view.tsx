@@ -212,6 +212,7 @@ export function AgendaView({
         open={detailOpen}
         onOpenChange={setDetailOpen}
         canWrite={canWrite}
+        dentists={dentists}
         onEdit={openEdit}
         onCancelled={refreshAgenda}
       />

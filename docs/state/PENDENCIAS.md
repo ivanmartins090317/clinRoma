@@ -2,7 +2,7 @@
 
 Fonte viva do que **ainda falta implementar ou validar**. Atualizar ao concluir cada fase.
 
-Última revisão: **2026-08-18** (após Fase 3 · código entregue).
+Última revisão: **2026-08-18** (após Fase 4 · código entregue).
 
 ---
 
@@ -82,3 +82,35 @@ Referência: `specs/2026-08-18-fase-3-pacientes-prontuario.md` · `docs/implemen
 ---
 
 ## Fase 4 · Fila Kanban
+
+Referência: `specs/2026-08-18-fase-4-fila-kanban.md` · `docs/implementation/F4-fila-kanban.md`
+
+### Implementação (concluída)
+
+- [x] `src/features/waitlist/` (queries, actions, schemas, domain, componentes)
+- [x] Migrations `014_waitlist_f4.sql`, `015_seed_waitlist_dev.sql`
+- [x] Kanban real em `/fila` (desktop DnD + mobile abas/menu)
+- [x] CRUD fila com LGPD e unicidade de entrada ativa
+- [x] Oferta de horário com token opaco, hash, validade 40 min
+- [x] Página pública `/fila/resposta/[token]` aceitar/recusar
+- [x] Aceite cria consulta `confirmed` com validação de conflito
+- [x] API pública + cron de expiração
+- [x] Resumo fila em `/hoje`
+- [x] Atalho oferta pós-cancelamento na agenda
+- [x] Testes Vitest de domínio (expiração, token, nome parcial, transições)
+- [x] Documentação F4 em `docs/implementation/` e `docs/manual-dev/`
+
+### Fechamento operacional (homologação manual)
+
+- [ ] Recepção: incluir paciente, ofertar horário, copiar link
+- [ ] Paciente (mobile/viewport estreita): aceitar link seed → consulta na agenda
+- [ ] Cenário recusa: card volta a Aguardando
+- [ ] Expiração: cron ou curl manual + link expirado na UI pública
+- [ ] Dentista: fila somente leitura
+- [ ] Visualizador: `/fila` negado
+
+**Pronto quando:** cancelamento vira consulta confirmada pelo link, sem ligação telefônica.
+
+---
+
+## Fase 5 · Insumos e estoque

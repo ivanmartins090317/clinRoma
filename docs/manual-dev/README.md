@@ -13,7 +13,7 @@ Guia de arquitetura, fases implementadas e operação do ambiente de desenvolvim
 | [01-arquitetura.md](./01-arquitetura.md)                           | Visão geral, pastas, fluxos, padrões de código           |
 | [02-fase-0-fundacao.md](./02-fase-0-fundacao.md)                   | Fase 0: shell, HTTPS, shadcn, middleware base            |
 | [03-fase-1-dados-auth-papeis.md](./03-fase-1-dados-auth-papeis.md) | Fase 1: banco, auth, papéis, **contas de teste**         |
-| [05-fase-3-pacientes-prontuario.md](./05-fase-3-pacientes-prontuario.md) | Fase 3: pacientes, prontuário, áudio, Whisper |
+| [06-fase-4-fila-kanban.md](./06-fase-4-fila-kanban.md) | Fase 4: fila Kanban, link paciente, cron |
 
 ## Documentos relacionados
 
@@ -33,7 +33,7 @@ Guia de arquitetura, fases implementadas e operação do ambiente de desenvolvim
 | 1 · Dados, auth e papéis   | concluída          | [03-fase-1-dados-auth-papeis.md](./03-fase-1-dados-auth-papeis.md) |
 | 2 · Agenda                 | concluída (código) | [04-fase-2-agenda.md](./04-fase-2-agenda.md)                       |
 | 3 · Pacientes e prontuário | concluída (código) | [05-fase-3-pacientes-prontuario.md](./05-fase-3-pacientes-prontuario.md) |
-| 4 · Fila Kanban            | pendente           | —                                                                  |
+| 4 · Fila Kanban            | concluída (código) | [06-fase-4-fila-kanban.md](./06-fase-4-fila-kanban.md)             |
 | 5 · Insumos e estoque      | pendente           | —                                                                  |
 | 6 · Lembrete e piloto      | pendente           | —                                                                  |
 

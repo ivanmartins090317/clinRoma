@@ -8,7 +8,7 @@ Registro do que **já foi entregue** em cada fase do `docs/PLANO.md`.
 | 1 · Dados, auth e papéis   | [F1-dados-auth-papeis.md](./F1-dados-auth-papeis.md) | concluída          |
 | 2 · Agenda                 | [F2-agenda.md](./F2-agenda.md)                       | concluída (código) |
 | 3 · Pacientes e prontuário | [F3-pacientes-prontuario.md](./F3-pacientes-prontuario.md) | concluída (código) |
-| 4 · Fila Kanban            | —                                                    | pendente           |
+| 4 · Fila Kanban            | [F4-fila-kanban.md](./F4-fila-kanban.md)             | concluída (código) |
 | 5 · Insumos e estoque      | —                                                    | pendente           |
 | 6 · Lembrete e piloto      | —                                                    | pendente           |
 

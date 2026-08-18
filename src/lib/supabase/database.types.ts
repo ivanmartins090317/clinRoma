@@ -255,6 +255,111 @@ export type Database = {
         };
         Relationships: [];
       };
+      waitlist_entries: {
+        Row: {
+          id: string;
+          patient_id: string;
+          priority: Database["public"]["Enums"]["waitlist_priority"];
+          reason: string | null;
+          preferred_dentist_id: string | null;
+          status: Database["public"]["Enums"]["waitlist_entry_status"];
+          created_by: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          patient_id: string;
+          priority: Database["public"]["Enums"]["waitlist_priority"];
+          reason?: string | null;
+          preferred_dentist_id?: string | null;
+          status?: Database["public"]["Enums"]["waitlist_entry_status"];
+          created_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          patient_id?: string;
+          priority?: Database["public"]["Enums"]["waitlist_priority"];
+          reason?: string | null;
+          preferred_dentist_id?: string | null;
+          status?: Database["public"]["Enums"]["waitlist_entry_status"];
+          created_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      slot_offers: {
+        Row: {
+          id: string;
+          waitlist_entry_id: string;
+          offered_at: string;
+          ends_at: string;
+          dentist_id: string;
+          token_hash: string;
+          expires_at: string;
+          status: Database["public"]["Enums"]["slot_offer_status"];
+          appointment_id: string | null;
+          created_by: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          waitlist_entry_id: string;
+          offered_at: string;
+          ends_at: string;
+          dentist_id: string;
+          token_hash: string;
+          expires_at: string;
+          status?: Database["public"]["Enums"]["slot_offer_status"];
+          appointment_id?: string | null;
+          created_by?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          waitlist_entry_id?: string;
+          offered_at?: string;
+          ends_at?: string;
+          dentist_id?: string;
+          token_hash?: string;
+          expires_at?: string;
+          status?: Database["public"]["Enums"]["slot_offer_status"];
+          appointment_id?: string | null;
+          created_by?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      patient_slot_responses: {
+        Row: {
+          id: string;
+          slot_offer_id: string;
+          response: Database["public"]["Enums"]["slot_response"];
+          lgpd_consent: boolean;
+          responded_at: string;
+          ip_hash: string;
+        };
+        Insert: {
+          id?: string;
+          slot_offer_id: string;
+          response: Database["public"]["Enums"]["slot_response"];
+          lgpd_consent?: boolean;
+          responded_at?: string;
+          ip_hash: string;
+        };
+        Update: {
+          id?: string;
+          slot_offer_id?: string;
+          response?: Database["public"]["Enums"]["slot_response"];
+          lgpd_consent?: boolean;
+          responded_at?: string;
+          ip_hash?: string;
+        };
+        Relationships: [];
+      };
       supplies: {
         Row: {
           id: string;
@@ -350,7 +455,12 @@ export type Database = {
       };
     };
     Views: Record<string, never>;
-    Functions: Record<string, never>;
+    Functions: {
+      expire_pending_slot_offers: {
+        Args: Record<string, never>;
+        Returns: number;
+      };
+    };
     Enums: {
       user_role:
         "admin" | "dentist" | "reception" | "room_assistant" | "viewer";
@@ -362,6 +472,15 @@ export type Database = {
         | "no_show"
         | "cancelled"
         | "rescheduled";
+      waitlist_priority: "red" | "yellow" | "green";
+      waitlist_entry_status:
+        | "waiting"
+        | "offered"
+        | "scheduled"
+        | "cancelled"
+        | "expired";
+      slot_offer_status: "pending" | "accepted" | "declined" | "expired";
+      slot_response: "accept" | "decline";
       medical_record_type: "anamnesis" | "evolution";
       record_attachment_type: "photo" | "audio";
       transcription_status:

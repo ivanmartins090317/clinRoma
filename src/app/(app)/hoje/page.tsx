@@ -11,6 +11,7 @@ import {
   getActiveDentists,
   getTodayAppointments,
 } from "@/features/agenda/queries";
+import { getWaitlistSummary } from "@/features/waitlist/queries";
 import { ClinicLogo } from "@/components/clinic-logo";
 import { Button } from "@/components/ui/button";
 import { WAITLIST_COLORS } from "@/types/clinroma";
@@ -20,9 +21,10 @@ export const metadata = {
 };
 
 export default async function HojePage() {
-  const [dentists, appointments] = await Promise.all([
+  const [dentists, appointments, waitlistSummary] = await Promise.all([
     getActiveDentists(),
     getTodayAppointments(),
+    getWaitlistSummary(),
   ]);
 
   const grouped = groupAppointmentsByDentist(appointments, dentists);
@@ -136,25 +138,54 @@ export default async function HojePage() {
       </section>
 
       <section className="rounded-xl border border-border bg-card p-5 sm:p-6">
-        <h3 className="font-semibold text-foreground">Fila · prioridades</h3>
-        <div className="mt-4 flex flex-wrap gap-3">
-          {Object.entries(WAITLIST_COLORS).map(([key, color]) => (
-            <span
-              key={key}
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-3 py-1.5 text-sm text-foreground"
-            >
-              <span
-                className={`h-3 w-3 rounded-full ${color.className}`}
-                aria-hidden
-              />
-              {color.label}
-            </span>
-          ))}
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h3 className="font-semibold text-foreground">Fila · aguardando</h3>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {waitlistSummary.totalWaiting === 0
+                ? "Nenhum paciente aguardando encaixe"
+                : `${waitlistSummary.totalWaiting} paciente(s) na fila`}
+            </p>
+          </div>
+          <Button asChild variant="outline">
+            <Link href="/fila">Abrir fila</Link>
+          </Button>
         </div>
-        <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-          Slot liberado: botão ou arrastar no Kanban. Paciente recebe link (40
-          min, LGPD).
-        </p>
+
+        <div className="mt-4 flex flex-wrap gap-3">
+          {Object.entries(WAITLIST_COLORS).map(([key, color]) => {
+            const count =
+              waitlistSummary.waitingByPriority[
+                key as keyof typeof waitlistSummary.waitingByPriority
+              ];
+
+            return (
+              <span
+                key={key}
+                className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-3 py-1.5 text-sm text-foreground"
+              >
+                <span
+                  className={`h-3 w-3 rounded-full ${color.className}`}
+                  aria-hidden
+                />
+                {count} {color.label.toLowerCase()}
+              </span>
+            );
+          })}
+        </div>
+
+        {waitlistSummary.expiringSoon.length > 0 ? (
+          <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
+            {waitlistSummary.expiringSoon.map((item) => (
+              <li
+                key={item.entryId}
+                className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-amber-950"
+              >
+                Oferta de {item.patientName} expira em {item.minutesLeft} min
+              </li>
+            ))}
+          </ul>
+        ) : null}
       </section>
     </div>
   );
