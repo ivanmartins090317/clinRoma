@@ -54,6 +54,6 @@ DeskcommCRM / WhatsApp paciente (Projeto 1).
 ## Qualidade
 
 - Vitest: regras de domínio (conflito de agenda, expiração de token, saldo de estoque)
-- Playwright: login, marcar consulta, aceitar oferta pública, baixa por scan (incluir viewport mobile nos fluxos críticos)
+- Sem Playwright no MVP. Homologação manual de UI na Fase 6 com `.cursor/skills/manual-report` (relatório HTML, evidências desktop/mobile, log de bugs) **antes da entrega ao cliente**
 - Meta ~80% de cobertura em domínio e actions
 - Fases 3 e 5: teste manual obrigatório em iPhone e Android real antes de fechar

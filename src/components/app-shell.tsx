@@ -1,17 +1,54 @@
-import Image from "next/image";
+"use client";
+
+import {
+  Calendar,
+  Home,
+  LayoutGrid,
+  Package,
+  Users,
+  type LucideIcon,
+} from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { ClinicLogo } from "@/components/clinic-logo";
-import { CLINROMA_MODULES } from "@/types/clinroma";
+import { CLINROMA_MODULES, type ClinicModule } from "@/types/clinroma";
+import { cn } from "@/lib/utils";
 
 interface AppShellProps {
   children: React.ReactNode;
 }
 
+const MOBILE_NAV_ICONS: Record<string, LucideIcon> = {
+  today: Home,
+  agenda: Calendar,
+  patients: Users,
+  waitlist: LayoutGrid,
+  stock: Package,
+};
+
+/** Módulos da barra inferior mobile (5 itens; Scan QR fica sob Estoque). */
+export function getMobileNavModules(
+  modules: readonly ClinicModule[],
+): ClinicModule[] {
+  return modules.filter((module) => module.id !== "stock-scan");
+}
+
+function isNavActive(pathname: string, href: string): boolean {
+  if (href === "/hoje") {
+    return pathname === "/hoje";
+  }
+
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
+
 export function AppShell({ children }: AppShellProps) {
+  const pathname = usePathname();
+  const mobileNavModules = getMobileNavModules(CLINROMA_MODULES);
+
   return (
     <div className="flex min-h-screen bg-neo-cream-50">
       <aside className="hidden w-64 shrink-0 bg-neo-burgundy-900 md:block">
-        <div className="border-b border-neo-burgundy-800 px-5 py-6">
+        <div className="safe-area-top border-b border-neo-burgundy-800 px-5 py-6 mt-6">
           <Link href="/hoje" className="inline-block">
             <ClinicLogo variant="on-dark" priority className="h-11 w-auto" />
           </Link>
@@ -27,25 +64,64 @@ export function AppShell({ children }: AppShellProps) {
             <Link
               key={module.id}
               href={module.href}
-              className="rounded-lg px-3 py-2 text-sm font-medium text-neo-cream-100/90 transition hover:bg-neo-burgundy-800 hover:text-neo-cream-100"
+              className={cn(
+                "rounded-lg px-3 py-2 text-sm font-medium transition",
+                isNavActive(pathname, module.href)
+                  ? "bg-neo-burgundy-800 text-neo-cream-100"
+                  : "text-neo-cream-100/90 hover:bg-neo-burgundy-800 hover:text-neo-cream-100",
+              )}
             >
               {module.label}
             </Link>
           ))}
         </nav>
       </aside>
-      <div className="flex min-w-0 flex-1 flex-col">
-        <header className="border-b border-neo-gray-200 bg-neo-white px-4 py-3 md:px-8">
-          <div className="flex items-center justify-between gap-4">
-            <Link href="/hoje" className="md:hidden">
-              <ClinicLogo variant="on-light" className="h-9 w-auto" />
-            </Link>
-            <p className="hidden text-sm text-brand-muted sm:block">
+
+      <div className="flex min-w-0 flex-1 flex-col pb-[calc(5.5rem+env(safe-area-inset-bottom))] md:pb-0">
+        <header className="safe-area-top hidden border-b border-neo-gray-200 bg-neo-white py-3 md:block">
+          <div className="page-container">
+            <p className="text-sm text-brand-muted">
               Piloto · 5 dentistas · fila 40 min · QR estoque
             </p>
           </div>
         </header>
-        <main className="flex-1 px-4 py-6 md:px-8">{children}</main>
+
+        <main className="safe-area-top flex-1 py-5 sm:py-6 lg:py-8">
+          <div className="page-container">{children}</div>
+        </main>
+
+        <nav
+          aria-label="Navegação principal"
+          className="pointer-events-none fixed inset-x-0 bottom-0 z-50 flex justify-center px-4 pb-[calc(0.875rem+env(safe-area-inset-bottom))] md:hidden"
+        >
+          <div className="pointer-events-auto flex items-center gap-0.5 rounded-full border border-neo-cream-100/10 bg-neo-burgundy-900/92 p-1.5 shadow-[0_8px_32px_rgba(32,8,12,0.35)] backdrop-blur-md">
+            {mobileNavModules.map((module) => {
+              const active = isNavActive(pathname, module.href);
+              const Icon = MOBILE_NAV_ICONS[module.id] ?? Home;
+
+              return (
+                <Link
+                  key={module.id}
+                  href={module.href}
+                  aria-current={active ? "page" : undefined}
+                  aria-label={module.label}
+                  className={cn(
+                    "flex size-11 shrink-0 items-center justify-center rounded-full transition-colors",
+                    active
+                      ? "bg-neo-gold-500 text-neo-burgundy-950 shadow-sm"
+                      : "text-neo-cream-100/65 hover:bg-neo-burgundy-800/80 hover:text-neo-cream-100",
+                  )}
+                >
+                  <Icon
+                    className="size-5"
+                    strokeWidth={active ? 2.25 : 1.75}
+                    aria-hidden
+                  />
+                </Link>
+              );
+            })}
+          </div>
+        </nav>
       </div>
     </div>
   );

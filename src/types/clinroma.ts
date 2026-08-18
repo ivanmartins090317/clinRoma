@@ -1,9 +1,5 @@
 export type UserRole =
-  | "admin"
-  | "dentist"
-  | "reception"
-  | "room_assistant"
-  | "viewer";
+  "admin" | "dentist" | "reception" | "room_assistant" | "viewer";
 
 export type WaitlistPriorityColor = "red" | "yellow" | "green";
 

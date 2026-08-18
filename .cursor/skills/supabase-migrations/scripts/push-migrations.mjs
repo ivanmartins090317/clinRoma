@@ -25,7 +25,6 @@ function resolveEnvPath() {
 }
 
 function parseEnvFile(filePath) {
-
   const env = {};
   for (const line of readFileSync(filePath, "utf8").split("\n")) {
     const trimmed = line.trim();
@@ -65,8 +64,7 @@ const envPath = resolveEnvPath();
 console.log(`Lendo env: ${path.basename(envPath)}`);
 const env = parseEnvFile(envPath);
 
-const supabaseUrl =
-  env.NEXT_PUBLIC_SUPABASE_URL ?? env.SUPABASE_URL ?? "";
+const supabaseUrl = env.NEXT_PUBLIC_SUPABASE_URL ?? env.SUPABASE_URL ?? "";
 const password = env.SUPABASE_DB_PASSWORD ?? "";
 
 if (!supabaseUrl) {

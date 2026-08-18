@@ -6,7 +6,9 @@ interface SlotResponsePageProps {
   params: Promise<{ token: string }>;
 }
 
-export default async function SlotResponsePage({ params }: SlotResponsePageProps) {
+export default async function SlotResponsePage({
+  params,
+}: SlotResponsePageProps) {
   const { token } = await params;
 
   return (
@@ -26,7 +28,11 @@ export default async function SlotResponsePage({ params }: SlotResponsePageProps
           token: {token.slice(0, 8)}…
         </p>
         <label className="mt-6 flex items-start gap-2 text-sm text-neo-cream-100/90">
-          <input type="checkbox" className="mt-1 accent-neo-gold-500" disabled />
+          <input
+            type="checkbox"
+            className="mt-1 accent-neo-gold-500"
+            disabled
+          />
           <span>
             Autorizo o uso dos meus dados para confirmar este agendamento,
             conforme a política de privacidade da clínica.

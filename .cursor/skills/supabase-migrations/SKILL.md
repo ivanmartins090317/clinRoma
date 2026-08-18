@@ -12,10 +12,10 @@ Piloto: **Clínica Neo Roma** · single-tenant (sem `clinic_id`).
 
 ## Projeto Supabase
 
-| Campo | Valor |
-| --- | --- |
-| Ref | `skdtkmruianufgenrlqv` |
-| URL | `https://skdtkmruianufgenrlqv.supabase.co` |
+| Campo     | Valor                                                                                                              |
+| --------- | ------------------------------------------------------------------------------------------------------------------ |
+| Ref       | `skdtkmruianufgenrlqv`                                                                                             |
+| URL       | `https://skdtkmruianufgenrlqv.supabase.co`                                                                         |
 | Dashboard | [supabase.com/dashboard/project/skdtkmruianufgenrlqv](https://supabase.com/dashboard/project/skdtkmruianufgenrlqv) |
 
 ## Pré-requisitos
@@ -63,15 +63,15 @@ Script: `.cursor/skills/supabase-migrations/scripts/push-migrations.mjs`
 
 Ordem sugerida de migrations (criar conforme fases; nomes ilustrativos):
 
-| Sequência | Conteúdo |
-| --- | --- |
+| Sequência                   | Conteúdo                                                                                               |
+| --------------------------- | ------------------------------------------------------------------------------------------------------ |
 | `001_profiles_dentists.sql` | `profiles` (ref `auth.users`, nome, papel, ativo), `dentists` (CRO, cor agenda, ativo), trigger signup |
-| `002_patients_records.sql` | `patients`, `medical_records`, `tooth_findings`, `record_attachments` |
-| `003_appointments.sql` | `appointments` (status `AppointmentStatus` de `src/types/clinroma.ts`) |
-| `004_stock.sql` | `supplies`, `supply_packages`, `supply_movements`, `supply_sheets` |
-| `005_waitlist.sql` | `waitlist_entries`, `slot_offers`, `patient_slot_responses` (token só hash; IP só hash) |
-| `006_reminders_audit.sql` | `reminders`, `audit_log` |
-| `007_storage.sql` | buckets privados + policies: `record-photos`, `record-audio`, `supply-sheets`, `supply-labels` |
+| `002_patients_records.sql`  | `patients`, `medical_records`, `tooth_findings`, `record_attachments`                                  |
+| `003_appointments.sql`      | `appointments` (status `AppointmentStatus` de `src/types/clinroma.ts`)                                 |
+| `004_stock.sql`             | `supplies`, `supply_packages`, `supply_movements`, `supply_sheets`                                     |
+| `005_waitlist.sql`          | `waitlist_entries`, `slot_offers`, `patient_slot_responses` (token só hash; IP só hash)                |
+| `006_reminders_audit.sql`   | `reminders`, `audit_log`                                                                               |
+| `007_storage.sql`           | buckets privados + policies: `record-photos`, `record-audio`, `supply-sheets`, `supply-labels`         |
 
 Atualizar esta tabela quando as migrations reais forem criadas.
 
@@ -97,12 +97,12 @@ Papéis: `admin`, `dentist`, `reception`, `room_assistant`, `viewer`.
 
 ## Troubleshooting
 
-| Erro | Ação |
-| --- | --- |
-| `password authentication failed` | Senha errada em `SUPABASE_DB_PASSWORD` — resetar no dashboard Supabase |
-| `SUPABASE_DB_PASSWORD` ausente | Usuário deve adicionar ao `.env.local` |
-| Policy já existe | Tornar migration idempotente: `drop policy if exists ...` antes de `create policy` |
-| `link` / privileges | **Não** usar `supabase link`; usar `npm run db:push` (conexão direta Postgres) |
+| Erro                             | Ação                                                                               |
+| -------------------------------- | ---------------------------------------------------------------------------------- |
+| `password authentication failed` | Senha errada em `SUPABASE_DB_PASSWORD` — resetar no dashboard Supabase             |
+| `SUPABASE_DB_PASSWORD` ausente   | Usuário deve adicionar ao `.env.local`                                             |
+| Policy já existe                 | Tornar migration idempotente: `drop policy if exists ...` antes de `create policy` |
+| `link` / privileges              | **Não** usar `supabase link`; usar `npm run db:push` (conexão direta Postgres)     |
 
 ## Alternativa manual
 

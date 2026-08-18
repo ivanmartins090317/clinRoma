@@ -5,15 +5,15 @@
 
 ## 1. Decisões fechadas
 
-| Tema | Decisão |
-| --- | --- |
-| Tenancy | Single-tenant. Sem `clinic_id`; RLS por sessão e papel |
-| Agenda | Biblioteca de calendário pronta, isolada atrás de um componente próprio |
-| Áudio da evolução | Grava, armazena e transcreve com Whisper no v1 |
-| Insumos | Upload da foto da planilha + digitação manual. Sem OCR |
-| Lembrete pós-consulta | E-mail via Resend. WhatsApp fica para depois |
-| Ordem de entrega | Agenda primeiro, depois prontuário, fila e estoque |
-| Responsividade | Mobile-first. Celular é o dispositivo primário do dentista e da auxiliar |
+| Tema                  | Decisão                                                                  |
+| --------------------- | ------------------------------------------------------------------------ |
+| Tenancy               | Single-tenant. Sem `clinic_id`; RLS por sessão e papel                   |
+| Agenda                | Biblioteca de calendário pronta, isolada atrás de um componente próprio  |
+| Áudio da evolução     | Grava, armazena e transcreve com Whisper no v1                           |
+| Insumos               | Upload da foto da planilha + digitação manual. Sem OCR                   |
+| Lembrete pós-consulta | E-mail via Resend. WhatsApp fica para depois                             |
+| Ordem de entrega      | Agenda primeiro, depois prontuário, fila e estoque                       |
+| Responsividade        | Mobile-first. Celular é o dispositivo primário do dentista e da auxiliar |
 
 ### Biblioteca de calendário
 
@@ -293,31 +293,35 @@ Android, e o saldo cai sozinho.
    `reminders`.
 2. Deploy na Vercel com projeto Supabase de produção separado do de dev.
 3. Revisão do checklist de DoD do `docs/SECURITY.md` em todas as features.
-4. Acompanhamento da clínica em uso real e ajustes.
+4. Homologação manual completa com a skill
+   `.cursor/skills/manual-report`: casos de teste, evidências (desktop e
+   mobile), relatório HTML e log de bugs. **Último passo antes da entrega ao
+   cliente.** Sem Playwright no MVP.
+5. Acompanhamento da clínica em uso real e ajustes pós-entrega.
 
 ## 7. Qualidade
 
 - Vitest para regras de domínio: conflito de horário na agenda, expiração de
   token da fila, cálculo de saldo de estoque.
-- Playwright para os fluxos críticos: login, marcar consulta, aceitar oferta
-  pelo link público, baixa por scan.
-- Playwright em viewport de celular além do desktop nos fluxos de prontuário,
-  scan e link público.
-- Teste manual obrigatório em aparelho real antes de fechar as Fases 3 e 5, em
-  um iPhone e em um Android. Emulador não reproduz permissão de microfone,
-  formato de gravação nem foco de câmera.
+- **Sem Playwright no MVP.** Fluxos de UI (login, agenda, prontuário, fila,
+  scan, link público) entram na homologação manual da Fase 6 via skill
+  `.cursor/skills/manual-report` (relatório HTML, evidências e bugs), antes da
+  entrega ao cliente.
+- Teste manual em aparelho real antes de fechar as Fases 3 e 5, em um iPhone e
+  em um Android. Emulador não reproduz permissão de microfone, formato de
+  gravação nem foco de câmera.
 - Meta de 80% de cobertura nas camadas de domínio e actions.
 
 ## 8. Riscos
 
-| Risco | Mitigação |
-| --- | --- |
-| RLS mal escrita expondo PHI | Testes de política com usuário de cada papel na Fase 1 |
-| Token da fila enumerável | Token aleatório, guardado só como hash, expira em 40 min |
-| Custo e latência do Whisper | Transcrição assíncrona, áudio sempre disponível mesmo se falhar |
-| Lock-in do calendário | Biblioteca isolada atrás de um componente do domínio |
-| Escopo crescer para o WhatsApp | WhatsApp do paciente é do DeskcommCRM, repositório separado |
-| Formato de áudio incompatível entre iOS e Android | Formato escolhido em runtime; backend aceita mp4 e webm |
-| iOS cortar a gravação em segundo plano | Upload em blocos durante a gravação e aviso claro ao dentista |
-| QR não ler no iPhone por falta da API nativa | Detecção de recurso com alternativa em WebAssembly |
-| Rede instável no consultório | Upload com retomada; áudio preservado localmente até confirmar envio |
+| Risco                                             | Mitigação                                                            |
+| ------------------------------------------------- | -------------------------------------------------------------------- |
+| RLS mal escrita expondo PHI                       | Testes de política com usuário de cada papel na Fase 1               |
+| Token da fila enumerável                          | Token aleatório, guardado só como hash, expira em 40 min             |
+| Custo e latência do Whisper                       | Transcrição assíncrona, áudio sempre disponível mesmo se falhar      |
+| Lock-in do calendário                             | Biblioteca isolada atrás de um componente do domínio                 |
+| Escopo crescer para o WhatsApp                    | WhatsApp do paciente é do DeskcommCRM, repositório separado          |
+| Formato de áudio incompatível entre iOS e Android | Formato escolhido em runtime; backend aceita mp4 e webm              |
+| iOS cortar a gravação em segundo plano            | Upload em blocos durante a gravação e aviso claro ao dentista        |
+| QR não ler no iPhone por falta da API nativa      | Detecção de recurso com alternativa em WebAssembly                   |
+| Rede instável no consultório                      | Upload com retomada; áudio preservado localmente até confirmar envio |

@@ -23,8 +23,29 @@
   --priority-yellow: #d4a017;
   --priority-green: #3d7a5c;
 
+  /* shadcn — mapeados para Neo Roma */
   --background: var(--neo-cream-50);
   --foreground: var(--neo-gray-900);
+  --card: var(--neo-white);
+  --card-foreground: var(--neo-gray-900);
+  --popover: var(--neo-white);
+  --popover-foreground: var(--neo-gray-900);
+  --primary: var(--neo-burgundy-900);
+  --primary-foreground: var(--neo-cream-100);
+  --secondary: var(--neo-cream-100);
+  --secondary-foreground: var(--neo-gray-900);
+  --muted: var(--neo-cream-100);
+  --muted-foreground: var(--neo-gray-500);
+  --accent: var(--neo-gold-500);
+  --accent-foreground: var(--neo-burgundy-950);
+  --destructive: var(--priority-red);
+  --destructive-foreground: var(--neo-white);
+  --border: var(--neo-gray-200);
+  --input: var(--neo-gray-200);
+  --ring: var(--neo-gold-500);
+  --radius: 0.625rem;
+
+  /* aliases legados usados no app */
   --brand-primary: var(--neo-burgundy-900);
   --brand-accent: var(--neo-gold-500);
   --brand-surface: var(--neo-white);
@@ -34,6 +55,23 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
   --color-brand-primary: var(--brand-primary);
   --color-brand-accent: var(--brand-accent);
   --color-brand-surface: var(--brand-surface);
@@ -47,9 +85,17 @@
   --color-neo-gold-400: var(--neo-gold-400);
   --color-neo-cream-50: var(--neo-cream-50);
   --color-neo-cream-100: var(--neo-cream-100);
+  --color-neo-white: var(--neo-white);
+  --color-neo-gray-200: var(--neo-gray-200);
+  --color-neo-gray-500: var(--neo-gray-500);
+  --color-neo-gray-900: var(--neo-gray-900);
   --color-priority-red: var(--priority-red);
   --color-priority-yellow: var(--priority-yellow);
   --color-priority-green: var(--priority-green);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -58,4 +104,67 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+/* Padrões mobile: alvo mínimo 44×44 px, inputs 16 px (evita zoom iOS) */
+button,
+[role="button"],
+input[type="checkbox"],
+input[type="radio"] {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+input:not([type="checkbox"]):not([type="radio"]),
+select,
+textarea {
+  font-size: 16px;
+}
+
+@media (min-width: 768px) {
+  input:not([type="checkbox"]):not([type="radio"]),
+  select,
+  textarea {
+    font-size: 0.875rem;
+  }
+}
+
+.touch-target-inline {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+.safe-area-top {
+  padding-top: env(safe-area-inset-top);
+}
+
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.safe-area-x {
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+.page-container {
+  width: 100%;
+  max-width: 72rem;
+  margin-inline: auto;
+  padding-left: max(1.25rem, env(safe-area-inset-left, 0px));
+  padding-right: max(1.25rem, env(safe-area-inset-right, 0px));
+}
+
+@media (min-width: 640px) {
+  .page-container {
+    padding-left: max(1.75rem, env(safe-area-inset-left, 0px));
+    padding-right: max(1.75rem, env(safe-area-inset-right, 0px));
+  }
+}
+
+@media (min-width: 1024px) {
+  .page-container {
+    padding-left: max(2.5rem, env(safe-area-inset-left, 0px));
+    padding-right: max(2.5rem, env(safe-area-inset-right, 0px));
+  }
 }

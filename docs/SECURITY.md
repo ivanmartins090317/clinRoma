@@ -13,13 +13,13 @@
 
 ## Superfícies
 
-| Superfície | Auth | Regra |
-| --- | --- | --- |
-| `/`, marketing | Público | Sem PHI |
-| `/login` | Auth Supabase | Rate limit login |
-| `/(app)/*` | Sessão + role | RLS por `clinic_id` |
-| `/fila/resposta/[token]` | Token opaco | Expira 40 min; mínimo de dados; consentimento LGPD |
-| `/api/*` | Server-only secrets | Validar sessão ou assinatura webhook |
+| Superfície               | Auth                | Regra                                              |
+| ------------------------ | ------------------- | -------------------------------------------------- |
+| `/`, marketing           | Público             | Sem PHI                                            |
+| `/login`                 | Auth Supabase       | Rate limit login                                   |
+| `/(app)/*`               | Sessão + role       | RLS por `clinic_id`                                |
+| `/fila/resposta/[token]` | Token opaco         | Expira 40 min; mínimo de dados; consentimento LGPD |
+| `/api/*`                 | Server-only secrets | Validar sessão ou assinatura webhook               |
 
 ## LGPD / link ao paciente (fila)
 

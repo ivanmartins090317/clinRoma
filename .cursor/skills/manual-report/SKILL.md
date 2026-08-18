@@ -9,6 +9,8 @@ Skill para criação e atualização de relatórios de testes manuais da **Zelit
 
 > **Automação:** Vitest cobre domínio e casos de uso. Esta skill cobre **homologação manual** de UI/PWA/fluxos — **sem Playwright** no MVP.
 
+> **ClinRoma:** usar na **Fase 6** (`docs/PLANO.md`), após entregar todos os módulos e **antes da entrega ao cliente**. Escopo: login, agenda, prontuário (áudio/foto), fila Kanban, link público LGPD, scan QR e lembrete. Referências: `docs/PLANO.md`, `docs/SECURITY.md`, `AGENTS.md`. Relatório sugerido: `docs/relatorio-testes-manuais.html` · evidências em `docs/evidencias/`.
+
 > **Recomendação de modelo:** Para melhor qualidade, use um LLM superior (Claude Opus/Sonnet ou Gemini Pro).
 
 ---
@@ -43,16 +45,16 @@ Ambiente padrão de teste manual:
 
 Códigos `FL-XX` alinhados ao PRD (fatias). Priorize pela fatia em curso:
 
-| Código | Fluxo | Superfície / rotas (alvo) |
-|--------|-------|---------------------------|
-| FL-01 | Auth OTP (e-mail + código) | `(auth)/` — entrar / código |
-| FL-02 | Onboarding + pessoa cuidada | cadastro 8 passos · care recipient |
-| FL-03 | Remédios e cartela | `(family)/` remédios · cálculo de fim |
-| FL-04 | Lembretes (job + WhatsApp sandbox) | Inngest · canal WA · `reminder_sent` |
-| FL-05 | PWA idoso (vínculo device) | `(elder)/` · sem login · QR/código |
-| FL-06 | SOS | PWA + painel · disclaimer SAMU/Bombeiros |
-| FL-07 | Segurança / RLS / papéis | multi-membro · service role só server |
-| FL-08 | Exames / convites / geo / billing | conforme fatia 3–4 (quando entrar no escopo) |
+| Código | Fluxo                              | Superfície / rotas (alvo)                    |
+| ------ | ---------------------------------- | -------------------------------------------- |
+| FL-01  | Auth OTP (e-mail + código)         | `(auth)/` — entrar / código                  |
+| FL-02  | Onboarding + pessoa cuidada        | cadastro 8 passos · care recipient           |
+| FL-03  | Remédios e cartela                 | `(family)/` remédios · cálculo de fim        |
+| FL-04  | Lembretes (job + WhatsApp sandbox) | Inngest · canal WA · `reminder_sent`         |
+| FL-05  | PWA idoso (vínculo device)         | `(elder)/` · sem login · QR/código           |
+| FL-06  | SOS                                | PWA + painel · disclaimer SAMU/Bombeiros     |
+| FL-07  | Segurança / RLS / papéis           | multi-membro · service role só server        |
+| FL-08  | Exames / convites / geo / billing  | conforme fatia 3–4 (quando entrar no escopo) |
 
 Consulte `docs/state/PENDENCIAS.md` para priorizar TCs ainda não validados. Na **fatia 1**, foque FL-01…FL-04 (+ smoke FL-07).
 
@@ -75,13 +77,13 @@ docs/
 
 ### FASE 3 — Criar os Casos de Teste
 
-| Campo | Regra |
-|-------|-------|
-| `Código` | Sequencial global: `TC-01`, `TC-02`, … |
-| `Descrição` | Ação + resultado observável |
-| `Pré-condição` | Auth, env, dados de teste, opt-in WA se necessário |
+| Campo                | Regra                                                     |
+| -------------------- | --------------------------------------------------------- |
+| `Código`             | Sequencial global: `TC-01`, `TC-02`, …                    |
+| `Descrição`          | Ação + resultado observável                               |
+| `Pré-condição`       | Auth, env, dados de teste, opt-in WA se necessário        |
 | `Resultado Esperado` | Comportamento correto (ex.: lembrete ≠ tomada confirmada) |
-| `Status` | `Pendente`, `Aprovado`, `Reprovado`, `Bloqueado` |
+| `Status`             | `Pendente`, `Aprovado`, `Reprovado`, `Bloqueado`          |
 
 **Severidade de bugs (`BG-XX`):**
 
