@@ -1,46 +1,58 @@
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { getModuleAccess } from "@/lib/auth/roles";
+import { requireAuthSession } from "@/lib/auth/session";
+import {
+  getSupplyDetail,
+  listSupplies,
+  listSuppliesForSelect,
+} from "@/features/stock/queries";
+import { StockPageShell } from "@/features/stock/components/stock-page-shell";
 
 export const metadata = { title: "Estoque" };
 
-export default function EstoquePage() {
+interface EstoquePageProps {
+  searchParams: Promise<{
+    id?: string;
+    novo?: string;
+    compra?: string;
+  }>;
+}
+
+export default async function EstoquePage({ searchParams }: EstoquePageProps) {
+  const params = await searchParams;
+  const session = await requireAuthSession("/estoque");
+  const role = session.profile.role;
+
+  const [supplies, supplyOptions, selectedSupply] = await Promise.all([
+    listSupplies(),
+    listSuppliesForSelect(),
+    params.id ? getSupplyDetail(params.id) : Promise.resolve(null),
+  ]);
+
+  const canManage = getModuleAccess(role, "stock") === "write";
+  const canRegisterPurchase = role === "admin" || role === "room_assistant";
+  const canScan = getModuleAccess(role, "stock-scan") === "write";
+
   return (
-    <div className="mx-auto max-w-2xl space-y-6 rounded-xl border border-border bg-card p-8">
-      <div>
-        <h2 className="text-2xl font-semibold">Estoque e insumos</h2>
+    <div className="space-y-6">
+      <section>
+        <h2 className="text-2xl font-semibold tracking-tight">
+          Estoque e insumos
+        </h2>
         <p className="mt-2 text-muted-foreground">
-          Cadastro via foto da planilha de compra, QR code por pacote e alertas
-          no painel para todos os usuários.
+          Cadastro, planilha de compra, pacotes com QR e alertas de reposição.
         </p>
-      </div>
+      </section>
 
-      <ul className="list-inside list-disc text-sm text-muted-foreground">
-        <li>Tipos: unitário, caixa, rolo, frasco</li>
-        <li>Críticos + grande porte + próteses</li>
-      </ul>
-
-      <div className="flex flex-col gap-3 sm:flex-row">
-        <Button asChild>
-          <Link href="/estoque/scan">Scan QR · retirada</Link>
-        </Button>
-        <Button variant="outline" disabled>
-          Cadastrar insumo
-        </Button>
-      </div>
-
-      <div className="space-y-2">
-        <label htmlFor="estoque-busca" className="text-sm font-medium">
-          Buscar insumo (demo shadcn)
-        </label>
-        <Input
-          id="estoque-busca"
-          placeholder="Ex.: luva, alginate..."
-          disabled
-        />
-      </div>
-
-      <p className="text-sm text-muted-foreground">Módulo em implementação.</p>
+      <StockPageShell
+        supplies={supplies}
+        selectedSupply={selectedSupply}
+        supplyOptions={supplyOptions}
+        canManage={canManage}
+        canRegisterPurchase={canRegisterPurchase}
+        canScan={canScan}
+        showNewForm={params.novo === "1" && canManage}
+        showPurchaseWizard={params.compra === "1" && canRegisterPurchase}
+      />
     </div>
   );
 }

@@ -390,6 +390,45 @@ export type Database = {
         };
         Relationships: [];
       };
+      supply_packages: {
+        Row: {
+          id: string;
+          supply_id: string;
+          qr_code: string;
+          quantity: number;
+          remaining_quantity: number;
+          lot_number: string | null;
+          expires_at: string | null;
+          status: Database["public"]["Enums"]["supply_package_status"];
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          supply_id: string;
+          qr_code: string;
+          quantity: number;
+          remaining_quantity?: number;
+          lot_number?: string | null;
+          expires_at?: string | null;
+          status?: Database["public"]["Enums"]["supply_package_status"];
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          supply_id?: string;
+          qr_code?: string;
+          quantity?: number;
+          remaining_quantity?: number;
+          lot_number?: string | null;
+          expires_at?: string | null;
+          status?: Database["public"]["Enums"]["supply_package_status"];
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       supply_movements: {
         Row: {
           id: string;
@@ -397,6 +436,7 @@ export type Database = {
           package_id: string | null;
           movement_type: Database["public"]["Enums"]["supply_movement_type"];
           quantity: number;
+          adjustment_direction: string | null;
           performed_by: string | null;
           notes: string | null;
           created_at: string;
@@ -407,6 +447,7 @@ export type Database = {
           package_id?: string | null;
           movement_type: Database["public"]["Enums"]["supply_movement_type"];
           quantity: number;
+          adjustment_direction?: string | null;
           performed_by?: string | null;
           notes?: string | null;
           created_at?: string;
@@ -417,8 +458,36 @@ export type Database = {
           package_id?: string | null;
           movement_type?: Database["public"]["Enums"]["supply_movement_type"];
           quantity?: number;
+          adjustment_direction?: string | null;
           performed_by?: string | null;
           notes?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      supply_sheets: {
+        Row: {
+          id: string;
+          storage_path: string;
+          mime_type: string;
+          file_size_bytes: number;
+          uploaded_by: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          storage_path: string;
+          mime_type: string;
+          file_size_bytes: number;
+          uploaded_by?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          storage_path?: string;
+          mime_type?: string;
+          file_size_bytes?: number;
+          uploaded_by?: string | null;
           created_at?: string;
         };
         Relationships: [];
@@ -489,6 +558,7 @@ export type Database = {
         | "completed"
         | "failed";
       supply_movement_type: "in" | "out" | "adjustment";
+      supply_package_status: "active" | "depleted" | "expired";
       supply_unit: "unit" | "box" | "roll" | "bottle";
     };
     CompositeTypes: Record<string, never>;

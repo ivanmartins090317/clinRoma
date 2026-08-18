@@ -11,6 +11,8 @@ import {
   getActiveDentists,
   getTodayAppointments,
 } from "@/features/agenda/queries";
+import { getStockAlerts } from "@/features/stock/queries";
+import { SUPPLY_UNIT_LABELS } from "@/features/stock/lib/clinic-date";
 import { getWaitlistSummary } from "@/features/waitlist/queries";
 import { ClinicLogo } from "@/components/clinic-logo";
 import { Button } from "@/components/ui/button";
@@ -21,11 +23,13 @@ export const metadata = {
 };
 
 export default async function HojePage() {
-  const [dentists, appointments, waitlistSummary] = await Promise.all([
-    getActiveDentists(),
-    getTodayAppointments(),
-    getWaitlistSummary(),
-  ]);
+  const [dentists, appointments, waitlistSummary, stockAlerts] =
+    await Promise.all([
+      getActiveDentists(),
+      getTodayAppointments(),
+      getWaitlistSummary(),
+      getStockAlerts(),
+    ]);
 
   const grouped = groupAppointmentsByDentist(appointments, dentists);
   const chronological = [...appointments].sort(
@@ -186,6 +190,42 @@ export default async function HojePage() {
             ))}
           </ul>
         ) : null}
+      </section>
+
+      <section className="rounded-xl border border-border bg-card p-5 sm:p-6">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h3 className="font-semibold text-foreground">
+              Estoque · abaixo do mínimo
+            </h3>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {stockAlerts.length === 0
+                ? "Nenhum insumo abaixo do mínimo"
+                : `${stockAlerts.length} insumo(s) precisam de reposição`}
+            </p>
+          </div>
+          <Button asChild variant="outline">
+            <Link href="/estoque">Abrir estoque</Link>
+          </Button>
+        </div>
+
+        {stockAlerts.length > 0 ? (
+          <ul className="mt-4 space-y-2">
+            {stockAlerts.map((alert) => (
+              <li
+                key={alert.id}
+                className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-950"
+              >
+                {alert.name} · {alert.currentQuantity} de{" "}
+                {alert.minimumQuantity} {SUPPLY_UNIT_LABELS[alert.unit]}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="mt-4 text-sm text-muted-foreground">
+            Nenhum insumo abaixo do mínimo.
+          </p>
+        )}
       </section>
     </div>
   );

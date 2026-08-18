@@ -8,12 +8,13 @@ Guia de arquitetura, fases implementadas e operação do ambiente de desenvolvim
 
 ## Índice
 
-| Documento                                                          | Conteúdo                                                 |
-| ------------------------------------------------------------------ | -------------------------------------------------------- |
-| [01-arquitetura.md](./01-arquitetura.md)                           | Visão geral, pastas, fluxos, padrões de código           |
-| [02-fase-0-fundacao.md](./02-fase-0-fundacao.md)                   | Fase 0: shell, HTTPS, shadcn, middleware base            |
-| [03-fase-1-dados-auth-papeis.md](./03-fase-1-dados-auth-papeis.md) | Fase 1: banco, auth, papéis, **contas de teste**         |
-| [06-fase-4-fila-kanban.md](./06-fase-4-fila-kanban.md) | Fase 4: fila Kanban, link paciente, cron |
+| Documento                                                          | Conteúdo                                         |
+| ------------------------------------------------------------------ | ------------------------------------------------ |
+| [01-arquitetura.md](./01-arquitetura.md)                           | Visão geral, pastas, fluxos, padrões de código   |
+| [02-fase-0-fundacao.md](./02-fase-0-fundacao.md)                   | Fase 0: shell, HTTPS, shadcn, middleware base    |
+| [03-fase-1-dados-auth-papeis.md](./03-fase-1-dados-auth-papeis.md) | Fase 1: banco, auth, papéis, **contas de teste** |
+| [06-fase-4-fila-kanban.md](./06-fase-4-fila-kanban.md)             | Fase 4: fila Kanban, link paciente, cron         |
+| [07-fase-5-insumos-estoque.md](./07-fase-5-insumos-estoque.md)     | Fase 5: estoque, QR, scan mobile, PWA            |
 
 ## Documentos relacionados
 
@@ -27,15 +28,15 @@ Guia de arquitetura, fases implementadas e operação do ambiente de desenvolvim
 
 ## Fases do projeto
 
-| Fase                       | Status             | Manual                                                             |
-| -------------------------- | ------------------ | ------------------------------------------------------------------ |
-| 0 · Fundação               | concluída          | [02-fase-0-fundacao.md](./02-fase-0-fundacao.md)                   |
-| 1 · Dados, auth e papéis   | concluída          | [03-fase-1-dados-auth-papeis.md](./03-fase-1-dados-auth-papeis.md) |
-| 2 · Agenda                 | concluída (código) | [04-fase-2-agenda.md](./04-fase-2-agenda.md)                       |
+| Fase                       | Status             | Manual                                                                   |
+| -------------------------- | ------------------ | ------------------------------------------------------------------------ |
+| 0 · Fundação               | concluída          | [02-fase-0-fundacao.md](./02-fase-0-fundacao.md)                         |
+| 1 · Dados, auth e papéis   | concluída          | [03-fase-1-dados-auth-papeis.md](./03-fase-1-dados-auth-papeis.md)       |
+| 2 · Agenda                 | concluída (código) | [04-fase-2-agenda.md](./04-fase-2-agenda.md)                             |
 | 3 · Pacientes e prontuário | concluída (código) | [05-fase-3-pacientes-prontuario.md](./05-fase-3-pacientes-prontuario.md) |
-| 4 · Fila Kanban            | concluída (código) | [06-fase-4-fila-kanban.md](./06-fase-4-fila-kanban.md)             |
-| 5 · Insumos e estoque      | pendente           | —                                                                  |
-| 6 · Lembrete e piloto      | pendente           | —                                                                  |
+| 4 · Fila Kanban            | concluída (código) | [06-fase-4-fila-kanban.md](./06-fase-4-fila-kanban.md)                   |
+| 5 · Insumos e estoque      | concluída (código) | [07-fase-5-insumos-estoque.md](./07-fase-5-insumos-estoque.md)           |
+| 6 · Lembrete e piloto      | pendente           | —                                                                        |
 
 ## Comandos do dia a dia
 

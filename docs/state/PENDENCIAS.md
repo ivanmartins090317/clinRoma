@@ -2,7 +2,7 @@
 
 Fonte viva do que **ainda falta implementar ou validar**. Atualizar ao concluir cada fase.
 
-Última revisão: **2026-08-18** (após Fase 4 · código entregue).
+Última revisão: **2026-08-18** (após Fase 5 · código entregue).
 
 ---
 
@@ -114,3 +114,33 @@ Referência: `specs/2026-08-18-fase-4-fila-kanban.md` · `docs/implementation/F4
 ---
 
 ## Fase 5 · Insumos e estoque
+
+Referência: `specs/2026-08-18-fase-5-insumos-estoque.md` · `docs/implementation/F5-insumos-estoque.md`
+
+### Implementação (concluída)
+
+- [x] `src/features/stock/` (queries, actions, schemas, domain, componentes)
+- [x] Migrations `016_stock_f5.sql`, `017_seed_stock_dev.sql`
+- [x] `/estoque` lista, detalhe, cadastro admin, wizard compra (sem OCR)
+- [x] Geração QR + folha imprimível de etiquetas
+- [x] `/estoque/scan` câmera, viewfinder, nativo + zxing-wasm, modo contínuo
+- [x] Retirada atômica via trigger + validação server-side
+- [x] Alertas estoque em `/hoje`
+- [x] PWA manifest + ícones + atalho Scan estoque
+- [x] Testes Vitest de domínio (saldo, retirada, situação, QR)
+- [x] Documentação F5 em `docs/implementation/` e `docs/manual-dev/`
+
+### Fechamento operacional (homologação manual)
+
+- [ ] **iPhone real:** scan `CR-DEV001` → retirada → saldo atualizado (§8.3 spec)
+- [ ] **Android real:** mesmo fluxo completo
+- [ ] Modo contínuo: 3 pacotes distintos sem voltar à lista
+- [ ] Desktop admin: cadastro, etiquetas, alerta Anestésico na Hoje
+- [ ] Recepção: `/estoque/scan` negado; alertas visíveis na Hoje
+- [ ] Auxiliar: scan OK; cadastro base de insumo negado
+
+**Pronto quando:** auxiliar retira pacote pelo celular e saldo cai automaticamente; recepção vê alertas na Hoje.
+
+---
+
+## Fase 6 · Lembrete e piloto

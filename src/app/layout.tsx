@@ -19,12 +19,21 @@ export const metadata: Metadata = {
   },
   description:
     "Agenda, prontuário e estoque da clínica odontológica em um só lugar.",
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    title: "ClinRoma",
+  },
+  icons: {
+    apple: "/icons/icon-192.png",
+  },
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
+  themeColor: "#6B2737",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
