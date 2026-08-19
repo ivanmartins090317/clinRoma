@@ -21,6 +21,7 @@ Guia de arquitetura, fases implementadas e operação do ambiente de desenvolvim
 
 | Onde                                                 | Para quê                                       |
 | ---------------------------------------------------- | ---------------------------------------------- |
+| [`docs/manual-usuario/`](../manual-usuario/README.md) | Manual para a equipe da clínica (não técnico) |
 | [`docs/PLANO.md`](../PLANO.md)                       | Roadmap completo (Fases 0–6)                   |
 | [`docs/implementation/`](../implementation/)         | Registro objetivo do que foi entregue por fase |
 | [`docs/state/PENDENCIAS.md`](../state/PENDENCIAS.md) | O que falta implementar ou validar             |
