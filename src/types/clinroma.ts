@@ -42,7 +42,7 @@ export const CLINROMA_MODULES: ClinicModule[] = [
   },
   {
     id: "waitlist",
-    label: "Fila Kanban",
+    label: "Fila",
     href: "/fila",
     description: "Vermelho · Amarelo · Verde · 40 min",
   },
