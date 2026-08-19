@@ -73,10 +73,7 @@ export function AppShell({
           <Link href="/hoje" className="inline-block">
             <ClinicLogo variant="on-dark" priority className="h-11 w-auto" />
           </Link>
-          <p className="mt-3 text-xs font-medium uppercase tracking-wider text-neo-gold-400">
-            ClinRoma
-          </p>
-          <p className="mt-0.5 text-sm text-neo-cream-100/80">{displayName}</p>
+          <p className="mt-4 text-sm text-neo-cream-100/80">{displayName}</p>
         </div>
         <nav className="flex flex-col gap-1 p-3">
           {visibleModules.map((module) => (
@@ -103,7 +100,7 @@ export function AppShell({
             <p className="text-sm text-brand-muted">
               Piloto · 5 dentistas · fila 40 min · QR estoque
             </p>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-6 mt-2">
               <span className="text-sm text-brand-muted">{displayName}</span>
               {logoutSlot}
             </div>
