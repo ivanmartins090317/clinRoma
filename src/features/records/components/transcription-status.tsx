@@ -82,6 +82,17 @@ export function TranscriptionStatusView({
           {isPending ? "Reenfileirando..." : "Tentar novamente"}
         </Button>
       ) : null}
+      {status === "pending" && canRetry ? (
+        <Button
+          type="button"
+          variant="outline"
+          className="min-h-11"
+          disabled={isPending}
+          onClick={handleRetry}
+        >
+          {isPending ? "Iniciando..." : "Processar transcrição"}
+        </Button>
+      ) : null}
     </div>
   );
 }

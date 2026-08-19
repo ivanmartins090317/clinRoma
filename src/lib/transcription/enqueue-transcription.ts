@@ -1,3 +1,5 @@
+import { after } from "next/server";
+
 import { createAdminClient } from "@/lib/supabase/admin";
 import { transcribeWithWhisper } from "@/lib/transcription/whisper";
 
@@ -135,15 +137,11 @@ export async function runTranscriptionJob(
 export async function enqueueTranscription(
   attachmentId: string,
 ): Promise<void> {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://localhost:3000";
+  after(async () => {
+    const result = await runTranscriptionJob(attachmentId);
 
-  try {
-    await fetch(`${baseUrl}/api/records/transcribe`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ attachmentId }),
-    });
-  } catch (error) {
-    console.error("[transcription] Falha ao enfileirar:", error);
-  }
+    if (!result.ok) {
+      console.error("[transcription] Job falhou:", result.error);
+    }
+  });
 }

@@ -80,6 +80,7 @@ export function AudioRecorder({ patientId, evolutionId }: AudioRecorderProps) {
   const chunkIndexRef = useRef(0);
   const streamRef = useRef<MediaStream | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
   const timerRef = useRef<number | null>(null);
   const levelFrameRef = useRef<number | null>(null);
 
@@ -109,15 +110,25 @@ export function AudioRecorder({ patientId, evolutionId }: AudioRecorderProps) {
     return () => {
       document.removeEventListener("visibilitychange", handleVisibility);
       window.removeEventListener("online", handleOnline);
+    };
+  }, [isRecording, mimeType]);
+
+  useEffect(() => {
+    return () => {
       if (timerRef.current) {
         window.clearInterval(timerRef.current);
       }
+
       if (levelFrameRef.current) {
         window.cancelAnimationFrame(levelFrameRef.current);
       }
+
+      recorderRef.current?.stop();
       streamRef.current?.getTracks().forEach((track) => track.stop());
+
+      void audioContextRef.current?.close();
     };
-  }, [isRecording, mimeType]);
+  }, []);
 
   async function startRecording() {
     if (!mimeType) {
@@ -137,6 +148,9 @@ export function AudioRecorder({ patientId, evolutionId }: AudioRecorderProps) {
       streamRef.current = stream;
 
       const audioContext = new AudioContext();
+      audioContextRef.current = audioContext;
+      await audioContext.resume();
+
       const source = audioContext.createMediaStreamSource(stream);
       const analyser = audioContext.createAnalyser();
       source.connect(analyser);
@@ -171,7 +185,6 @@ export function AudioRecorder({ patientId, evolutionId }: AudioRecorderProps) {
           chunkIndex: index,
           mimeType,
           blob: event.data,
-          totalBytes: totalBytes + event.data.size,
         });
 
         setUploading(false);
@@ -222,6 +235,10 @@ export function AudioRecorder({ patientId, evolutionId }: AudioRecorderProps) {
     streamRef.current?.getTracks().forEach((track) => track.stop());
     recorderRef.current = null;
     streamRef.current = null;
+    analyserRef.current = null;
+
+    void audioContextRef.current?.close();
+    audioContextRef.current = null;
 
     if (timerRef.current) {
       window.clearInterval(timerRef.current);
