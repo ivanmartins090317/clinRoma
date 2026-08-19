@@ -9,7 +9,13 @@ Guia prático para a equipe da clínica usar o ClinRoma no dia a dia.
 
 ---
 
-## Índice
+## Versão para enviar ao usuário
+
+**[MANUAL-COMPLETO.md](./MANUAL-COMPLETO.md)** · Um único arquivo com todo o conteúdo abaixo, pronto para compartilhar por e-mail, WhatsApp ou impressão.
+
+---
+
+## Índice (capítulos separados)
 
 | Documento | O que você encontra |
 | --------- | ------------------- |

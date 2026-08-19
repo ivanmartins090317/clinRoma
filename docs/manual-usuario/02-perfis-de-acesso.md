@@ -87,7 +87,7 @@ Isso protege o registro clínico e deixa claro quem documentou o atendimento.
 
 ## Por que o dentista não marca consulta?
 
-No piloto, **marcar, remarcar e cancelar horários** fica com a **recepção** (e o administrador). O dentista consulta a agenda, abre o prontuário a partir da consulta e marca o atendimento como concluído quando termina.
+No piloto, **marcar, remarcar, cancelar e concluir horários** fica com a **recepção** (e o administrador). O dentista consulta a agenda, abre o prontuário a partir da consulta e, ao terminar, avisa a recepção para marcar a consulta como **Concluída**.
 
 Se no futuro a clínica quiser mudar essa regra, o administrador pode avaliar com o suporte técnico.
 
