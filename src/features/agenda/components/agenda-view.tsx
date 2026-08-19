@@ -164,10 +164,12 @@ export function AgendaView({
 
   return (
     <div className="space-y-6">
-      <section className="flex flex-col gap-4 border-b border-border/60 pb-6 sm:flex-row sm:items-end sm:justify-between">
+      <section className="flex flex-col gap-4 border-b border-neo-cream-line pb-6 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h2 className="text-2xl font-semibold tracking-tight">Agenda</h2>
-          <p className="mt-2 text-sm text-muted-foreground">
+          <h2 className="text-2xl font-extrabold tracking-tight md:text-[1.875rem]">
+            Agenda
+          </h2>
+          <p className="mt-2 text-[15px] text-muted-foreground">
             Calendário multi-dentista com consultas do dia e da semana.
           </p>
         </div>

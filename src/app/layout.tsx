@@ -9,6 +9,7 @@ const siteDescription =
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
 });
 
 const geistMono = Geist_Mono({
@@ -64,7 +65,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#6B2737",
+  themeColor: "#2a0d13",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

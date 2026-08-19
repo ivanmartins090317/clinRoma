@@ -1,27 +1,40 @@
 @import "tailwindcss";
 
 :root {
-  /* Neo Roma — marca */
-  --neo-burgundy-950: #20080c;
-  --neo-burgundy-900: #301010;
-  --neo-burgundy-800: #401018;
-  --neo-burgundy-700: #5c1820;
+  /* Neo Roma — marca (alinhado ao protótipo revisado) */
+  --neo-burgundy-950: #2a0d13;
+  --neo-burgundy-900: #331016;
+  --neo-burgundy-800: #3d1118;
+  --neo-burgundy-700: #4a1a22;
+  --neo-burgundy-600: #5c2430;
+  --neo-wine-accent: #7d2f3f;
 
-  --neo-gold-600: #b07818;
-  --neo-gold-500: #d09010;
-  --neo-gold-400: #e0a010;
+  --neo-gold-600: #9a6b12;
+  --neo-gold-500: #d9a441;
+  --neo-gold-400: #e5b558;
+  --neo-gold-soft: #f3e2c2;
 
-  --neo-cream-50: #f7f0e8;
-  --neo-cream-100: #ede3d4;
+  --neo-cream-50: #f8efe9;
+  --neo-cream-100: #f6e9e2;
+  --neo-cream-soft: #f6e9e2;
+  --neo-cream-line: #eadcd4;
 
   --neo-white: #ffffff;
-  --neo-gray-200: #e8e4df;
-  --neo-gray-500: #8a8480;
-  --neo-gray-900: #2a2523;
+  --neo-gray-200: #eadcd4;
+  --neo-gray-500: #5f4c44;
+  --neo-gray-900: #231512;
+  --neo-ink-3: #7d685f;
 
-  --priority-red: #b8323a;
-  --priority-yellow: #d4a017;
-  --priority-green: #3d7a5c;
+  --priority-red: #a92238;
+  --priority-red-soft: #f7dee2;
+  --priority-yellow: #9a6b12;
+  --priority-yellow-soft: #f6e8c8;
+  --priority-green: #2c6547;
+  --priority-green-soft: #dcece1;
+
+  --shadow-neo: 0 1px 2px rgba(42, 13, 19, 0.06),
+    0 4px 14px rgba(42, 13, 19, 0.07);
+  --shadow-neo-lg: 0 8px 30px rgba(42, 13, 19, 0.22);
 
   /* shadcn — mapeados para Neo Roma */
   --background: var(--neo-cream-50);
@@ -30,8 +43,8 @@
   --card-foreground: var(--neo-gray-900);
   --popover: var(--neo-white);
   --popover-foreground: var(--neo-gray-900);
-  --primary: var(--neo-burgundy-900);
-  --primary-foreground: var(--neo-cream-100);
+  --primary: var(--neo-burgundy-800);
+  --primary-foreground: var(--neo-white);
   --secondary: var(--neo-cream-100);
   --secondary-foreground: var(--neo-gray-900);
   --muted: var(--neo-cream-100);
@@ -40,13 +53,13 @@
   --accent-foreground: var(--neo-burgundy-950);
   --destructive: var(--priority-red);
   --destructive-foreground: var(--neo-white);
-  --border: var(--neo-gray-200);
-  --input: var(--neo-gray-200);
+  --border: var(--neo-cream-line);
+  --input: #dcc9c0;
   --ring: var(--neo-gold-500);
-  --radius: 0.625rem;
+  --radius: 0.875rem;
 
   /* aliases legados usados no app */
-  --brand-primary: var(--neo-burgundy-900);
+  --brand-primary: var(--neo-burgundy-800);
   --brand-accent: var(--neo-gold-500);
   --brand-surface: var(--neo-white);
   --brand-muted: var(--neo-gray-500);
@@ -80,30 +93,48 @@
   --color-neo-burgundy-900: var(--neo-burgundy-900);
   --color-neo-burgundy-800: var(--neo-burgundy-800);
   --color-neo-burgundy-700: var(--neo-burgundy-700);
+  --color-neo-burgundy-600: var(--neo-burgundy-600);
+  --color-neo-wine-accent: var(--neo-wine-accent);
   --color-neo-gold-600: var(--neo-gold-600);
   --color-neo-gold-500: var(--neo-gold-500);
   --color-neo-gold-400: var(--neo-gold-400);
+  --color-neo-gold-soft: var(--neo-gold-soft);
   --color-neo-cream-50: var(--neo-cream-50);
   --color-neo-cream-100: var(--neo-cream-100);
+  --color-neo-cream-soft: var(--neo-cream-soft);
+  --color-neo-cream-line: var(--neo-cream-line);
   --color-neo-white: var(--neo-white);
   --color-neo-gray-200: var(--neo-gray-200);
   --color-neo-gray-500: var(--neo-gray-500);
   --color-neo-gray-900: var(--neo-gray-900);
+  --color-neo-ink-3: var(--neo-ink-3);
   --color-priority-red: var(--priority-red);
+  --color-priority-red-soft: var(--priority-red-soft);
   --color-priority-yellow: var(--priority-yellow);
+  --color-priority-yellow-soft: var(--priority-yellow-soft);
   --color-priority-green: var(--priority-green);
-  --radius-sm: calc(var(--radius) - 4px);
+  --color-priority-green-soft: var(--priority-green-soft);
+  --radius-sm: calc(var(--radius) - 5px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --shadow-neo: var(--shadow-neo);
+  --shadow-neo-lg: var(--shadow-neo-lg);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+*:focus-visible {
+  outline: 3px solid var(--neo-gold-500);
+  outline-offset: 2px;
 }
 
 /* Padrões mobile: alvo mínimo 44×44 px, inputs 16 px (evita zoom iOS) */
@@ -149,10 +180,18 @@ textarea {
 
 .page-container {
   width: 100%;
-  max-width: 72rem;
+  max-width: 73.75rem;
   margin-inline: auto;
-  padding-left: max(1.25rem, env(safe-area-inset-left, 0px));
-  padding-right: max(1.25rem, env(safe-area-inset-right, 0px));
+  padding-left: max(0.875rem, env(safe-area-inset-left, 0px));
+  padding-right: max(0.875rem, env(safe-area-inset-right, 0px));
+}
+
+.shadow-neo {
+  box-shadow: var(--shadow-neo);
+}
+
+.shadow-neo-lg {
+  box-shadow: var(--shadow-neo-lg);
 }
 
 .agenda-calendar {
@@ -162,10 +201,15 @@ textarea {
 
 .agenda-calendar .rbc-calendar {
   font-family: var(--font-geist-sans), system-ui, sans-serif;
+  border: 1px solid #f0e3db;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-neo);
+  background: var(--neo-white);
 }
 
 .agenda-calendar .rbc-time-view .rbc-row {
-  min-height: 2.75rem;
+  min-height: 2.875rem;
 }
 
 .agenda-calendar .rbc-header {
@@ -173,12 +217,14 @@ textarea {
   align-items: center;
   justify-content: center;
   min-height: 2.75rem;
-  padding: 0.5rem 0.375rem;
-  font-weight: 600;
+  padding: 0.625rem 0.375rem;
+  font-weight: 700;
   font-size: 0.8125rem;
   line-height: 1.25;
   white-space: normal;
-  border-color: var(--border);
+  border-color: var(--neo-cream-line);
+  background: var(--neo-white);
+  color: var(--neo-gray-900);
 }
 
 .agenda-calendar .rbc-header > a,
@@ -195,32 +241,74 @@ textarea {
 .agenda-calendar .rbc-timeslot-group,
 .agenda-calendar .rbc-time-slot,
 .agenda-calendar .rbc-time-gutter {
-  border-color: var(--border);
+  border-color: #f3e8e1;
 }
 
 .agenda-calendar .rbc-today {
-  background-color: color-mix(in srgb, var(--neo-gold-500) 8%, transparent);
+  background-color: #fbf3ec;
 }
 
 .agenda-calendar .rbc-event {
-  border-radius: 0.375rem;
-  padding: 0.125rem 0.375rem;
+  border-radius: 0.5rem;
+  padding: 0.375rem 0.5625rem;
   font-size: 0.75rem;
+  font-weight: 600;
+  border: none;
+  box-shadow: var(--shadow-neo);
+}
+
+.agenda-calendar .rbc-toolbar {
+  padding: 0.875rem 1.25rem;
+  border-bottom: 1px solid var(--neo-cream-line);
+  gap: 0.75rem;
+}
+
+.agenda-calendar .rbc-toolbar-label {
+  font-size: 0.96875rem;
+  font-weight: 700;
+  color: var(--neo-gray-900);
 }
 
 .agenda-calendar .rbc-toolbar button {
   min-height: 44px;
   min-width: 44px;
-  border-radius: 0.375rem;
-  border: 1px solid var(--border);
-  background: var(--background);
-  color: var(--foreground);
+  border-radius: 0.625rem;
+  border: 1px solid #dcc9c0;
+  background: var(--neo-white);
+  color: var(--neo-burgundy-800);
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.agenda-calendar .rbc-toolbar button:hover {
+  background: var(--neo-cream-soft);
 }
 
 .agenda-calendar .rbc-toolbar button.rbc-active {
-  background: var(--primary);
-  color: var(--primary-foreground);
-  border-color: var(--primary);
+  background: var(--neo-burgundy-800);
+  color: var(--neo-white);
+  border-color: var(--neo-burgundy-800);
+}
+
+.agenda-calendar .rbc-time-gutter .rbc-timeslot-group {
+  font-size: 0.75rem;
+  color: var(--neo-ink-3);
+}
+
+.agenda-calendar .rbc-current-time-indicator {
+  background-color: var(--priority-green);
+  height: 2px;
+}
+
+.agenda-calendar .rbc-current-time-indicator::before {
+  content: "";
+  position: absolute;
+  left: -5px;
+  top: -3px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--priority-green);
 }
 
 @media (min-width: 640px) {
@@ -232,7 +320,7 @@ textarea {
 
 @media (min-width: 1024px) {
   .page-container {
-    padding-left: max(2.5rem, env(safe-area-inset-left, 0px));
-    padding-right: max(2.5rem, env(safe-area-inset-right, 0px));
+    padding-left: max(2.125rem, env(safe-area-inset-left, 0px));
+    padding-right: max(2.125rem, env(safe-area-inset-right, 0px));
   }
 }

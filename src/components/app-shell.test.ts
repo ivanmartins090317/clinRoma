@@ -36,4 +36,17 @@ describe("filterModulesByAccess", () => {
 
     expect(modules.map((module) => module.id)).toEqual(["stock", "stock-scan"]);
   });
+
+  it("inclui Scan QR quando permitido pelo papel", () => {
+    const modules = filterModulesByAccess(CLINROMA_MODULES, [
+      "today",
+      "agenda",
+      "patients",
+      "waitlist",
+      "stock",
+      "stock-scan",
+    ]);
+
+    expect(modules.map((module) => module.id)).toContain("stock-scan");
+  });
 });

@@ -2,7 +2,7 @@ import { headers } from "next/headers";
 
 import { AppShell } from "@/components/app-shell";
 import { Toaster } from "@/components/ui/sonner";
-import { LogoutForm } from "@/features/auth/components/logout-form";
+import { getActiveDentists } from "@/features/agenda/queries";
 import { assertRouteAccess } from "@/lib/auth/guard";
 import { getAllowedModuleIds } from "@/lib/auth/roles";
 import { requireAuthSession } from "@/lib/auth/session";
@@ -17,13 +17,17 @@ export default async function AppLayout({ children }: AppLayoutProps) {
   const session = await requireAuthSession(pathname);
   assertRouteAccess(session, pathname);
 
-  const allowedModuleIds = getAllowedModuleIds(session.profile.role);
+  const [allowedModuleIds, dentists] = await Promise.all([
+    Promise.resolve(getAllowedModuleIds(session.profile.role)),
+    getActiveDentists(),
+  ]);
 
   return (
     <AppShell
       allowedModuleIds={allowedModuleIds}
       displayName={session.profile.displayName}
-      logoutSlot={<LogoutForm />}
+      role={session.profile.role}
+      activeDentistCount={dentists.length}
     >
       {children}
       <Toaster />
