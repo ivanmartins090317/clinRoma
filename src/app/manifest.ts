@@ -11,12 +11,12 @@ export default function manifest(): MetadataRoute.Manifest {
     theme_color: "#6B2737",
     icons: [
       {
-        src: "/icons/icon-192.png",
+        src: "/brand/icon-192.png",
         sizes: "192x192",
         type: "image/png",
       },
       {
-        src: "/icons/icon-512.png",
+        src: "/brand/icon-512.png",
         sizes: "512x512",
         type: "image/png",
       },
@@ -26,7 +26,7 @@ export default function manifest(): MetadataRoute.Manifest {
         name: "Scan estoque",
         short_name: "Scan",
         url: "/estoque/scan",
-        icons: [{ src: "/icons/icon-192.png", sizes: "192x192" }],
+        icons: [{ src: "/brand/icon-192.png", sizes: "192x192" }],
       },
     ],
   };
