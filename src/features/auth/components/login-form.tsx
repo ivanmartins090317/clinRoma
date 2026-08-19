@@ -4,6 +4,7 @@ import { useActionState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { ClinicLogo } from "@/components/clinic-logo";
 import { loginAction, type LoginActionState } from "@/features/auth/actions";
 
@@ -63,10 +64,9 @@ export function LoginForm({ returnTo }: LoginFormProps) {
           >
             Senha
           </label>
-          <Input
+          <PasswordInput
             id="password"
             name="password"
-            type="password"
             autoComplete="current-password"
             required
             disabled={isPending}
