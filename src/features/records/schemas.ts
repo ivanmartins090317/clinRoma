@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { ANAMNESIS_FORM_VERSION } from "@/features/records/domain/anamnesis-form-v1";
+import { TRANSCRIPTION_TEXT_MAX_LENGTH } from "@/features/records/domain/transcription-edit";
 
 const optionalText = z
   .string()
@@ -59,6 +60,15 @@ export const finalizeAudioSchema = z.object({
 
 export const retryTranscriptionSchema = z.object({
   attachmentId: z.string().uuid(),
+});
+
+export const updateTranscriptionSchema = z.object({
+  attachmentId: z.string().uuid(),
+  transcription: z
+    .string()
+    .trim()
+    .min(1, "Informe o texto da transcrição.")
+    .max(TRANSCRIPTION_TEXT_MAX_LENGTH, "Texto muito longo"),
 });
 
 export const readChartAuditSchema = z.object({

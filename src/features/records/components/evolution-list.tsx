@@ -4,11 +4,13 @@ import { TranscriptionStatusView } from "@/features/records/components/transcrip
 interface EvolutionListProps {
   evolutions: EvolutionRecord[];
   canRetryTranscription: boolean;
+  canCorrectTranscription: boolean;
 }
 
 export function EvolutionList({
   evolutions,
   canRetryTranscription,
+  canCorrectTranscription,
 }: EvolutionListProps) {
   if (evolutions.length === 0) {
     return (
@@ -66,6 +68,7 @@ export function EvolutionList({
                     initialStatus={attachment.transcriptionStatus}
                     initialText={attachment.transcription}
                     canRetry={canRetryTranscription}
+                    canCorrect={canCorrectTranscription}
                   />
                 ) : null}
               </div>

@@ -5,7 +5,12 @@ import { revalidatePath } from "next/cache";
 import { writeAuditLog } from "@/lib/audit/write-audit-log";
 import { getLinkedDentistId } from "@/features/agenda/queries";
 import { validateAttachmentLimits } from "@/features/records/domain/attachment-limits";
+import {
+  evaluateTranscriptionCorrection,
+  TRANSCRIPTION_EDIT_ERRORS,
+} from "@/features/records/domain/transcription-edit";
 import { validateToothFinding } from "@/features/records/domain/tooth-fdi";
+import { canCorrectTranscription } from "@/features/records/permissions";
 import {
   buildAnamnesisContent,
   createEvolutionSchema,
@@ -13,6 +18,7 @@ import {
   readChartAuditSchema,
   retryTranscriptionSchema,
   saveAnamnesisSchema,
+  updateTranscriptionSchema,
   uploadPhotoSchema,
   upsertToothFindingSchema,
 } from "@/features/records/schemas";
@@ -437,6 +443,88 @@ export async function retryTranscriptionAction(
         error instanceof Error
           ? error.message
           : "Não foi possível retentar transcrição",
+    };
+  }
+}
+
+export async function updateTranscriptionAction(
+  input: unknown,
+): Promise<RecordActionResult> {
+  try {
+    const session = await assertClinicalRead();
+
+    if (!canCorrectTranscription(session.profile.role)) {
+      return { error: TRANSCRIPTION_EDIT_ERRORS.forbidden };
+    }
+
+    const parsed = updateTranscriptionSchema.safeParse(input);
+
+    if (!parsed.success) {
+      return {
+        error: parsed.error.issues[0]?.message ?? "Dados inválidos",
+      };
+    }
+
+    const supabase = await createClient();
+    const { data: attachment, error: loadError } = await supabase
+      .from("record_attachments")
+      .select("id, attachment_type, transcription_status, medical_record_id")
+      .eq("id", parsed.data.attachmentId)
+      .maybeSingle();
+
+    if (loadError || !attachment) {
+      return { error: TRANSCRIPTION_EDIT_ERRORS.generic };
+    }
+
+    const evaluation = evaluateTranscriptionCorrection({
+      role: session.profile.role,
+      status: attachment.transcription_status,
+      attachmentType: attachment.attachment_type,
+      text: parsed.data.transcription,
+    });
+
+    if (!evaluation.ok) {
+      return { error: evaluation.error };
+    }
+
+    const { data: record } = await supabase
+      .from("medical_records")
+      .select("patient_id")
+      .eq("id", attachment.medical_record_id)
+      .maybeSingle();
+
+    if (!record) {
+      return { error: TRANSCRIPTION_EDIT_ERRORS.generic };
+    }
+
+    const { data: updated, error: updateError } = await supabase
+      .from("record_attachments")
+      .update({ transcription: evaluation.text })
+      .eq("id", attachment.id)
+      .eq("attachment_type", "audio")
+      .eq("transcription_status", "completed")
+      .select("id")
+      .maybeSingle();
+
+    if (updateError || !updated) {
+      return { error: TRANSCRIPTION_EDIT_ERRORS.generic };
+    }
+
+    await logRecordAudit("update", "record_attachments", updated.id, {
+      attachmentType: "audio",
+      patientId: record.patient_id,
+      field: "transcription",
+    });
+
+    revalidatePath(`/pacientes/${record.patient_id}`);
+
+    return { success: true, attachmentId: updated.id };
+  } catch (error) {
+    return {
+      error:
+        error instanceof Error
+          ? error.message
+          : TRANSCRIPTION_EDIT_ERRORS.generic,
     };
   }
 }

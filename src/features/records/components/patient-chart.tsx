@@ -11,7 +11,9 @@ import { Odontogram } from "@/features/records/components/odontogram";
 import { OdontogramMobile } from "@/features/records/components/odontogram-mobile";
 import type { PatientChartData } from "@/features/records/queries";
 import {
+  canCorrectTranscription,
   canRegisterEvolution,
+  canRetryTranscription,
   canViewClinicalContent,
   canWriteClinicalChart,
 } from "@/features/records/permissions";
@@ -44,6 +46,8 @@ export function PatientChart({
   const canViewClinical = canViewClinicalContent(role);
   const canWriteClinical = canWriteClinicalChart(role);
   const canEvolution = canRegisterEvolution(role);
+  const canRetry = canRetryTranscription(role);
+  const canCorrect = canCorrectTranscription(role);
 
   useEffect(() => {
     if (!canViewClinical) {
@@ -71,7 +75,10 @@ export function PatientChart({
                 <TabsTrigger value="anamnese" className={chartTabTriggerClass}>
                   Anamnese
                 </TabsTrigger>
-                <TabsTrigger value="odontograma" className={chartTabTriggerClass}>
+                <TabsTrigger
+                  value="odontograma"
+                  className={chartTabTriggerClass}
+                >
                   Odontograma
                 </TabsTrigger>
                 <TabsTrigger
@@ -85,11 +92,12 @@ export function PatientChart({
           </TabsList>
 
           <div className="p-5 md:p-6">
-
             <TabsContent value="resumo" className="mt-0 space-y-4">
               {canWriteClinical ? (
                 <section className="space-y-4">
-                  <h3 className="font-semibold text-primary">Editar cadastro</h3>
+                  <h3 className="font-semibold text-primary">
+                    Editar cadastro
+                  </h3>
                   <PatientForm mode="edit" patient={patient} />
                 </section>
               ) : (
@@ -106,8 +114,8 @@ export function PatientChart({
                     <Alert variant="warning">
                       <AlertTitle>Anamnese desatualizada</AlertTitle>
                       <AlertDescription>
-                        A última anamnese tem mais de 12 meses. Registre uma nova
-                        versão antes ou durante o atendimento.
+                        A última anamnese tem mais de 12 meses. Registre uma
+                        nova versão antes ou durante o atendimento.
                       </AlertDescription>
                     </Alert>
                   ) : null}
@@ -143,7 +151,8 @@ export function PatientChart({
                   ) : null}
                   <EvolutionList
                     evolutions={chart.evolutions}
-                    canRetryTranscription={canEvolution}
+                    canRetryTranscription={canRetry}
+                    canCorrectTranscription={canCorrect}
                   />
                 </TabsContent>
               </>

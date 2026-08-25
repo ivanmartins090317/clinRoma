@@ -15,3 +15,7 @@ export function canWriteClinicalChart(role: UserRole): boolean {
 export function canRetryTranscription(role: UserRole): boolean {
   return role === "admin" || role === "dentist";
 }
+
+export function canCorrectTranscription(role: UserRole): boolean {
+  return canRetryTranscription(role);
+}

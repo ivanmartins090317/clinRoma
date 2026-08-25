@@ -2,7 +2,7 @@
 
 Fonte viva do que **ainda falta implementar ou validar**. Atualizar ao concluir cada fase.
 
-Última revisão: **2026-08-18** (após Fase 6 · código entregue).
+Última revisão: **2026-08-25** (Fase 7 aberta após demo Felipe).
 
 ---
 
@@ -175,5 +175,44 @@ Referência: `specs/2026-08-18-fase-6-lembrete-piloto.md` · `docs/implementatio
 - [ ] Bugs novos rastreados como BG-XX no relatório ou aqui
 
 **Pronto quando:** dentista recebe lembrete por e-mail; homologação manual aprovada; clínica operando em produção.
+
+---
+
+## Fase 7 · Ajustes pós-demo Felipe (2026-08-25)
+
+Referência: `specs/2026-08-25-fase-7-ajustes-demo-felipe.md` · `docs/plans/plano-F7.md` · PRD vault (D17–D24)
+
+Felipe gostou da demo (melhor do que esperava). Código da Fase 7 entra por fatia.
+
+### Implementação
+
+- [x] **F7-01** Evolução: transcrição Whisper **editável** (ver `docs/implementation/F7-01-transcricao-editavel.md`)
+- [ ] **F7-02** Barra de busca no histórico do prontuário (ex.: `dente 24`)
+- [ ] **F7-03** Anamnese isolada (link + tablet) com **questionário papel** Sim/Não (`docs/plans/plano-F7.md` apêndice)
+- [ ] **F7-09** Card do paciente: resumo da anamnese + último procedimento
+- [ ] **F7-04** Automações ao paciente pelo **WhatsApp** (sem inbox neste repo)
+- [ ] **F7-05** Aba pós-cirurgia: mensagem personalizada → WhatsApp
+- [ ] **F7-06** Estoque baixo → e-mail do financeiro (job + config; endereço pendente)
+- [ ] **F7-07** Cadastro: segundo telefone + observação (parente / sem WhatsApp)
+- [ ] **F7-08** Odontograma em **formato de cruz** (FDI, três vistas). Ref: `docs/assets/odontograma-formato-cruz.png`
+
+**Ordem sugerida:** F7-07 → F7-09 → F7-02 → F7-08 → F7-03 → F7-05/F7-04 → F7-06.
+
+### Fechamento operacional (homologação)
+
+Itens de código prontos, ainda sem validação em dispositivo real (fica no fechamento da Fase 7):
+
+- [ ] **iPhone real:** corrigir transcrição na ficha (F7-01), recarregar e confirmar que o texto permanece
+- [ ] **Android real:** mesmo fluxo F7-01
+
+### Pendente com o Felipe (não bloqueia F7-01)
+
+- [ ] E-mail do financeiro (F7-06)
+- [ ] 2º telefone obrigatório vs opcional
+- [ ] Texto-padrão vs 100% livre no pós-cirurgia
+- [ ] Confirmar link de anamnese sempre via WhatsApp
+- [ ] Escolher provedor WhatsApp (WAHA / Cloud API / bridge DeskcommCRM)
+
+**Pronto quando:** os oito itens passam no DoD da spec F7; transcrição corrige na UI; cruz bate com a imagem; paciente não vê outras abas na anamnese.
 
 ---

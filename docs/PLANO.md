@@ -9,9 +9,9 @@
 | --------------------- | ------------------------------------------------------------------------ |
 | Tenancy               | Single-tenant. Sem `clinic_id`; RLS por sessão e papel                   |
 | Agenda                | Biblioteca de calendário pronta, isolada atrás de um componente próprio  |
-| Áudio da evolução     | Grava, armazena e transcreve com Whisper no v1                           |
+| Áudio da evolução     | Grava, transcreve com Whisper e **o dentista corrige o texto** (F7) |
 | Insumos               | Upload da foto da planilha + digitação manual. Sem OCR                   |
-| Lembrete pós-consulta | E-mail via Resend. WhatsApp fica para depois                             |
+| Lembrete pós-consulta | E-mail via Resend ao **dentista**. Mensagem ao **paciente**: WhatsApp (F7) |
 | Ordem de entrega      | Agenda primeiro, depois prontuário, fila e estoque                       |
 | Responsividade        | Mobile-first. Celular é o dispositivo primário do dentista e da auxiliar |
 
@@ -299,6 +299,22 @@ Android, e o saldo cai sozinho.
    cliente.** Sem Playwright no MVP.
 5. Acompanhamento da clínica em uso real e ajustes pós-entrega.
 
+### Fase 7 · Ajustes pós-demo Felipe (2026-08-25)
+
+Spec: `specs/2026-08-25-fase-7-ajustes-demo-felipe.md`.
+Plano de implementação: `docs/plans/plano-F7.md`.
+
+1. Transcrição de áudio **editável** após o Whisper.
+2. Busca no histórico do prontuário (ex.: `dente 24`).
+3. Anamnese isolada: link pré-consulta e tablet só com essa tela.
+4. Disparo de mensagem ao paciente por **WhatsApp** (sem inbox neste repo).
+5. Aba pós-cirurgia com texto personalizado.
+6. E-mail de estoque baixo para o financeiro (endereço pendente).
+7. Segundo telefone + observação no cadastro (parente).
+8. Odontograma em formato de cruz (FDI). Imagem: `docs/assets/odontograma-formato-cruz.png`.
+
+Pronto quando: os oito itens da spec F7 passam no DoD; o paciente não vê outras telas na anamnese; a cruz bate com a referência visual.
+
 ## 7. Qualidade
 
 - Vitest para regras de domínio: conflito de horário na agenda, expiração de
@@ -320,7 +336,7 @@ Android, e o saldo cai sozinho.
 | Token da fila enumerável                          | Token aleatório, guardado só como hash, expira em 40 min             |
 | Custo e latência do Whisper                       | Transcrição assíncrona, áudio sempre disponível mesmo se falhar      |
 | Lock-in do calendário                             | Biblioteca isolada atrás de um componente do domínio                 |
-| Escopo crescer para o WhatsApp                    | WhatsApp do paciente é do DeskcommCRM, repositório separado          |
+| Escopo crescer para inbox WhatsApp            | Inbox/bot fica no DeskcommCRM. ClinRoma só **dispara** (F7) |
 | Formato de áudio incompatível entre iOS e Android | Formato escolhido em runtime; backend aceita mp4 e webm              |
 | iOS cortar a gravação em segundo plano            | Upload em blocos durante a gravação e aviso claro ao dentista        |
 | QR não ler no iPhone por falta da API nativa      | Detecção de recurso com alternativa em WebAssembly                   |

@@ -12,14 +12,14 @@ Piloto: Clínica Neo Roma.
 ## Escopo v1
 
 - Agenda (5 dentistas)
-- Prontuário (anamnese, odontograma, evolução + foto + áudio)
-- Insumos: foto planilha + QR por pacote + scan retirada
+- Prontuário (anamnese isolada, odontograma cruz, evolução + foto + áudio editável, busca, pós-cirurgia WhatsApp)
+- Insumos: foto planilha + QR por pacote + scan retirada + e-mail estoque baixo (financeiro)
 - Fila Kanban (Vermelho/Amarelo/Verde), 40 min, link paciente LGPD
-- Lembrete pós-consulta → dentista (e-mail/WhatsApp)
+- Lembrete pós-consulta → dentista (e-mail)
 
 ## Fora deste repo
 
-- DeskcommCRM / WhatsApp paciente (Projeto 1)
+- DeskcommCRM / inbox e bot de WhatsApp (Projeto 1). O ClinRoma **dispara** WhatsApp (Fase 7), não opera conversa.
 
 ## Convenções
 
