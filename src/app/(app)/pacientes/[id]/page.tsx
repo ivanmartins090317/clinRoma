@@ -3,8 +3,11 @@ import { notFound } from "next/navigation";
 
 import { getPatientById } from "@/features/patients/queries";
 import { PatientChart } from "@/features/records/components/patient-chart";
-import { getPatientChartData } from "@/features/records/queries";
 import { canViewClinicalContent } from "@/features/records/permissions";
+import {
+  getPatientCardSummary,
+  getPatientChartData,
+} from "@/features/records/queries";
 import { requireAuthSession } from "@/lib/auth/session";
 
 export const metadata = { title: "Ficha do paciente" };
@@ -28,8 +31,11 @@ export default async function PatientDetailPage({
     notFound();
   }
 
-  const chart = canViewClinicalContent(session.profile.role)
-    ? await getPatientChartData(id)
+  const role = session.profile.role;
+  const canViewClinical = canViewClinicalContent(role);
+  const chart = canViewClinical ? await getPatientChartData(id) : null;
+  const cardSummary = canViewClinical
+    ? await getPatientCardSummary(id, role)
     : null;
 
   const origin = consulta ? ("agenda" as const) : ("lista-pacientes" as const);
@@ -54,7 +60,8 @@ export default async function PatientDetailPage({
       <PatientChart
         patient={patient}
         chart={chart}
-        role={session.profile.role}
+        cardSummary={cardSummary}
+        role={role}
         appointmentId={consulta}
         origin={origin}
       />

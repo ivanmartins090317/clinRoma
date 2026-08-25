@@ -241,6 +241,36 @@ export async function getActiveAppointmentsForDentist(
     }));
 }
 
+export interface LatestCompletedAppointment {
+  id: string;
+  startsAt: string;
+  procedureName: string | null;
+}
+
+export async function getLatestCompletedAppointmentForPatient(
+  patientId: string,
+): Promise<LatestCompletedAppointment | null> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("appointments")
+    .select("id, starts_at, procedure_name")
+    .eq("patient_id", patientId)
+    .eq("status", "completed")
+    .order("starts_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (error || !data) {
+    return null;
+  }
+
+  return {
+    id: data.id,
+    startsAt: data.starts_at,
+    procedureName: data.procedure_name,
+  };
+}
+
 export {
   clinicDateNavigation,
   clinicDayBounds,

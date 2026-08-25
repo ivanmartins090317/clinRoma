@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { auditPatientChartReadAction } from "@/features/records/actions";
 import { AnamnesisForm } from "@/features/records/components/anamnesis-form";
@@ -9,7 +9,10 @@ import { EvolutionForm } from "@/features/records/components/evolution-form";
 import { EvolutionList } from "@/features/records/components/evolution-list";
 import { Odontogram } from "@/features/records/components/odontogram";
 import { OdontogramMobile } from "@/features/records/components/odontogram-mobile";
-import type { PatientChartData } from "@/features/records/queries";
+import type {
+  PatientCardSummary,
+  PatientChartData,
+} from "@/features/records/queries";
 import {
   canCorrectTranscription,
   canRegisterEvolution,
@@ -28,9 +31,21 @@ import type { UserRole } from "@/types/clinroma";
 const chartTabTriggerClass =
   "relative min-h-11 flex-none rounded-none border-0 bg-transparent px-5 py-3 text-sm font-medium tracking-wide text-muted-foreground shadow-none transition-colors hover:text-foreground data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-none after:absolute after:inset-x-5 after:bottom-0 after:h-0.5 after:rounded-full after:bg-transparent after:transition-colors data-[state=active]:after:bg-neo-gold-500";
 
+type ChartTab = "resumo" | "anamnese" | "odontograma" | "evolucoes";
+
+function isChartTab(value: string): value is ChartTab {
+  return (
+    value === "resumo" ||
+    value === "anamnese" ||
+    value === "odontograma" ||
+    value === "evolucoes"
+  );
+}
+
 interface PatientChartProps {
   patient: PatientDetail;
   chart: PatientChartData | null;
+  cardSummary?: PatientCardSummary | null;
   role: UserRole;
   appointmentId?: string;
   origin: "agenda" | "lista-pacientes";
@@ -39,6 +54,7 @@ interface PatientChartProps {
 export function PatientChart({
   patient,
   chart,
+  cardSummary,
   role,
   appointmentId,
   origin,
@@ -48,6 +64,7 @@ export function PatientChart({
   const canEvolution = canRegisterEvolution(role);
   const canRetry = canRetryTranscription(role);
   const canCorrect = canCorrectTranscription(role);
+  const [activeTab, setActiveTab] = useState<ChartTab>("resumo");
 
   useEffect(() => {
     if (!canViewClinical) {
@@ -59,9 +76,22 @@ export function PatientChart({
 
   return (
     <div className="space-y-6">
-      <PatientSummary patient={patient} />
+      <PatientSummary
+        patient={patient}
+        clinicalSummary={canViewClinical ? (cardSummary ?? null) : null}
+        onOpenAnamnesis={() => setActiveTab("anamnese")}
+        onOpenEvolutions={() => setActiveTab("evolucoes")}
+      />
 
-      <Tabs defaultValue="resumo" className="gap-0">
+      <Tabs
+        value={activeTab}
+        onValueChange={(value) => {
+          if (isChartTab(value)) {
+            setActiveTab(value);
+          }
+        }}
+        className="gap-0"
+      >
         <div className="rounded-xl border border-border/70 bg-card shadow-sm">
           <TabsList className="h-auto min-h-0 w-full justify-start gap-0 overflow-x-auto overflow-y-hidden rounded-none rounded-t-xl border-b border-border/60 bg-neo-cream-50/80 p-0 scrollbar-none [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
             <TabsTrigger

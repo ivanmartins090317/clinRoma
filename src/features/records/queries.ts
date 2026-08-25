@@ -1,10 +1,24 @@
-import { createClient } from "@/lib/supabase/server";
+import { getLatestCompletedAppointmentForPatient } from "@/features/agenda/queries";
 import {
   buildAnamnesisPreview,
   type AnamnesisContentV1,
 } from "@/features/records/domain/anamnesis-form-v1";
 import { evaluateAnamnesisExpiry } from "@/features/records/domain/anamnesis-expiry";
+import {
+  buildAnamnesisCardView,
+  emptyPatientCardSummary,
+  parseAnamnesisCardSource,
+  pickVigenteAnamnesis,
+  resolveLastProcedure,
+  type EvolutionCardInput,
+  type PatientCardSummary,
+} from "@/features/records/domain/patient-card-summary";
+import { canViewClinicalContent } from "@/features/records/permissions";
+import { createClient } from "@/lib/supabase/server";
 import type { Database } from "@/lib/supabase/database.types";
+import type { UserRole } from "@/types/clinroma";
+
+export type { PatientCardSummary };
 
 type TranscriptionStatus = Database["public"]["Enums"]["transcription_status"];
 
@@ -203,6 +217,62 @@ export async function getAttachmentTranscriptionStatus(
     transcription: data.transcription,
     transcriptionStatus: data.transcription_status,
   };
+}
+
+export async function getPatientCardSummary(
+  patientId: string,
+  role: UserRole,
+): Promise<PatientCardSummary | null> {
+  if (!canViewClinicalContent(role)) {
+    return null;
+  }
+
+  try {
+    const supabase = await createClient();
+    const [anamnesisResult, completedAppointment] = await Promise.all([
+      supabase
+        .from("medical_records")
+        .select("content, created_at")
+        .eq("patient_id", patientId)
+        .eq("record_type", "anamnesis"),
+      getLatestCompletedAppointmentForPatient(patientId),
+    ]);
+
+    const sources = (anamnesisResult.data ?? []).map((row) =>
+      parseAnamnesisCardSource(row.content, row.created_at),
+    );
+    const anamnesis = buildAnamnesisCardView(pickVigenteAnamnesis(sources));
+    const procedureName = (completedAppointment?.procedureName ?? "").trim();
+    let evolutions: EvolutionCardInput[] = [];
+
+    if (!completedAppointment || !procedureName) {
+      const evoResult = await supabase
+        .from("medical_records")
+        .select("id, content, created_at, appointment_id")
+        .eq("patient_id", patientId)
+        .eq("record_type", "evolution")
+        .order("created_at", { ascending: false })
+        .limit(20);
+
+      evolutions = (evoResult.data ?? []).map((row) => {
+        const content = row.content as { text?: string } | null;
+
+        return {
+          id: row.id,
+          text: content?.text ?? "",
+          createdAt: row.created_at,
+          appointmentId: row.appointment_id,
+        };
+      });
+    }
+
+    return {
+      anamnesis,
+      lastProcedure: resolveLastProcedure(completedAppointment, evolutions),
+    };
+  } catch {
+    return emptyPatientCardSummary();
+  }
 }
 
 export async function getEvolutionById(evolutionId: string) {
