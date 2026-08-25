@@ -8,6 +8,7 @@ import {
   createPatientAction,
   updatePatientAction,
 } from "@/features/patients/actions";
+import { SECONDARY_PHONE_COPY } from "@/features/patients/domain/secondary-phone";
 import type { PatientDetail } from "@/features/patients/queries";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -41,6 +42,8 @@ export function PatientForm({ mode, patient }: PatientFormProps) {
         cpf: String(formData.get("cpf") ?? ""),
         contactPhone: String(formData.get("contactPhone") ?? ""),
         contactEmail: String(formData.get("contactEmail") ?? ""),
+        secondaryPhone: String(formData.get("secondaryPhone") ?? ""),
+        secondaryPhoneNote: String(formData.get("secondaryPhoneNote") ?? ""),
         lgpdConsent: formData.get("lgpdConsent") === "on",
         signatureName: String(formData.get("signatureName") ?? ""),
       };
@@ -55,6 +58,8 @@ export function PatientForm({ mode, patient }: PatientFormProps) {
               cpf: payload.cpf,
               contactPhone: payload.contactPhone,
               contactEmail: payload.contactEmail,
+              secondaryPhone: payload.secondaryPhone,
+              secondaryPhoneNote: payload.secondaryPhoneNote,
             });
 
       if (result.error) {
@@ -121,6 +126,32 @@ export function PatientForm({ mode, patient }: PatientFormProps) {
             name="contactEmail"
             type="email"
             defaultValue={patient?.contactEmail ?? ""}
+            className="text-base"
+          />
+        </div>
+        <p className="text-sm text-muted-foreground sm:col-span-2">
+          {SECONDARY_PHONE_COPY.help}
+        </p>
+        <div className="space-y-2">
+          <Label htmlFor="secondaryPhone">
+            {SECONDARY_PHONE_COPY.phoneLabel}
+          </Label>
+          <Input
+            id="secondaryPhone"
+            name="secondaryPhone"
+            defaultValue={patient?.secondaryPhone ?? ""}
+            className="text-base"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="secondaryPhoneNote">
+            {SECONDARY_PHONE_COPY.noteLabel}
+          </Label>
+          <Input
+            id="secondaryPhoneNote"
+            name="secondaryPhoneNote"
+            defaultValue={patient?.secondaryPhoneNote ?? ""}
+            placeholder={SECONDARY_PHONE_COPY.notePlaceholder}
             className="text-base"
           />
         </div>

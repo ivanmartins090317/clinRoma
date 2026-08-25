@@ -1,4 +1,8 @@
 import { formatCpfDisplay } from "@/features/patients/domain/cpf";
+import {
+  SECONDARY_PHONE_COPY,
+  hasSecondaryPhone,
+} from "@/features/patients/domain/secondary-phone";
 import type { PatientDetail } from "@/features/patients/queries";
 import { Badge } from "@/components/ui/badge";
 
@@ -42,6 +46,21 @@ export function PatientSummary({ patient }: PatientSummaryProps) {
           <dt className="text-muted-foreground">Telefone</dt>
           <dd>{patient.contactPhone ?? "Não informado"}</dd>
         </div>
+        {hasSecondaryPhone(patient.secondaryPhone) ? (
+          <div>
+            <dt className="text-muted-foreground">
+              {SECONDARY_PHONE_COPY.phoneLabel}
+            </dt>
+            <dd>
+              {patient.secondaryPhone}
+              {patient.secondaryPhoneNote ? (
+                <span className="mt-0.5 block text-muted-foreground">
+                  {patient.secondaryPhoneNote}
+                </span>
+              ) : null}
+            </dd>
+          </div>
+        ) : null}
         <div>
           <dt className="text-muted-foreground">E-mail</dt>
           <dd>{patient.contactEmail ?? "Não informado"}</dd>

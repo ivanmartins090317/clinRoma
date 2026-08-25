@@ -193,7 +193,7 @@ Felipe gostou da demo (melhor do que esperava). Código da Fase 7 entra por fati
 - [ ] **F7-04** Automações ao paciente pelo **WhatsApp** (sem inbox neste repo)
 - [ ] **F7-05** Aba pós-cirurgia: mensagem personalizada → WhatsApp
 - [ ] **F7-06** Estoque baixo → e-mail do financeiro (job + config; endereço pendente)
-- [ ] **F7-07** Cadastro: segundo telefone + observação (parente / sem WhatsApp)
+- [x] **F7-07** Cadastro: segundo telefone + observação (parente / sem WhatsApp) (ver `docs/implementation/F7-07-segundo-telefone.md`)
 - [ ] **F7-08** Odontograma em **formato de cruz** (FDI, três vistas). Ref: `docs/assets/odontograma-formato-cruz.png`
 
 **Ordem sugerida:** F7-07 → F7-09 → F7-02 → F7-08 → F7-03 → F7-05/F7-04 → F7-06.
@@ -204,8 +204,10 @@ Itens de código prontos, ainda sem validação em dispositivo real (fica no fec
 
 - [ ] **iPhone real:** corrigir transcrição na ficha (F7-01), recarregar e confirmar que o texto permanece
 - [ ] **Android real:** mesmo fluxo F7-01
+- [ ] **F7-07 desktop/viewport:** cadastrar com segundo telefone + observação; reabrir a ficha; incluir depois; remover o bloco
+- [ ] **F7-07 visualizador:** lê o segundo contato no resumo e não edita
 
-### Pendente com o Felipe (não bloqueia F7-01)
+### Pendente com o Felipe (não bloqueia F7-01 nem F7-07)
 
 - [ ] E-mail do financeiro (F7-06)
 - [ ] 2º telefone obrigatório vs opcional

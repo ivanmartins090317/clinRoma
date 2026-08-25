@@ -77,6 +77,8 @@ export type Database = {
           cpf: string | null;
           contact_phone: string | null;
           contact_email: string | null;
+          secondary_phone: string | null;
+          secondary_phone_note: string | null;
           lgpd_consent_at: string | null;
           created_at: string;
           updated_at: string;
@@ -88,6 +90,8 @@ export type Database = {
           cpf?: string | null;
           contact_phone?: string | null;
           contact_email?: string | null;
+          secondary_phone?: string | null;
+          secondary_phone_note?: string | null;
           lgpd_consent_at?: string | null;
           created_at?: string;
           updated_at?: string;
@@ -99,6 +103,8 @@ export type Database = {
           cpf?: string | null;
           contact_phone?: string | null;
           contact_email?: string | null;
+          secondary_phone?: string | null;
+          secondary_phone_note?: string | null;
           lgpd_consent_at?: string | null;
           created_at?: string;
           updated_at?: string;

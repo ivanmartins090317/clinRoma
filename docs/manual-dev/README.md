@@ -17,6 +17,7 @@ Guia de arquitetura, fases implementadas e operação do ambiente de desenvolvim
 | [07-fase-5-insumos-estoque.md](./07-fase-5-insumos-estoque.md)                 | Fase 5: estoque, QR, scan mobile, PWA              |
 | [08-fase-6-lembrete-piloto.md](./08-fase-6-lembrete-piloto.md)                 | Fase 6: lembrete e-mail, cron, deploy, homologação |
 | [09-fase-7-01-transcricao-editavel.md](./09-fase-7-01-transcricao-editavel.md) | Fase 7 fatia F7-01: transcrição editável           |
+| [10-fase-7-07-segundo-telefone.md](./10-fase-7-07-segundo-telefone.md)         | Fase 7 fatia F7-07: segundo telefone no cadastro   |
 
 ## Documentos relacionados
 
@@ -31,16 +32,16 @@ Guia de arquitetura, fases implementadas e operação do ambiente de desenvolvim
 
 ## Fases do projeto
 
-| Fase                       | Status             | Manual                                                                         |
-| -------------------------- | ------------------ | ------------------------------------------------------------------------------ |
-| 0 · Fundação               | concluída          | [02-fase-0-fundacao.md](./02-fase-0-fundacao.md)                               |
-| 1 · Dados, auth e papéis   | concluída          | [03-fase-1-dados-auth-papeis.md](./03-fase-1-dados-auth-papeis.md)             |
-| 2 · Agenda                 | concluída (código) | [04-fase-2-agenda.md](./04-fase-2-agenda.md)                                   |
-| 3 · Pacientes e prontuário | concluída (código) | [05-fase-3-pacientes-prontuario.md](./05-fase-3-pacientes-prontuario.md)       |
-| 4 · Fila Kanban            | concluída (código) | [06-fase-4-fila-kanban.md](./06-fase-4-fila-kanban.md)                         |
-| 5 · Insumos e estoque      | concluída (código) | [07-fase-5-insumos-estoque.md](./07-fase-5-insumos-estoque.md)                 |
-| 6 · Lembrete e piloto      | concluída (código) | [08-fase-6-lembrete-piloto.md](./08-fase-6-lembrete-piloto.md)                 |
-| 7 · Ajustes demo Felipe    | F7-01 em código    | [09-fase-7-01-transcricao-editavel.md](./09-fase-7-01-transcricao-editavel.md) |
+| Fase                       | Status                  | Manual                                                                                                                                                  |
+| -------------------------- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0 · Fundação               | concluída               | [02-fase-0-fundacao.md](./02-fase-0-fundacao.md)                                                                                                        |
+| 1 · Dados, auth e papéis   | concluída               | [03-fase-1-dados-auth-papeis.md](./03-fase-1-dados-auth-papeis.md)                                                                                      |
+| 2 · Agenda                 | concluída (código)      | [04-fase-2-agenda.md](./04-fase-2-agenda.md)                                                                                                            |
+| 3 · Pacientes e prontuário | concluída (código)      | [05-fase-3-pacientes-prontuario.md](./05-fase-3-pacientes-prontuario.md)                                                                                |
+| 4 · Fila Kanban            | concluída (código)      | [06-fase-4-fila-kanban.md](./06-fase-4-fila-kanban.md)                                                                                                  |
+| 5 · Insumos e estoque      | concluída (código)      | [07-fase-5-insumos-estoque.md](./07-fase-5-insumos-estoque.md)                                                                                          |
+| 6 · Lembrete e piloto      | concluída (código)      | [08-fase-6-lembrete-piloto.md](./08-fase-6-lembrete-piloto.md)                                                                                          |
+| 7 · Ajustes demo Felipe    | F7-01 e F7-07 em código | [09-fase-7-01-transcricao-editavel.md](./09-fase-7-01-transcricao-editavel.md) · [10-fase-7-07-segundo-telefone.md](./10-fase-7-07-segundo-telefone.md) |
 
 ## Comandos do dia a dia
 

@@ -16,6 +16,8 @@ export interface PatientDetail {
   cpf: string | null;
   contactPhone: string | null;
   contactEmail: string | null;
+  secondaryPhone: string | null;
+  secondaryPhoneNote: string | null;
   lgpdConsentAt: string | null;
   createdAt: string;
   updatedAt: string;
@@ -28,6 +30,8 @@ function mapPatientRow(row: {
   cpf: string | null;
   contact_phone: string | null;
   contact_email?: string | null;
+  secondary_phone?: string | null;
+  secondary_phone_note?: string | null;
   lgpd_consent_at?: string | null;
   created_at?: string;
   updated_at?: string;
@@ -39,6 +43,8 @@ function mapPatientRow(row: {
     cpf: row.cpf,
     contactPhone: row.contact_phone,
     contactEmail: row.contact_email ?? null,
+    secondaryPhone: row.secondary_phone ?? null,
+    secondaryPhoneNote: row.secondary_phone_note ?? null,
     lgpdConsentAt: row.lgpd_consent_at ?? null,
     createdAt: row.created_at ?? "",
     updatedAt: row.updated_at ?? "",
@@ -98,7 +104,7 @@ export async function getPatientById(
   const { data, error } = await supabase
     .from("patients")
     .select(
-      "id, full_name, birth_date, cpf, contact_phone, contact_email, lgpd_consent_at, created_at, updated_at",
+      "id, full_name, birth_date, cpf, contact_phone, contact_email, secondary_phone, secondary_phone_note, lgpd_consent_at, created_at, updated_at",
     )
     .eq("id", patientId)
     .maybeSingle();

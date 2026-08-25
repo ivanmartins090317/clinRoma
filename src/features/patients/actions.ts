@@ -8,7 +8,12 @@ import { requireAuthSession } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
 import { hasSupabaseConfig } from "@/lib/env";
 import { normalizeCpf } from "@/features/patients/domain/cpf";
-import { findPatientByCpf } from "@/features/patients/queries";
+import {
+  hasSecondaryPhone,
+  prepareSecondaryContact,
+  secondaryContactAuditState,
+} from "@/features/patients/domain/secondary-phone";
+import { findPatientByCpf, getPatientById } from "@/features/patients/queries";
 import {
   createPatientSchema,
   updatePatientSchema,
@@ -83,6 +88,12 @@ export async function createPatientAction(
       }
     }
 
+    const secondary = prepareSecondaryContact(parsed.data);
+
+    if (!secondary.ok) {
+      return { error: secondary.error };
+    }
+
     const supabase = await createClient();
     const { data, error } = await supabase
       .from("patients")
@@ -92,6 +103,8 @@ export async function createPatientAction(
         cpf: normalizedCpf,
         contact_phone: parsed.data.contactPhone ?? null,
         contact_email: parsed.data.contactEmail ?? null,
+        secondary_phone: secondary.value.secondaryPhone,
+        secondary_phone_note: secondary.value.secondaryPhoneNote,
         lgpd_consent_at: new Date().toISOString(),
       })
       .select("id")
@@ -108,6 +121,10 @@ export async function createPatientAction(
     await logPatientAudit("create", data.id, {
       origin: "lista-pacientes",
       consentSignature: parsed.data.signatureName,
+      secondaryContact: secondaryContactAuditState({
+        previousPresent: null,
+        nextPresent: hasSecondaryPhone(secondary.value.secondaryPhone),
+      }),
     });
 
     revalidatePath("/pacientes");
@@ -149,6 +166,18 @@ export async function updatePatientAction(
       }
     }
 
+    const current = await getPatientById(parsed.data.id);
+
+    if (!current) {
+      return { error: "Não foi possível atualizar o paciente." };
+    }
+
+    const secondary = prepareSecondaryContact(parsed.data);
+
+    if (!secondary.ok) {
+      return { error: secondary.error };
+    }
+
     const supabase = await createClient();
     const { data, error } = await supabase
       .from("patients")
@@ -158,6 +187,8 @@ export async function updatePatientAction(
         cpf: normalizedCpf,
         contact_phone: parsed.data.contactPhone ?? null,
         contact_email: parsed.data.contactEmail ?? null,
+        secondary_phone: secondary.value.secondaryPhone,
+        secondary_phone_note: secondary.value.secondaryPhoneNote,
       })
       .eq("id", parsed.data.id)
       .select("id")
@@ -171,7 +202,13 @@ export async function updatePatientAction(
       return { error: "Não foi possível atualizar o paciente." };
     }
 
-    await logPatientAudit("update", data.id, { origin: "ficha-paciente" });
+    await logPatientAudit("update", data.id, {
+      origin: "ficha-paciente",
+      secondaryContact: secondaryContactAuditState({
+        previousPresent: hasSecondaryPhone(current.secondaryPhone),
+        nextPresent: hasSecondaryPhone(secondary.value.secondaryPhone),
+      }),
+    });
 
     revalidatePath("/pacientes");
     revalidatePath(`/pacientes/${data.id}`);
