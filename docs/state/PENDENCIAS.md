@@ -187,7 +187,7 @@ Felipe gostou da demo (melhor do que esperava). Código da Fase 7 entra por fati
 ### Implementação
 
 - [x] **F7-01** Evolução: transcrição Whisper **editável** (ver `docs/implementation/F7-01-transcricao-editavel.md`)
-- [ ] **F7-02** Barra de busca no histórico do prontuário (ex.: `dente 24`)
+- [x] **F7-02** Barra de busca no histórico do prontuário (ex.: `dente 24`) (ver `docs/implementation/F7-02-busca-historico.md`)
 - [ ] **F7-03** Anamnese isolada (link + tablet) com **questionário papel** Sim/Não (`docs/plans/plano-F7.md` apêndice)
 - [x] **F7-09** Card do paciente: resumo da anamnese + último procedimento (ver `docs/implementation/F7-09-card-paciente.md`)
 - [ ] **F7-04** Automações ao paciente pelo **WhatsApp** (sem inbox neste repo)
@@ -208,8 +208,11 @@ Itens de código prontos, ainda sem validação em dispositivo real (fica no fec
 - [ ] **F7-07 visualizador:** lê o segundo contato no resumo e não edita
 - [ ] **F7-09 desktop/viewport:** abrir Maria e ver anamnese vigente + Restauração sem entrar nas abas; toque abre Anamnese / Evoluções
 - [ ] **F7-09 visualizador:** vê o cadastro e **não** vê os dois blocos clínicos
+- [ ] **F7-02 desktop/viewport:** Maria → Evoluções; `dente 24` mostra só a extração; limpar restaura as duas
+- [ ] **F7-02 recepção:** filtra o histórico e **não** vê o formulário de nova evolução
+- [ ] **F7-02 visualizador:** não vê aba Evoluções nem o campo de busca
 
-### Pendente com o Felipe (não bloqueia F7-01, F7-07 nem F7-09)
+### Pendente com o Felipe (não bloqueia F7-01, F7-02, F7-07 nem F7-09)
 
 - [ ] E-mail do financeiro (F7-06)
 - [ ] 2º telefone obrigatório vs opcional

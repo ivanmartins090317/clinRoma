@@ -11,7 +11,7 @@ Registro do que **já foi entregue** em cada fase do `docs/PLANO.md`.
 | 4 · Fila Kanban            | [F4-fila-kanban.md](./F4-fila-kanban.md)                                                                                    | concluída (código)                        |
 | 5 · Insumos e estoque      | [F5-insumos-estoque.md](./F5-insumos-estoque.md)                                                                            | concluída (código)                        |
 | 6 · Lembrete e piloto      | [F6-lembrete-piloto.md](./F6-lembrete-piloto.md)                                                                            | concluída (código)                        |
-| 7 · Ajustes demo Felipe    | [F7-01-transcricao-editavel.md](./F7-01-transcricao-editavel.md) · [F7-07-segundo-telefone.md](./F7-07-segundo-telefone.md) · [F7-09-card-paciente.md](./F7-09-card-paciente.md) | **F7-01, F7-07 e F7-09 em código** · fase aberta |
+| 7 · Ajustes demo Felipe    | [F7-01-transcricao-editavel.md](./F7-01-transcricao-editavel.md) · [F7-02-busca-historico.md](./F7-02-busca-historico.md) · [F7-07-segundo-telefone.md](./F7-07-segundo-telefone.md) · [F7-09-card-paciente.md](./F7-09-card-paciente.md) | **F7-01, F7-02, F7-07 e F7-09 em código** · fase aberta |
 
 **Complemento:** o que falta implementar ou validar está em [`docs/state/PENDENCIAS.md`](../state/PENDENCIAS.md).
 
