@@ -164,12 +164,12 @@ export function PatientForm({ mode, patient }: PatientFormProps) {
             O paciente (ou responsável) autoriza o tratamento dos dados para
             atendimento clínico e comunicação da clínica.
           </p>
-          <label className="flex min-h-11 items-start gap-3 text-sm">
+          <label className="flex min-h-11 items-start gap-2.5 text-sm">
             <input
               type="checkbox"
               name="lgpdConsent"
               required
-              className="mt-1 size-4"
+              className="mt-1"
             />
             <span>Li e o paciente concorda com o tratamento dos dados.</span>
           </label>

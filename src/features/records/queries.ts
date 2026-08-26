@@ -3,7 +3,19 @@ import {
   buildAnamnesisPreview,
   type AnamnesisContentV1,
 } from "@/features/records/domain/anamnesis-form-v1";
+import {
+  buildAnamnesisPreviewV2,
+  formatVigenteDateLabel,
+  isAnamnesisContentV2,
+  type AnamnesisContentV2,
+} from "@/features/records/domain/anamnesis-form-v2";
 import { evaluateAnamnesisExpiry } from "@/features/records/domain/anamnesis-expiry";
+import {
+  checkInviteRateLimit,
+  evaluateInviteAccess,
+  hashAnamnesisInviteToken,
+  inviteViewGuessKey,
+} from "@/features/records/lib/anamnesis-token";
 import {
   buildAnamnesisCardView,
   emptyPatientCardSummary,
@@ -29,6 +41,18 @@ export interface AnamnesisVersion {
   preview: string;
   authorName: string | null;
   createdAt: string;
+  formVersion: 1 | 2;
+  v1?: AnamnesisContentV1;
+  v2?: AnamnesisContentV2;
+}
+
+export type PublicAnamnesisInviteState = "valid" | "invalid";
+
+export interface PublicAnamnesisInviteView {
+  state: PublicAnamnesisInviteState;
+  patientFullName?: string;
+  vigenteDateLabel?: string | null;
+  purpose?: "pre_consult" | "office";
 }
 
 export interface ToothFindingRecord {
@@ -133,6 +157,20 @@ export async function getPatientChartData(
 
   for (const record of recordsResult.data ?? []) {
     if (record.record_type === "anamnesis") {
+      if (isAnamnesisContentV2(record.content)) {
+        anamnesisVersions.push({
+          id: record.id,
+          signedAt: record.content.signedAt ?? null,
+          signatureName: record.content.signatureName ?? null,
+          preview: buildAnamnesisPreviewV2(record.content),
+          authorName: resolveAuthorName(),
+          createdAt: record.created_at,
+          formVersion: 2,
+          v2: record.content,
+        });
+        continue;
+      }
+
       const content = record.content as AnamnesisContentV1;
 
       anamnesisVersions.push({
@@ -142,6 +180,8 @@ export async function getPatientChartData(
         preview: buildAnamnesisPreview(content),
         authorName: resolveAuthorName(),
         createdAt: record.created_at,
+        formVersion: 1,
+        v1: content,
       });
       continue;
     }
@@ -180,11 +220,13 @@ export async function getPatientChartData(
     }
   }
 
-  const latestSignedAt = anamnesisVersions[0]?.signedAt ?? null;
+  const vigente = pickVigenteAnamnesis(anamnesisVersions);
 
   return {
     anamnesisVersions,
-    anamnesisExpiry: evaluateAnamnesisExpiry({ signedAt: latestSignedAt }),
+    anamnesisExpiry: evaluateAnamnesisExpiry({
+      signedAt: vigente?.signedAt ?? null,
+    }),
     toothFindings: (findingsResult.data ?? []).map((finding) => ({
       id: finding.id,
       toothNumber: finding.tooth_number,
@@ -288,4 +330,84 @@ export async function getEvolutionById(evolutionId: string) {
   }
 
   return data;
+}
+
+export async function getPublicAnamnesisInviteView(
+  token: string,
+  originKey = "anon",
+): Promise<PublicAnamnesisInviteView> {
+  const invalid: PublicAnamnesisInviteView = { state: "invalid" };
+  const guessKey = inviteViewGuessKey(originKey);
+
+  if (!token || token.length < 16) {
+    checkInviteRateLimit(guessKey);
+    return invalid;
+  }
+
+  try {
+    const { createAdminClient } = await import("@/lib/supabase/admin");
+    const supabase = createAdminClient();
+    const tokenHash = hashAnamnesisInviteToken(token);
+    const { data: invite } = await supabase
+      .from("anamnesis_invites")
+      .select(
+        "id, patient_id, purpose, token_hash, status, expires_at, used_at",
+      )
+      .eq("token_hash", tokenHash)
+      .maybeSingle();
+
+    const access = evaluateInviteAccess({
+      token,
+      tokenHash,
+      storedHash: invite?.token_hash,
+      status: invite?.status,
+      expiresAt: invite?.expires_at,
+      usedAt: invite?.used_at ?? null,
+    });
+
+    if (access !== "valid" || !invite) {
+      checkInviteRateLimit(guessKey);
+      return invalid;
+    }
+
+    const [{ data: patient }, { data: records }] = await Promise.all([
+      supabase
+        .from("patients")
+        .select("full_name")
+        .eq("id", invite.patient_id)
+        .maybeSingle(),
+      supabase
+        .from("medical_records")
+        .select("content, created_at")
+        .eq("patient_id", invite.patient_id)
+        .eq("record_type", "anamnesis"),
+    ]);
+
+    const vigente = pickVigenteAnamnesis(
+      (records ?? []).map((row) => {
+        const content = row.content as { signedAt?: unknown };
+        return {
+          signedAt:
+            typeof content?.signedAt === "string" ? content.signedAt : null,
+          createdAt: row.created_at,
+        };
+      }),
+    );
+    const signedAt = vigente?.signedAt ?? null;
+
+    return {
+      state: "valid",
+      patientFullName: patient?.full_name ?? "Paciente",
+      vigenteDateLabel: signedAt ? formatVigenteDateLabel(signedAt) : null,
+      purpose: invite.purpose,
+    };
+  } catch (error) {
+    if (process.env.NODE_ENV === "development") {
+      console.error(
+        "[anamnesis-invite] view failed",
+        error instanceof Error ? error.message : "erro",
+      );
+    }
+    return invalid;
+  }
 }

@@ -54,9 +54,26 @@ function getProjectRef(supabaseUrl) {
   return match[1];
 }
 
-function buildDbUrl(projectRef, password) {
+function buildDirectDbUrl(projectRef, password) {
   const encoded = encodeURIComponent(password);
   return `postgresql://postgres:${encoded}@db.${projectRef}.supabase.co:5432/postgres`;
+}
+
+function buildPoolerDbUrl(projectRef, password) {
+  const encoded = encodeURIComponent(password);
+  const host =
+    process.env.SUPABASE_POOLER_HOST || "aws-0-us-west-2.pooler.supabase.com";
+  return `postgresql://postgres.${projectRef}:${encoded}@${host}:5432/postgres`;
+}
+
+function runPush(dbUrl, extraArgs) {
+  const args = ["supabase", "db", "push", "--db-url", dbUrl, "--yes", ...extraArgs];
+  execSync(`npx ${args.map((a) => JSON.stringify(a)).join(" ")}`, {
+    cwd: projectRoot,
+    stdio: "inherit",
+    shell: true,
+    env: { ...process.env },
+  });
 }
 
 const isDryRun = process.argv.includes("--dry-run");
@@ -80,10 +97,7 @@ if (!password) {
 }
 
 const projectRef = getProjectRef(supabaseUrl);
-const dbUrl = buildDbUrl(projectRef, password);
-
-const args = ["supabase", "db", "push", "--db-url", dbUrl, "--yes"];
-if (isDryRun) args.push("--dry-run");
+const extraArgs = isDryRun ? ["--dry-run"] : [];
 
 console.log(`Projeto: ${projectRef}`);
 console.log(
@@ -93,16 +107,18 @@ console.log(
 );
 
 try {
-  execSync(`npx ${args.map((a) => JSON.stringify(a)).join(" ")}`, {
-    cwd: projectRoot,
-    stdio: "inherit",
-    shell: true,
-    env: { ...process.env },
-  });
-} catch (error) {
-  const status = typeof error?.status === "number" ? error.status : 1;
-  console.error(
-    `db push falhou (exit ${status}). Senha/URL omitidas deste log. Veja a mensagem do Supabase CLI acima.`,
+  runPush(buildDirectDbUrl(projectRef, password), extraArgs);
+} catch (directError) {
+  console.log(
+    "Conexão direta ao Postgres indisponível; tentando pooler (IPv4).",
   );
-  process.exit(status);
+  try {
+    runPush(buildPoolerDbUrl(projectRef, password), extraArgs);
+  } catch (error) {
+    const status = typeof error?.status === "number" ? error.status : 1;
+    console.error(
+      `db push falhou (exit ${status}). Senha/URL omitidas deste log. Veja a mensagem do Supabase CLI acima.`,
+    );
+    process.exit(status);
+  }
 }

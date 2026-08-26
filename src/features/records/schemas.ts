@@ -1,29 +1,37 @@
 import { z } from "zod";
 
-import { ANAMNESIS_FORM_VERSION } from "@/features/records/domain/anamnesis-form-v1";
+import { ANAMNESIS_COPY } from "@/features/records/domain/anamnesis-form-v2";
 import { TRANSCRIPTION_TEXT_MAX_LENGTH } from "@/features/records/domain/transcription-edit";
 
-const optionalText = z
-  .string()
-  .trim()
-  .transform((value) => (value.length === 0 ? undefined : value))
-  .optional();
+const paperAnswerSchema = z.object({
+  answer: z.enum(["yes", "no"]).nullable(),
+  complement: z.string().default(""),
+});
 
 export const saveAnamnesisSchema = z.object({
   patientId: z.string().uuid(),
-  generalHealth: optionalText,
-  lastDentalVisit: optionalText,
-  allergies: optionalText,
-  medications: optionalText,
-  systemicConditions: optionalText,
-  pregnancy: optionalText,
-  habits: optionalText,
-  chiefComplaint: optionalText,
+  answers: z.record(z.string(), paperAnswerSchema),
+  diseases: z.array(z.string()).default([]),
+  otherDisease: z.string().optional(),
   signatureConfirmed: z.literal(true, {
-    error: "Confirme a assinatura da anamnese",
+    error: ANAMNESIS_COPY.missingDeclaration,
   }),
-  signatureName: z.string().trim().min(2, "Informe o nome para assinatura"),
+  signatureName: z.string().trim().min(2, ANAMNESIS_COPY.missingDeclaration),
 });
+
+export const generateAnamnesisInviteSchema = z.object({
+  patientId: z.string().uuid(),
+  purpose: z.enum(["pre_consult", "office"]),
+});
+
+export const submitAnamnesisInviteSchema = saveAnamnesisSchema
+  .omit({ patientId: true })
+  .extend({
+    token: z.string().min(16, ANAMNESIS_COPY.genericInvite),
+    consentConfirmed: z.literal(true, {
+      error: ANAMNESIS_COPY.missingConsent,
+    }),
+  });
 
 export const upsertToothFindingSchema = z.object({
   patientId: z.string().uuid(),
@@ -78,22 +86,9 @@ export const readChartAuditSchema = z.object({
 
 export type SaveAnamnesisInput = z.infer<typeof saveAnamnesisSchema>;
 export type CreateEvolutionInput = z.infer<typeof createEvolutionSchema>;
-
-export function buildAnamnesisContent(
-  input: SaveAnamnesisInput,
-): Record<string, unknown> {
-  return {
-    formVersion: ANAMNESIS_FORM_VERSION,
-    signedAt: new Date().toISOString(),
-    signatureName: input.signatureName,
-    signatureConfirmed: true,
-    generalHealth: input.generalHealth,
-    lastDentalVisit: input.lastDentalVisit,
-    allergies: input.allergies,
-    medications: input.medications,
-    systemicConditions: input.systemicConditions,
-    pregnancy: input.pregnancy,
-    habits: input.habits,
-    chiefComplaint: input.chiefComplaint,
-  };
-}
+export type GenerateAnamnesisInviteInput = z.infer<
+  typeof generateAnamnesisInviteSchema
+>;
+export type SubmitAnamnesisInviteInput = z.infer<
+  typeof submitAnamnesisInviteSchema
+>;

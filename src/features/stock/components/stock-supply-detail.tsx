@@ -221,12 +221,11 @@ export function StockSupplyDetail({
                 )}
               >
                 <div className="flex flex-wrap items-center justify-between gap-3">
-                  <label className="flex items-center gap-3">
+                  <label className="flex min-h-11 items-center gap-2.5">
                     <input
                       type="checkbox"
                       checked={selectedIds.includes(pkg.id)}
                       onChange={() => togglePackage(pkg.id)}
-                      className="size-4"
                     />
                     <div>
                       <p className="font-medium">{pkg.qrCode}</p>

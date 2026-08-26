@@ -122,10 +122,10 @@ export function SlotResponseClient({ token, view }: SlotResponseClientProps) {
         </p>
       ) : null}
 
-      <label className="flex items-start gap-3 text-sm text-neo-cream-100/90">
+      <label className="flex min-h-11 items-start gap-2.5 text-sm text-neo-cream-100/90">
         <input
           type="checkbox"
-          className="mt-1 size-5 accent-neo-gold-500"
+          className="mt-1"
           checked={lgpdConsent}
           disabled={view.state !== "valid"}
           onChange={(event) => setLgpdConsent(event.target.checked)}

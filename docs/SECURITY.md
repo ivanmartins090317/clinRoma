@@ -13,13 +13,14 @@
 
 ## Superfícies
 
-| Superfície               | Auth                | Regra                                              |
-| ------------------------ | ------------------- | -------------------------------------------------- |
-| `/`, marketing           | Público             | Sem PHI                                            |
-| `/login`                 | Auth Supabase       | Rate limit login                                   |
-| `/(app)/*`               | Sessão + role       | RLS por `clinic_id`                                |
-| `/fila/resposta/[token]` | Token opaco         | Expira 40 min; mínimo de dados; consentimento LGPD |
-| `/api/*`                 | Server-only secrets | Validar sessão ou assinatura webhook               |
+| Superfície               | Auth                | Regra                                                                 |
+| ------------------------ | ------------------- | --------------------------------------------------------------------- |
+| `/`, marketing           | Público             | Sem PHI                                                               |
+| `/login`                 | Auth Supabase       | Rate limit login                                                      |
+| `/(app)/*`               | Sessão + role       | RLS por sessão e papel                                                |
+| `/fila/resposta/[token]` | Token opaco         | Expira 40 min; mínimo de dados; consentimento LGPD                    |
+| `/anamnese/[token]`      | Token opaco         | Pré-consulta 7 dias ou fim do dia (SP); nome + questionário em branco |
+| `/api/*`                 | Server-only secrets | Validar sessão ou assinatura webhook                                  |
 
 ## LGPD / link ao paciente (fila)
 
@@ -28,6 +29,17 @@
 - Checkbox de consentimento antes de aceitar/recusar.
 - Registrar `patient_slot_responses` com timestamp; sem logar IP completo em texto claro (hash se necessário).
 - Link enviado por canal acordado com a clínica (SMS/WhatsApp manual da recepção na v1).
+
+## LGPD / convite de anamnese
+
+- Segredo só no link; o banco guarda a impressão digital (SHA-256), nunca o valor em claro.
+- Link opaco: não sequencial e sem nome, documento ou id previsível do paciente.
+- Página pública: nome completo + questionário em branco; sem menu da clínica, CPF, prontuário, respostas anteriores.
+- Inválido, expirado ou já usado: a mesma mensagem genérica (`Link inválido ou expirado.`).
+- Consentimento visível antes do envio. Sem a marca, o envio não conclui.
+- Limite de tentativas por impressão digital de origem; IP nunca em claro nos logs.
+- Quem tem o link válido envia; quem não tem o segredo não lê o paciente.
+- Auditoria de geração e envio: finalidade e paciente; sem corpo do questionário e sem segredo.
 
 ## PHI / prontuário
 
@@ -42,7 +54,7 @@
 - [ ] Zod na borda
 - [ ] Sem `service_role` no client
 - [ ] Upload: MIME/tamanho; path UUID
-- [ ] Rotas públicas (token fila) sem enumeração de IDs
+- [ ] Rotas públicas (token fila / convite de anamnese) sem enumeração de IDs
 
 ## Fora do escopo v0.1
 

@@ -3,11 +3,18 @@
 import { useMemo, useRef, useState, useTransition } from "react";
 
 import { upsertToothFindingAction } from "@/features/records/actions";
+import { OdontogramCross } from "@/features/records/components/odontogram-cross";
 import {
-  FDI_TOOTH_NUMBERS,
+  getBitingSurface,
+  toothFindingKey,
+  TOOTH_SURFACE_LABELS,
+} from "@/features/records/domain/odontogram-cross";
+import {
+  isValidToothCondition,
   TOOTH_CONDITIONS,
   TOOTH_SURFACES,
   type ToothConditionCode,
+  type ToothSurface,
 } from "@/features/records/domain/tooth-fdi";
 import type { ToothFindingRecord } from "@/features/records/queries";
 import { Button } from "@/components/ui/button";
@@ -20,16 +27,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "@/components/ui/sonner";
-import { cn } from "@/lib/utils";
 
 interface OdontogramMobileProps {
   patientId: string;
   findings: ToothFindingRecord[];
   canWrite: boolean;
-}
-
-function findingKey(toothNumber: number, surface: string): string {
-  return `${toothNumber}:${surface}`;
 }
 
 export function OdontogramMobile({
@@ -42,7 +44,10 @@ export function OdontogramMobile({
     const map = new Map<string, ToothFindingRecord>();
 
     for (const finding of findings) {
-      map.set(findingKey(finding.toothNumber, finding.toothSurface), finding);
+      map.set(
+        toothFindingKey(finding.toothNumber, finding.toothSurface),
+        finding,
+      );
     }
 
     return map;
@@ -58,23 +63,32 @@ export function OdontogramMobile({
   const [isPending, startTransition] = useTransition();
   const dragRef = useRef<{ x: number; y: number } | null>(null);
 
-  function getToothColor(toothNumber: number): string {
-    const match = TOOTH_SURFACES.map((surface) =>
-      findingMap.get(findingKey(toothNumber, surface)),
-    ).find(Boolean);
+  function syncConditionFromFinding(toothNumber: number, surface: string) {
+    const existing = findingMap.get(toothFindingKey(toothNumber, surface));
 
-    if (!match) {
-      return "#e5e7eb";
+    if (existing && isValidToothCondition(existing.conditionCode)) {
+      setSelectedCondition(existing.conditionCode);
     }
+  }
 
-    return (
-      TOOTH_CONDITIONS[match.conditionCode as ToothConditionCode]?.color ??
-      "#e5e7eb"
-    );
+  function handleSelectTooth(toothNumber: number) {
+    setSelectedTooth(toothNumber);
+    const nextSurface =
+      selectedTooth === toothNumber
+        ? selectedSurface
+        : getBitingSurface(toothNumber);
+    setSelectedSurface(nextSurface);
+    syncConditionFromFinding(toothNumber, nextSurface);
+  }
+
+  function handleSelectSurface(toothNumber: number, surface: ToothSurface) {
+    setSelectedTooth(toothNumber);
+    setSelectedSurface(surface);
+    syncConditionFromFinding(toothNumber, surface);
   }
 
   function handleConfirm() {
-    if (!selectedTooth || !canWrite) {
+    if (!selectedTooth || !selectedSurface || !canWrite) {
       return;
     }
 
@@ -97,6 +111,13 @@ export function OdontogramMobile({
     });
   }
 
+  function isInteractiveTarget(target: EventTarget | null): boolean {
+    return (
+      target instanceof Element &&
+      Boolean(target.closest("button, [role='button']"))
+    );
+  }
+
   return (
     <div className="space-y-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
       <div className="flex items-center justify-between gap-2">
@@ -106,7 +127,7 @@ export function OdontogramMobile({
             type="button"
             variant="outline"
             className="min-h-11 min-w-11"
-            onClick={() => setScale((value) => Math.max(0.8, value - 0.1))}
+            onClick={() => setScale((value) => Math.max(0.25, value - 0.1))}
           >
             -
           </Button>
@@ -125,6 +146,10 @@ export function OdontogramMobile({
         ref={containerRef}
         className="overflow-hidden rounded-xl border border-border bg-card"
         onPointerDown={(event) => {
+          if (isInteractiveTarget(event.target)) {
+            return;
+          }
+
           dragRef.current = {
             x: event.clientX - offset.x,
             y: event.clientY - offset.y,
@@ -148,34 +173,33 @@ export function OdontogramMobile({
         }}
       >
         <div
-          className="grid grid-cols-8 gap-2 p-4 touch-pan-y"
+          className="flex min-h-64 justify-center p-4"
           style={{
             transform: `translate(${offset.x}px, ${offset.y}px) scale(${scale})`,
             transformOrigin: "center center",
           }}
         >
-          {FDI_TOOTH_NUMBERS.map((toothNumber) => (
-            <button
-              key={toothNumber}
-              type="button"
-              disabled={!canWrite}
-              onClick={() => setSelectedTooth(toothNumber)}
-              className={cn(
-                "flex min-h-11 min-w-11 items-center justify-center rounded-md border text-xs font-medium",
-                selectedTooth === toothNumber && "ring-2 ring-primary",
-              )}
-              style={{ backgroundColor: getToothColor(toothNumber) }}
-            >
-              {toothNumber}
-            </button>
-          ))}
+          <OdontogramCross
+            findings={findings}
+            selectedTooth={selectedTooth}
+            selectedSurface={selectedSurface}
+            size="touch"
+            onSelectTooth={handleSelectTooth}
+            onSelectSurface={handleSelectSurface}
+          />
         </div>
       </div>
 
       <div className="sticky bottom-0 space-y-3 rounded-xl border border-border bg-background p-4 shadow-lg">
-        <p className="text-sm font-medium">
-          {selectedTooth ? `Dente ${selectedTooth}` : "Toque em um dente"}
-        </p>
+        {selectedTooth ? (
+          <p className="text-sm font-medium">
+            Dente selecionado {selectedTooth}
+          </p>
+        ) : (
+          <p className="text-sm text-muted-foreground">
+            Toque um dente ou uma face para registrar o achado.
+          </p>
+        )}
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="space-y-2">
             <Label>Face</Label>
@@ -186,7 +210,7 @@ export function OdontogramMobile({
               <SelectContent>
                 {TOOTH_SURFACES.map((surface) => (
                   <SelectItem key={surface} value={surface}>
-                    {surface}
+                    {TOOTH_SURFACE_LABELS[surface]}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -217,9 +241,9 @@ export function OdontogramMobile({
         {canWrite ? (
           <Button
             type="button"
-            disabled={!selectedTooth || isPending}
+            disabled={!selectedTooth || !selectedSurface || isPending}
             onClick={handleConfirm}
-            className="min-h-11 w-full"
+            className="min-h-11 min-w-11 w-full"
           >
             {isPending ? "Salvando..." : "Confirmar achado"}
           </Button>

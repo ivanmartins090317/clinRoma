@@ -537,6 +537,45 @@ export type Database = {
         };
         Relationships: [];
       };
+      anamnesis_invites: {
+        Row: {
+          id: string;
+          patient_id: string;
+          purpose: Database["public"]["Enums"]["anamnesis_invite_purpose"];
+          token_hash: string;
+          status: Database["public"]["Enums"]["anamnesis_invite_status"];
+          expires_at: string;
+          used_at: string | null;
+          created_by: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          patient_id: string;
+          purpose: Database["public"]["Enums"]["anamnesis_invite_purpose"];
+          token_hash: string;
+          status?: Database["public"]["Enums"]["anamnesis_invite_status"];
+          expires_at: string;
+          used_at?: string | null;
+          created_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          patient_id?: string;
+          purpose?: Database["public"]["Enums"]["anamnesis_invite_purpose"];
+          token_hash?: string;
+          status?: Database["public"]["Enums"]["anamnesis_invite_status"];
+          expires_at?: string;
+          used_at?: string | null;
+          created_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       audit_log: {
         Row: {
           id: string;
@@ -588,25 +627,19 @@ export type Database = {
         | "rescheduled";
       waitlist_priority: "red" | "yellow" | "green";
       waitlist_entry_status:
-        | "waiting"
-        | "offered"
-        | "scheduled"
-        | "cancelled"
-        | "expired";
+        "waiting" | "offered" | "scheduled" | "cancelled" | "expired";
       slot_offer_status: "pending" | "accepted" | "declined" | "expired";
       slot_response: "accept" | "decline";
       medical_record_type: "anamnesis" | "evolution";
       record_attachment_type: "photo" | "audio";
-      transcription_status:
-        | "pending"
-        | "processing"
-        | "completed"
-        | "failed";
+      transcription_status: "pending" | "processing" | "completed" | "failed";
       supply_movement_type: "in" | "out" | "adjustment";
       supply_package_status: "active" | "depleted" | "expired";
       supply_unit: "unit" | "box" | "roll" | "bottle";
       reminder_channel: "email" | "whatsapp";
       reminder_status: "pending" | "sent" | "failed";
+      anamnesis_invite_purpose: "pre_consult" | "office";
+      anamnesis_invite_status: "open" | "used" | "revoked";
     };
     CompositeTypes: Record<string, never>;
   };

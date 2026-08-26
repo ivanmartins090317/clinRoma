@@ -1,112 +1,197 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useMemo, useState, useTransition } from "react";
 
-import { saveAnamnesisAction } from "@/features/records/actions";
-import { ANAMNESIS_FORM_SECTIONS } from "@/features/records/domain/anamnesis-form-v1";
+import {
+  saveAnamnesisAction,
+  submitAnamnesisInviteAction,
+} from "@/features/records/actions";
+import { AnamnesisDiseaseList } from "@/features/records/components/anamnesis-disease-list";
+import { AnamnesisYesNoField } from "@/features/records/components/anamnesis-yes-no-field";
+import {
+  ANAMNESIS_COPY,
+  ANAMNESIS_DECLARATION_TEXT,
+  PAPER_BLOCKS,
+  listYesNoQuestions,
+  type PaperAnswerDraft,
+} from "@/features/records/domain/anamnesis-form-v2";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/sonner";
 
 interface AnamnesisFormProps {
-  patientId: string;
+  surface: "chart" | "invite";
+  patientId?: string;
+  token?: string;
+  vigenteDateLabel?: string | null;
 }
 
-export function AnamnesisForm({ patientId }: AnamnesisFormProps) {
+function emptyAnswers(): Record<string, PaperAnswerDraft> {
+  const answers: Record<string, PaperAnswerDraft> = {};
+
+  for (const question of listYesNoQuestions()) {
+    answers[question.id] = { answer: null, complement: "" };
+  }
+
+  return answers;
+}
+
+export function AnamnesisForm({
+  surface,
+  patientId,
+  token,
+  vigenteDateLabel,
+}: AnamnesisFormProps) {
+  const [answers, setAnswers] = useState(emptyAnswers);
+  const [diseases, setDiseases] = useState<string[]>([]);
+  const [otherDisease, setOtherDisease] = useState("");
+  const [signatureConfirmed, setSignatureConfirmed] = useState(false);
+  const [signatureName, setSignatureName] = useState("");
+  const [consentConfirmed, setConsentConfirmed] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [submitted, setSubmitted] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const isInvite = surface === "invite";
+
+  const payload = useMemo(
+    () => ({
+      answers,
+      diseases,
+      otherDisease,
+      signatureConfirmed,
+      signatureName,
+    }),
+    [answers, diseases, otherDisease, signatureConfirmed, signatureName],
+  );
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError(null);
 
-    const formData = new FormData(event.currentTarget);
-
     startTransition(async () => {
-      const payload = {
-        patientId,
-        signatureConfirmed: formData.get("signatureConfirmed") === "on",
-        signatureName: String(formData.get("signatureName") ?? ""),
-        generalHealth: String(formData.get("generalHealth") ?? ""),
-        lastDentalVisit: String(formData.get("lastDentalVisit") ?? ""),
-        allergies: String(formData.get("allergies") ?? ""),
-        medications: String(formData.get("medications") ?? ""),
-        systemicConditions: String(formData.get("systemicConditions") ?? ""),
-        pregnancy: String(formData.get("pregnancy") ?? ""),
-        habits: String(formData.get("habits") ?? ""),
-        chiefComplaint: String(formData.get("chiefComplaint") ?? ""),
-      };
-
-      const result = await saveAnamnesisAction(payload);
+      const result = isInvite
+        ? await submitAnamnesisInviteAction({
+            ...payload,
+            token,
+            consentConfirmed,
+          })
+        : await saveAnamnesisAction({
+            ...payload,
+            patientId,
+          });
 
       if (result.error) {
         setError(result.error);
         return;
       }
 
-      toast("Nova versão de anamnese salva");
-      event.currentTarget.reset();
+      if (isInvite) {
+        setSubmitted(true);
+        return;
+      }
+
+      toast(ANAMNESIS_COPY.successChart);
+      setAnswers(emptyAnswers());
+      setDiseases([]);
+      setOtherDisease("");
+      setSignatureConfirmed(false);
+      setSignatureName("");
     });
+  }
+
+  if (isInvite && submitted) {
+    return (
+      <p className="text-center text-base font-medium">
+        {ANAMNESIS_COPY.successInvite}
+      </p>
+    );
   }
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-6 rounded-xl border border-border bg-card p-5"
+      className="mx-auto w-full max-w-2xl space-y-6 rounded-xl border border-border bg-card p-5"
     >
-      <div>
-        <h3 className="font-semibold">Nova anamnese</h3>
-        <p className="text-sm text-muted-foreground">
-          Formulário Dr. Fellipe S. Roma · versão 1
-        </p>
-      </div>
+      {isInvite ? null : (
+        <div>
+          <h3 className="font-semibold">Nova anamnese</h3>
+          <p className="text-sm text-muted-foreground">
+            {ANAMNESIS_COPY.publicTitle}
+          </p>
+        </div>
+      )}
 
-      {ANAMNESIS_FORM_SECTIONS.map((section) => (
-        <section key={section.id} className="space-y-3">
-          <h4 className="font-medium">{section.title}</h4>
-          {section.fields.map((field) => (
-            <div key={field.id} className="space-y-2">
-              <Label htmlFor={field.id}>{field.label}</Label>
-              {field.multiline ? (
-                <Textarea
-                  id={field.id}
-                  name={field.id}
-                  placeholder={field.placeholder}
-                  className="text-base"
-                />
-              ) : (
-                <Input
-                  id={field.id}
-                  name={field.id}
-                  placeholder={field.placeholder}
-                  className="text-base"
-                />
-              )}
-            </div>
+      {isInvite && vigenteDateLabel ? (
+        <p className="text-base">
+          Você já preencheu em {vigenteDateLabel}. Pode enviar uma nova versão.
+        </p>
+      ) : null}
+
+      {PAPER_BLOCKS.map((block) => (
+        <section key={block.id} className="space-y-4">
+          <h4 className="font-medium">{block.title}</h4>
+          {block.questions.map((question) => (
+            <AnamnesisYesNoField
+              key={question.id}
+              question={question}
+              value={answers[question.id] ?? { answer: null, complement: "" }}
+              onChange={(value) =>
+                setAnswers((current) => ({ ...current, [question.id]: value }))
+              }
+              disabled={isPending}
+            />
           ))}
+          {block.includeDiseases ? (
+            <AnamnesisDiseaseList
+              selectedIds={diseases}
+              otherDisease={otherDisease}
+              onToggle={(id) =>
+                setDiseases((current) =>
+                  current.includes(id)
+                    ? current.filter((item) => item !== id)
+                    : [...current, id],
+                )
+              }
+              onOtherDiseaseChange={setOtherDisease}
+              disabled={isPending}
+            />
+          ) : null}
         </section>
       ))}
 
       <section className="space-y-3 rounded-lg border border-border p-4">
-        <label className="flex min-h-11 items-start gap-3 text-sm">
+        {isInvite ? (
+          <label className="flex min-h-11 items-start gap-2.5 text-base">
+            <input
+              type="checkbox"
+              checked={consentConfirmed}
+              disabled={isPending}
+              onChange={(event) => setConsentConfirmed(event.target.checked)}
+              className="mt-1"
+            />
+            <span>{ANAMNESIS_COPY.publicConsent}</span>
+          </label>
+        ) : null}
+        <label className="flex min-h-11 items-start gap-2.5 text-base">
           <input
             type="checkbox"
-            name="signatureConfirmed"
-            required
-            className="mt-1 size-4"
+            checked={signatureConfirmed}
+            disabled={isPending}
+            onChange={(event) => setSignatureConfirmed(event.target.checked)}
+            className="mt-1"
           />
-          <span>
-            Confirmo que as informações foram revisadas com o paciente.
-          </span>
+          <span>{ANAMNESIS_DECLARATION_TEXT}</span>
         </label>
         <div className="space-y-2">
-          <Label htmlFor="signatureName">Assinatura (nome digitado)</Label>
+          <Label htmlFor="signatureName" className="text-base">
+            Nome
+          </Label>
           <Input
             id="signatureName"
-            name="signatureName"
-            required
+            value={signatureName}
+            disabled={isPending}
+            onChange={(event) => setSignatureName(event.target.value)}
             className="text-base"
           />
         </div>
@@ -119,7 +204,11 @@ export function AnamnesisForm({ patientId }: AnamnesisFormProps) {
         disabled={isPending}
         className="min-h-11 w-full sm:w-auto"
       >
-        {isPending ? "Salvando..." : "Salvar nova versão"}
+        {isPending
+          ? "Enviando..."
+          : isInvite
+            ? ANAMNESIS_COPY.submit
+            : "Salvar nova versão"}
       </Button>
     </form>
   );

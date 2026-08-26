@@ -3,11 +3,18 @@
 import { useMemo, useState, useTransition } from "react";
 
 import { upsertToothFindingAction } from "@/features/records/actions";
+import { OdontogramCross } from "@/features/records/components/odontogram-cross";
 import {
-  FDI_TOOTH_NUMBERS,
+  getBitingSurface,
+  toothFindingKey,
+  TOOTH_SURFACE_LABELS,
+} from "@/features/records/domain/odontogram-cross";
+import {
+  isValidToothCondition,
   TOOTH_CONDITIONS,
   TOOTH_SURFACES,
   type ToothConditionCode,
+  type ToothSurface,
 } from "@/features/records/domain/tooth-fdi";
 import type { ToothFindingRecord } from "@/features/records/queries";
 import { Button } from "@/components/ui/button";
@@ -20,7 +27,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "@/components/ui/sonner";
-import { cn } from "@/lib/utils";
 
 interface OdontogramProps {
   patientId: string;
@@ -28,16 +34,15 @@ interface OdontogramProps {
   canWrite: boolean;
 }
 
-function findingKey(toothNumber: number, surface: string): string {
-  return `${toothNumber}:${surface}`;
-}
-
 export function Odontogram({ patientId, findings, canWrite }: OdontogramProps) {
   const findingMap = useMemo(() => {
     const map = new Map<string, ToothFindingRecord>();
 
     for (const finding of findings) {
-      map.set(findingKey(finding.toothNumber, finding.toothSurface), finding);
+      map.set(
+        toothFindingKey(finding.toothNumber, finding.toothSurface),
+        finding,
+      );
     }
 
     return map;
@@ -50,21 +55,32 @@ export function Odontogram({ patientId, findings, canWrite }: OdontogramProps) {
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
-  function getToothColor(toothNumber: number): string {
-    const surfaces = TOOTH_SURFACES.map((surface) =>
-      findingMap.get(findingKey(toothNumber, surface)),
-    ).filter(Boolean);
+  function syncConditionFromFinding(toothNumber: number, surface: string) {
+    const existing = findingMap.get(toothFindingKey(toothNumber, surface));
 
-    if (surfaces.length === 0) {
-      return "#e5e7eb";
+    if (existing && isValidToothCondition(existing.conditionCode)) {
+      setSelectedCondition(existing.conditionCode);
     }
+  }
 
-    const code = surfaces[0]!.conditionCode as ToothConditionCode;
-    return TOOTH_CONDITIONS[code]?.color ?? "#e5e7eb";
+  function handleSelectTooth(toothNumber: number) {
+    setSelectedTooth(toothNumber);
+    const nextSurface =
+      selectedTooth === toothNumber
+        ? selectedSurface
+        : getBitingSurface(toothNumber);
+    setSelectedSurface(nextSurface);
+    syncConditionFromFinding(toothNumber, nextSurface);
+  }
+
+  function handleSelectSurface(toothNumber: number, surface: ToothSurface) {
+    setSelectedTooth(toothNumber);
+    setSelectedSurface(surface);
+    syncConditionFromFinding(toothNumber, surface);
   }
 
   function handleConfirm() {
-    if (!selectedTooth || !canWrite) {
+    if (!selectedTooth || !selectedSurface || !canWrite) {
       return;
     }
 
@@ -87,37 +103,19 @@ export function Odontogram({ patientId, findings, canWrite }: OdontogramProps) {
     });
   }
 
-  const quadrants = [
-    FDI_TOOTH_NUMBERS.slice(0, 8),
-    FDI_TOOTH_NUMBERS.slice(8, 16),
-    FDI_TOOTH_NUMBERS.slice(16, 24),
-    FDI_TOOTH_NUMBERS.slice(24, 32),
-  ];
-
   return (
     <div className="space-y-4 rounded-xl border border-border bg-card p-5">
-      <h3 className="font-semibold">Odontograma FDI</h3>
+      <h3 className="font-semibold">Odontograma</h3>
 
-      <div className="space-y-3">
-        {quadrants.map((row, rowIndex) => (
-          <div key={rowIndex} className="flex flex-wrap justify-center gap-2">
-            {row.map((toothNumber) => (
-              <button
-                key={toothNumber}
-                type="button"
-                disabled={!canWrite}
-                onClick={() => setSelectedTooth(toothNumber)}
-                className={cn(
-                  "flex size-11 items-center justify-center rounded-md border text-xs font-medium",
-                  selectedTooth === toothNumber && "ring-2 ring-primary",
-                )}
-                style={{ backgroundColor: getToothColor(toothNumber) }}
-              >
-                {toothNumber}
-              </button>
-            ))}
-          </div>
-        ))}
+      <div className="overflow-x-auto">
+        <OdontogramCross
+          findings={findings}
+          selectedTooth={selectedTooth}
+          selectedSurface={selectedSurface}
+          size="compact"
+          onSelectTooth={handleSelectTooth}
+          onSelectSurface={handleSelectSurface}
+        />
       </div>
 
       {selectedTooth ? (
@@ -135,7 +133,7 @@ export function Odontogram({ patientId, findings, canWrite }: OdontogramProps) {
               <SelectContent>
                 {TOOTH_SURFACES.map((surface) => (
                   <SelectItem key={surface} value={surface}>
-                    {surface}
+                    {TOOTH_SURFACE_LABELS[surface]}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -164,7 +162,7 @@ export function Odontogram({ patientId, findings, canWrite }: OdontogramProps) {
         </div>
       ) : (
         <p className="text-sm text-muted-foreground">
-          Selecione um dente para registrar achado.
+          Toque um dente ou uma face para registrar o achado.
         </p>
       )}
 
@@ -173,9 +171,9 @@ export function Odontogram({ patientId, findings, canWrite }: OdontogramProps) {
       {canWrite ? (
         <Button
           type="button"
-          disabled={!selectedTooth || isPending}
+          disabled={!selectedTooth || !selectedSurface || isPending}
           onClick={handleConfirm}
-          className="min-h-11"
+          className="min-h-11 min-w-11"
         >
           {isPending ? "Salvando..." : "Confirmar achado"}
         </Button>

@@ -2,7 +2,7 @@
 
 Fonte viva do que **ainda falta implementar ou validar**. Atualizar ao concluir cada fase.
 
-Última revisão: **2026-08-25** (Fase 7 aberta após demo Felipe).
+Última revisão: **2026-08-26** (F7-03 anamnese isolada em código).
 
 ---
 
@@ -188,13 +188,13 @@ Felipe gostou da demo (melhor do que esperava). Código da Fase 7 entra por fati
 
 - [x] **F7-01** Evolução: transcrição Whisper **editável** (ver `docs/implementation/F7-01-transcricao-editavel.md`)
 - [x] **F7-02** Barra de busca no histórico do prontuário (ex.: `dente 24`) (ver `docs/implementation/F7-02-busca-historico.md`)
-- [ ] **F7-03** Anamnese isolada (link + tablet) com **questionário papel** Sim/Não (`docs/plans/plano-F7.md` apêndice)
+- [x] **F7-03** Anamnese isolada (link + tablet) com **questionário papel** Sim/Não (ver `docs/implementation/F7-03-anamnese-isolada.md`)
 - [x] **F7-09** Card do paciente: resumo da anamnese + último procedimento (ver `docs/implementation/F7-09-card-paciente.md`)
 - [ ] **F7-04** Automações ao paciente pelo **WhatsApp** (sem inbox neste repo)
 - [ ] **F7-05** Aba pós-cirurgia: mensagem personalizada → WhatsApp
 - [ ] **F7-06** Estoque baixo → e-mail do financeiro (job + config; endereço pendente)
 - [x] **F7-07** Cadastro: segundo telefone + observação (parente / sem WhatsApp) (ver `docs/implementation/F7-07-segundo-telefone.md`)
-- [ ] **F7-08** Odontograma em **formato de cruz** (FDI, três vistas). Ref: `docs/assets/odontograma-formato-cruz.png`
+- [x] **F7-08** Odontograma em **formato de cruz** (FDI, três vistas). Ref: `docs/assets/odontograma-formato-cruz.png` (ver `docs/implementation/F7-08-odontograma-cruz.md`)
 
 **Ordem sugerida:** F7-07 → F7-09 → F7-02 → F7-08 → F7-03 → F7-05/F7-04 → F7-06.
 
@@ -211,8 +211,17 @@ Itens de código prontos, ainda sem validação em dispositivo real (fica no fec
 - [ ] **F7-02 desktop/viewport:** Maria → Evoluções; `dente 24` mostra só a extração; limpar restaura as duas
 - [ ] **F7-02 recepção:** filtra o histórico e **não** vê o formulário de nova evolução
 - [ ] **F7-02 visualizador:** não vê aba Evoluções nem o campo de busca
+- [ ] **F7-08 desktop:** cruz reconhecível vs PNG; marcar face oclusal do 24; recarregar e o achado permanece
+- [ ] **F7-08 viewport estreito:** zoom/rolagem; face tocável no zoom de trabalho (≥ 44 px); painel inferior alcançável
+- [ ] **F7-08 achado antigo:** Maria, dente 36 oclusal na cor de restauração, sem migration
+- [ ] **F7-08 visualizador:** não vê a aba Odontograma
+- [ ] **F7-03 desktop/viewport:** preencher questionário papel na ficha da Maria; recarregar; v1 do seed continua no histórico
+- [ ] **F7-03 pré-consulta:** gerar link, abrir sem login, enviar, recarregar o mesmo link (mensagem genérica)
+- [ ] **F7-03 tablet:** convite de consultório; página sem menu; validade só no dia
+- [ ] **F7-03 visualizador:** não vê aba Anamnese nem botões de convite
+- [ ] **F7-03 db:push:** aplicar `022_anamnesis_convites_f7.sql` no remoto (timeout de conexão na entrega)
 
-### Pendente com o Felipe (não bloqueia F7-01, F7-02, F7-07 nem F7-09)
+### Pendente com o Felipe (não bloqueia F7-01, F7-02, F7-03, F7-07, F7-08 nem F7-09)
 
 - [ ] E-mail do financeiro (F7-06)
 - [ ] 2º telefone obrigatório vs opcional

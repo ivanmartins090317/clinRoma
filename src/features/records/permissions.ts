@@ -12,6 +12,10 @@ export function canWriteClinicalChart(role: UserRole): boolean {
   return role === "admin" || role === "dentist" || role === "reception";
 }
 
+export function canGenerateAnamnesisInvite(role: UserRole): boolean {
+  return canWriteClinicalChart(role);
+}
+
 export function canRetryTranscription(role: UserRole): boolean {
   return role === "admin" || role === "dentist";
 }

@@ -101,6 +101,7 @@ Papéis: `admin`, `dentist`, `reception`, `room_assistant`, `viewer`.
 | -------------------------------- | ---------------------------------------------------------------------------------- |
 | `password authentication failed` | Senha errada em `SUPABASE_DB_PASSWORD` — resetar no dashboard Supabase             |
 | `SUPABASE_DB_PASSWORD` ausente   | Usuário deve adicionar ao `.env.local`                                             |
+| `Connection timed out` em `db.<ref>.supabase.co` | IPv6 bloqueado. O script tenta o pooler `aws-0-us-west-2` (ClinRoma). Override: `SUPABASE_POOLER_HOST` |
 | Policy já existe                 | Tornar migration idempotente: `drop policy if exists ...` antes de `create policy` |
 | `link` / privileges              | **Não** usar `supabase link`; usar `npm run db:push` (conexão direta Postgres)     |
 

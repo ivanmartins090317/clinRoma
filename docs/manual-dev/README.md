@@ -20,6 +20,8 @@ Guia de arquitetura, fases implementadas e operação do ambiente de desenvolvim
 | [10-fase-7-07-segundo-telefone.md](./10-fase-7-07-segundo-telefone.md)         | Fase 7 fatia F7-07: segundo telefone no cadastro   |
 | [11-fase-7-09-card-paciente.md](./11-fase-7-09-card-paciente.md)               | Fase 7 fatia F7-09: card do paciente               |
 | [12-fase-7-02-busca-historico.md](./12-fase-7-02-busca-historico.md)           | Fase 7 fatia F7-02: busca no histórico             |
+| [13-fase-7-08-odontograma-cruz.md](./13-fase-7-08-odontograma-cruz.md)         | Fase 7 fatia F7-08: odontograma em cruz            |
+| [14-fase-7-03-anamnese-isolada.md](./14-fase-7-03-anamnese-isolada.md)         | Fase 7 fatia F7-03: anamnese papel e convite       |
 
 ## Documentos relacionados
 
@@ -43,7 +45,7 @@ Guia de arquitetura, fases implementadas e operação do ambiente de desenvolvim
 | 4 · Fila Kanban            | concluída (código)      | [06-fase-4-fila-kanban.md](./06-fase-4-fila-kanban.md)                                                                                                  |
 | 5 · Insumos e estoque      | concluída (código)      | [07-fase-5-insumos-estoque.md](./07-fase-5-insumos-estoque.md)                                                                                          |
 | 6 · Lembrete e piloto      | concluída (código)      | [08-fase-6-lembrete-piloto.md](./08-fase-6-lembrete-piloto.md)                                                                                          |
-| 7 · Ajustes demo Felipe    | F7-01, F7-02, F7-07 e F7-09 em código | [09-fase-7-01-transcricao-editavel.md](./09-fase-7-01-transcricao-editavel.md) · [10-fase-7-07-segundo-telefone.md](./10-fase-7-07-segundo-telefone.md) · [11-fase-7-09-card-paciente.md](./11-fase-7-09-card-paciente.md) · [12-fase-7-02-busca-historico.md](./12-fase-7-02-busca-historico.md) |
+| 7 · Ajustes demo Felipe    | F7-01, F7-02, F7-03, F7-07, F7-08 e F7-09 em código | [09-fase-7-01-transcricao-editavel.md](./09-fase-7-01-transcricao-editavel.md) · [10-fase-7-07-segundo-telefone.md](./10-fase-7-07-segundo-telefone.md) · [11-fase-7-09-card-paciente.md](./11-fase-7-09-card-paciente.md) · [12-fase-7-02-busca-historico.md](./12-fase-7-02-busca-historico.md) · [13-fase-7-08-odontograma-cruz.md](./13-fase-7-08-odontograma-cruz.md) · [14-fase-7-03-anamnese-isolada.md](./14-fase-7-03-anamnese-isolada.md) |
 
 ## Comandos do dia a dia
 
