@@ -28,19 +28,22 @@ npm install
 cp .env.example .env.local
 ```
 
-| Variável                        | Obrigatória    | Descrição                                                                    |
-| ------------------------------- | -------------- | ---------------------------------------------------------------------------- |
-| `NEXT_PUBLIC_SUPABASE_URL`      | Sim (F1+)      | URL do projeto Supabase                                                      |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Sim (F1+)      | Chave anônima do Supabase                                                    |
-| `NEXT_PUBLIC_APP_URL`           | Não            | Default: `https://localhost:3000`                                            |
-| `SUPABASE_DB_PASSWORD`          | Só db:push     | Senha Postgres (Settings → Database no dashboard)                            |
-| `SUPABASE_SERVICE_ROLE_KEY`     | Opcional       | Server-only: seed/jobs, merge de áudio. **Nunca** no client                  |
-| `OPENAI_API_KEY`                | Fase 3+        | Server-only: transcrição Whisper. Sem ela, áudio salva mas transcrição falha |
-| `CRON_SECRET`                   | Fase 4+        | Proteção do job de expiração da fila                                         |
-| `WAITLIST_IP_HASH_SECRET`       | Fase 4+        | Hash de IP na resposta pública da fila (server-only)                         |
-| `RESEND_API_KEY`                | Fase 6+        | Server-only: lembrete pós-consulta por e-mail                                |
-| `RESEND_FROM_EMAIL`             | Fase 6+        | Remetente verificado no Resend (ex.: ClinRoma &lt;lembretes@dominio&gt;)     |
-| `FINANCE_ALERT_EMAIL`           | Fase 7 (F7-06) | Destino do aviso de estoque baixo. Vazio = não dispara. Só no ambiente.      |
+| Variável                        | Obrigatória    | Descrição                                                                     |
+| ------------------------------- | -------------- | ----------------------------------------------------------------------------- |
+| `NEXT_PUBLIC_SUPABASE_URL`      | Sim (F1+)      | URL do projeto Supabase                                                       |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Sim (F1+)      | Chave anônima do Supabase                                                     |
+| `NEXT_PUBLIC_APP_URL`           | Não            | Default: `https://localhost:3000`                                             |
+| `SUPABASE_DB_PASSWORD`          | Só db:push     | Senha Postgres (Settings → Database no dashboard)                             |
+| `SUPABASE_SERVICE_ROLE_KEY`     | Opcional       | Server-only: seed/jobs, merge de áudio. **Nunca** no client                   |
+| `OPENAI_API_KEY`                | Fase 3+        | Server-only: transcrição Whisper. Sem ela, áudio salva mas transcrição falha  |
+| `CRON_SECRET`                   | Fase 4+        | Proteção do job de expiração da fila                                          |
+| `WAITLIST_IP_HASH_SECRET`       | Fase 4+        | Hash de IP na resposta pública da fila (server-only)                          |
+| `RESEND_API_KEY`                | Fase 6+        | Server-only: lembrete pós-consulta por e-mail                                 |
+| `RESEND_FROM_EMAIL`             | Fase 6+        | Remetente verificado no Resend (ex.: ClinRoma &lt;lembretes@dominio&gt;)      |
+| `FINANCE_ALERT_EMAIL`           | Fase 7 (F7-06) | Destino do aviso de estoque baixo. Vazio = não dispara. Só no ambiente.       |
+| `WHATSAPP_GATEWAY_URL`          | Fase 7 (F7-04) | Endereço do gateway WhatsApp da clínica. Vazio = não dispara. Só no servidor. |
+| `WHATSAPP_GATEWAY_KEY`          | Fase 7 (F7-04) | Chave do gateway. Sem prefixo público. Vazio = não dispara. Nunca no client.  |
+| `WHATSAPP_GATEWAY_SESSION`      | Fase 7 (F7-04) | Nome da sessão (ex.: `default`). Vazio = não dispara.                         |
 
 ### 3. Banco de dados (Fase 1)
 

@@ -618,6 +618,51 @@ export type Database = {
         };
         Relationships: [];
       };
+      patient_messages: {
+        Row: {
+          id: string;
+          patient_id: string;
+          appointment_id: string | null;
+          purpose: Database["public"]["Enums"]["patient_message_purpose"];
+          destination_digits: string;
+          contact_source: Database["public"]["Enums"]["patient_message_contact_source"];
+          body: string;
+          status: Database["public"]["Enums"]["patient_message_status"];
+          error_message: string | null;
+          created_by: string | null;
+          created_at: string;
+          sent_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          patient_id: string;
+          appointment_id?: string | null;
+          purpose: Database["public"]["Enums"]["patient_message_purpose"];
+          destination_digits: string;
+          contact_source: Database["public"]["Enums"]["patient_message_contact_source"];
+          body: string;
+          status?: Database["public"]["Enums"]["patient_message_status"];
+          error_message?: string | null;
+          created_by?: string | null;
+          created_at?: string;
+          sent_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          patient_id?: string;
+          appointment_id?: string | null;
+          purpose?: Database["public"]["Enums"]["patient_message_purpose"];
+          destination_digits?: string;
+          contact_source?: Database["public"]["Enums"]["patient_message_contact_source"];
+          body?: string;
+          status?: Database["public"]["Enums"]["patient_message_status"];
+          error_message?: string | null;
+          created_by?: string | null;
+          created_at?: string;
+          sent_at?: string | null;
+        };
+        Relationships: [];
+      };
       audit_log: {
         Row: {
           id: string;
@@ -683,6 +728,9 @@ export type Database = {
       stock_finance_alert_status: "pending" | "sent" | "failed" | "cancelled";
       anamnesis_invite_purpose: "pre_consult" | "office";
       anamnesis_invite_status: "open" | "used" | "revoked";
+      patient_message_purpose: "post_surgery" | "anamnesis_invite";
+      patient_message_contact_source: "patient_phone" | "secondary_phone";
+      patient_message_status: "pending" | "sent" | "failed";
     };
     CompositeTypes: Record<string, never>;
   };

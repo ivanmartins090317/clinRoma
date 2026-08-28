@@ -42,11 +42,11 @@ Next.js App Router · React 19 · TypeScript · Tailwind 4 · shadcn/ui · Supab
 - Prontuário (anamnese, odontograma, evolução + foto + áudio + Whisper)
 - Insumos: foto planilha + digitação manual (sem OCR) + QR por pacote + scan retirada
 - Fila Kanban (Vermelho/Amarelo/Verde), 40 min, link paciente LGPD
-- Lembrete pós-consulta por e-mail (Resend). WhatsApp fica para depois
+- Lembrete pós-consulta por e-mail (Resend). WhatsApp ao paciente: só disparo (inbox fora deste repo).
 
 ## Fora deste repo
 
-DeskcommCRM / WhatsApp paciente (Projeto 1).
+DeskcommCRM / inbox e bot de WhatsApp (Projeto 1). O ClinRoma dispara; não opera conversa.
 
 ## Decisões fechadas
 

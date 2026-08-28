@@ -52,7 +52,9 @@ export const ANAMNESIS_COPY = {
   publicTitle: "QUESTIONÁRIO PARA O PACIENTE",
   generatePreConsult: "Gerar link pré-consulta",
   openTablet: "Abrir no tablet",
-  helpPreConsult: "Copie este link e envie ao paciente. Vale por 7 dias.",
+  sendWhatsApp: "Enviar questionário por WhatsApp",
+  helpPreConsult:
+    "Envie pelo WhatsApp da clínica ou copie o link. Vale por 7 dias.",
   helpTablet:
     "Abra este link no tablet da clínica. Vale até o fim de hoje. Não entre com a conta da equipe nesse aparelho.",
   linkReplaced: "O link anterior desta finalidade não vale mais.",

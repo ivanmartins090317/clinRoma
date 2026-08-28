@@ -1,8 +1,8 @@
 # Fase 7 · Fatia F7-03 · Anamnese isolada
 
-| Status                  | Spec                                           |
-| ----------------------- | ---------------------------------------------- |
-| código entregue (F7-03) | `specs/2026-08-26-f7-03-anamnese-isolada.md`   |
+| Status                  | Spec                                         |
+| ----------------------- | -------------------------------------------- |
+| código entregue (F7-03) | `specs/2026-08-26-f7-03-anamnese-isolada.md` |
 
 A Fase 7 inteira **ainda está aberta**. Este capítulo cobre o questionário papel e os convites isolados (casa e tablet).
 
@@ -10,7 +10,7 @@ A Fase 7 inteira **ainda está aberta**. Este capítulo cobre o questionário pa
 
 - Formulário **novo** na aba Anamnese: questionário papel Sim/Não (versão 2), não o texto livre da v1
 - Histórico misto: v1 continua legível como texto; v2 mostra Sim/Não, doenças e declaração
-- **Gerar link pré-consulta**: convite de 7 dias, link copiável (sem WhatsApp nesta fatia)
+- **Gerar link pré-consulta**: convite de 7 dias, link copiável. O disparo do link por WhatsApp é F7-04/F7-05.
 - **Abrir no tablet**: convite até a meia-noite de São Paulo; a equipe não entra com a própria conta no aparelho
 - Página pública `/anamnese/[token]`: cabeçalho do Dr. Fellipe, nome do paciente, questionário, consentimento LGPD; **sem** menu da clínica
 - Seed de desenvolvimento: convite pré-consulta da Maria (ver abaixo)

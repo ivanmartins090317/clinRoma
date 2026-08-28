@@ -1,6 +1,10 @@
 import { z } from "zod";
 
 import { ANAMNESIS_COPY } from "@/features/records/domain/anamnesis-form-v2";
+import {
+  PATIENT_MESSAGE_BODY_MAX,
+  PATIENT_MESSAGE_COPY,
+} from "@/features/records/domain/patient-message";
 import { TRANSCRIPTION_TEXT_MAX_LENGTH } from "@/features/records/domain/transcription-edit";
 
 const paperAnswerSchema = z.object({
@@ -84,6 +88,21 @@ export const readChartAuditSchema = z.object({
   origin: z.enum(["agenda", "lista-pacientes"]).default("lista-pacientes"),
 });
 
+export const sendPostSurgeryWhatsAppSchema = z.object({
+  patientId: z.string().uuid(),
+  appointmentId: z.string().uuid().optional(),
+  body: z
+    .string()
+    .trim()
+    .min(1, PATIENT_MESSAGE_COPY.emptyBody)
+    .max(PATIENT_MESSAGE_BODY_MAX, PATIENT_MESSAGE_COPY.tooLong),
+});
+
+export const sendAnamnesisInviteWhatsAppSchema = z.object({
+  patientId: z.string().uuid(),
+  appointmentId: z.string().uuid().optional(),
+});
+
 export type SaveAnamnesisInput = z.infer<typeof saveAnamnesisSchema>;
 export type CreateEvolutionInput = z.infer<typeof createEvolutionSchema>;
 export type GenerateAnamnesisInviteInput = z.infer<
@@ -91,4 +110,10 @@ export type GenerateAnamnesisInviteInput = z.infer<
 >;
 export type SubmitAnamnesisInviteInput = z.infer<
   typeof submitAnamnesisInviteSchema
+>;
+export type SendPostSurgeryWhatsAppInput = z.infer<
+  typeof sendPostSurgeryWhatsAppSchema
+>;
+export type SendAnamnesisInviteWhatsAppInput = z.infer<
+  typeof sendAnamnesisInviteWhatsAppSchema
 >;

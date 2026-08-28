@@ -48,6 +48,14 @@
 - Rotina `/api/cron/process-stock-finance-alerts` protegida por `CRON_SECRET` (mesmo segredo das outras).
 - Falha do aviso não reverte movimentação de estoque. Sem `service_role` no client.
 
+## WhatsApp ao paciente (disparo)
+
+- Canal só no ambiente (`WHATSAPP_GATEWAY_URL`, `WHATSAPP_GATEWAY_KEY`, `WHATSAPP_GATEWAY_SESSION`). Qualquer um vazio: não dispara. Sem tela de configurações. Sem inbox.
+- A chave do gateway **nunca** vai ao navegador. O disparo corre no servidor.
+- Logs e auditoria: destino **mascarado**, sem corpo da mensagem, sem nome completo do paciente.
+- Quem envia = quem já escreve prontuário (admin, dentista, recepção). Visualizador e auxiliar: recusa na interface e no servidor (fail secure).
+- Destino: telefone do cadastro se aproveitável; senão o segundo telefone. Sem flag "tem WhatsApp".
+
 ## PHI / prontuário
 
 - Buckets Storage **privados** (fotos etiqueta, áudio, planilhas).

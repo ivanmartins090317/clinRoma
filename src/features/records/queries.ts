@@ -26,8 +26,19 @@ import {
   type PatientCardSummary,
 } from "@/features/records/domain/patient-card-summary";
 import { canViewClinicalContent } from "@/features/records/permissions";
+import {
+  PATIENT_MESSAGE_PURPOSE,
+  messageStatusLabel,
+  type PatientMessageStatus,
+} from "@/features/records/domain/patient-message";
+import {
+  formatWhatsAppDestinationNotice,
+  formatWhatsAppDigits,
+  resolveWhatsAppDestination,
+} from "@/features/records/domain/whatsapp-destination";
 import { createClient } from "@/lib/supabase/server";
 import type { Database } from "@/lib/supabase/database.types";
+import { isWhatsAppChannelConfigured } from "@/lib/whatsapp/send-whatsapp";
 import type { UserRole } from "@/types/clinroma";
 
 export type { PatientCardSummary };
@@ -84,11 +95,29 @@ export interface EvolutionRecord {
   attachments: RecordAttachmentView[];
 }
 
+export interface WhatsAppDestinationView {
+  notice: string;
+  hasDestination: boolean;
+}
+
+export interface PostSurgeryMessageView {
+  id: string;
+  createdAt: string;
+  authorName: string | null;
+  destinationLabel: string;
+  status: PatientMessageStatus;
+  statusLabel: string;
+  body: string;
+}
+
 export interface PatientChartData {
   anamnesisVersions: AnamnesisVersion[];
   anamnesisExpiry: ReturnType<typeof evaluateAnamnesisExpiry>;
   toothFindings: ToothFindingRecord[];
   evolutions: EvolutionRecord[];
+  whatsappChannelConfigured: boolean;
+  whatsappDestination: WhatsAppDestinationView;
+  postSurgeryMessages: PostSurgeryMessageView[];
 }
 
 function resolveAuthorName(): string | null {
@@ -111,16 +140,67 @@ async function signStorageUrl(
   return data.signedUrl;
 }
 
+function resolveWhatsAppChartFields(
+  patient: {
+    contact_phone: string | null;
+    secondary_phone: string | null;
+    secondary_phone_note: string | null;
+  } | null,
+): WhatsAppDestinationView {
+  const destination = patient
+    ? resolveWhatsAppDestination({
+        contactPhone: patient.contact_phone,
+        secondaryPhone: patient.secondary_phone,
+        secondaryPhoneNote: patient.secondary_phone_note,
+      })
+    : null;
+
+  if (!destination) {
+    return { hasDestination: false, notice: "" };
+  }
+
+  return {
+    hasDestination: true,
+    notice: formatWhatsAppDestinationNotice(destination),
+  };
+}
+
+function mapPostSurgeryMessages(
+  rows: Array<{
+    id: string;
+    created_at: string;
+    destination_digits: string;
+    status: PatientMessageStatus;
+    body: string;
+    profiles: { display_name: string } | { display_name: string }[] | null;
+  }>,
+): PostSurgeryMessageView[] {
+  return rows.map((row) => {
+    const author = Array.isArray(row.profiles) ? row.profiles[0] : row.profiles;
+
+    return {
+      id: row.id,
+      createdAt: row.created_at,
+      authorName: author?.display_name ?? null,
+      destinationLabel: formatWhatsAppDigits(row.destination_digits),
+      status: row.status,
+      statusLabel: messageStatusLabel(row.status),
+      body: row.body,
+    };
+  });
+}
+
 export async function getPatientChartData(
   patientId: string,
 ): Promise<PatientChartData | null> {
   const supabase = await createClient();
 
-  const [recordsResult, findingsResult] = await Promise.all([
-    supabase
-      .from("medical_records")
-      .select(
-        `
+  const [recordsResult, findingsResult, patientResult, messagesResult] =
+    await Promise.all([
+      supabase
+        .from("medical_records")
+        .select(
+          `
         id,
         record_type,
         content,
@@ -138,15 +218,28 @@ export async function getPatientChartData(
           created_at
         )
       `,
-      )
-      .eq("patient_id", patientId)
-      .order("created_at", { ascending: false }),
-    supabase
-      .from("tooth_findings")
-      .select("id, tooth_number, tooth_surface, condition_code, updated_at")
-      .eq("patient_id", patientId)
-      .order("tooth_number"),
-  ]);
+        )
+        .eq("patient_id", patientId)
+        .order("created_at", { ascending: false }),
+      supabase
+        .from("tooth_findings")
+        .select("id, tooth_number, tooth_surface, condition_code, updated_at")
+        .eq("patient_id", patientId)
+        .order("tooth_number"),
+      supabase
+        .from("patients")
+        .select("contact_phone, secondary_phone, secondary_phone_note")
+        .eq("id", patientId)
+        .maybeSingle(),
+      supabase
+        .from("patient_messages")
+        .select(
+          "id, created_at, destination_digits, status, body, profiles:created_by ( display_name )",
+        )
+        .eq("patient_id", patientId)
+        .eq("purpose", PATIENT_MESSAGE_PURPOSE.postSurgery)
+        .order("created_at", { ascending: false }),
+    ]);
 
   if (recordsResult.error || findingsResult.error) {
     return null;
@@ -235,6 +328,9 @@ export async function getPatientChartData(
       updatedAt: finding.updated_at,
     })),
     evolutions,
+    whatsappChannelConfigured: isWhatsAppChannelConfigured(),
+    whatsappDestination: resolveWhatsAppChartFields(patientResult.data),
+    postSurgeryMessages: mapPostSurgeryMessages(messagesResult.data ?? []),
   };
 }
 
