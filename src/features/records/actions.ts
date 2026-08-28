@@ -30,10 +30,7 @@ import {
   canCorrectTranscription,
   canGenerateAnamnesisInvite,
 } from "@/features/records/permissions";
-import {
-  sendAnamnesisInviteWhatsApp,
-  sendPostSurgeryWhatsApp,
-} from "@/features/records/lib/send-patient-whatsapp";
+import { sendAnamnesisInviteWhatsApp } from "@/features/records/lib/send-patient-whatsapp";
 import {
   createEvolutionSchema,
   finalizeAudioSchema,
@@ -42,7 +39,6 @@ import {
   retryTranscriptionSchema,
   saveAnamnesisSchema,
   sendAnamnesisInviteWhatsAppSchema,
-  sendPostSurgeryWhatsAppSchema,
   submitAnamnesisInviteSchema,
   updateTranscriptionSchema,
   uploadPhotoSchema,
@@ -848,36 +844,6 @@ export async function getTranscriptionStatusAction(attachmentId: string) {
   const { getAttachmentTranscriptionStatus } =
     await import("@/features/records/queries");
   return getAttachmentTranscriptionStatus(attachmentId);
-}
-
-export async function sendPostSurgeryWhatsAppAction(
-  input: unknown,
-): Promise<RecordActionResult> {
-  try {
-    const session = await requireAuthSession("/pacientes");
-    const parsed = sendPostSurgeryWhatsAppSchema.safeParse(input);
-
-    if (!parsed.success) {
-      return {
-        error: parsed.error.issues[0]?.message ?? "Dados inválidos",
-      };
-    }
-
-    return sendPostSurgeryWhatsApp({
-      patientId: parsed.data.patientId,
-      appointmentId: parsed.data.appointmentId,
-      body: parsed.data.body,
-      actorId: session.userId,
-      role: session.profile.role,
-    });
-  } catch (error) {
-    return {
-      error:
-        error instanceof Error
-          ? error.message
-          : "Não foi possível enviar a mensagem.",
-    };
-  }
 }
 
 export async function sendAnamnesisInviteWhatsAppAction(

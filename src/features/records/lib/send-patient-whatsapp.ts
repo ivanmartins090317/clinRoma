@@ -94,6 +94,8 @@ async function persistMessage(input: {
       error_message: input.sent ? null : PATIENT_MESSAGE_COPY.failure,
       created_by: input.actorId,
       sent_at: sentAt,
+      scheduled_at: null,
+      attempt_count: 0,
     })
     .select("id")
     .single();

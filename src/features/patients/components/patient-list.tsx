@@ -51,14 +51,14 @@ export function PatientList({ initialPatients, canCreate }: PatientListProps) {
           className="text-base"
           aria-label="Buscar pacientes"
         />
-        {canCreate ? (
+        {/* {canCreate ? (
           <Link
             href="/pacientes/novo"
             className="inline-flex min-h-11 items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground"
           >
             Novo paciente
           </Link>
-        ) : null}
+        ) : null} */}
       </div>
 
       {isPending ? (

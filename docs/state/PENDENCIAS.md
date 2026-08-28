@@ -2,7 +2,7 @@
 
 Fonte viva do que **ainda falta implementar ou validar**. Atualizar ao concluir cada fase.
 
-Última revisão: **2026-08-28** (F7-04 e F7-05 WhatsApp ao paciente e aba pós-cirurgia em código).
+Última revisão: **2026-08-28** (F7-05b agendamento pós-cirurgia em código).
 
 ---
 
@@ -192,6 +192,7 @@ Felipe gostou da demo (melhor do que esperava). Código da Fase 7 entra por fati
 - [x] **F7-09** Card do paciente: resumo da anamnese + último procedimento (ver `docs/implementation/F7-09-card-paciente.md`)
 - [x] **F7-04** Automações ao paciente pelo **WhatsApp** (sem inbox neste repo) (ver `docs/implementation/F7-04-05-whatsapp-pos-cirurgia.md`)
 - [x] **F7-05** Aba pós-cirurgia: mensagem personalizada → WhatsApp (ver `docs/implementation/F7-04-05-whatsapp-pos-cirurgia.md`)
+- [x] **F7-05b** Agendar pós-cirurgia (texto + data/hora; cron dispara na WAHA) (ver `docs/implementation/F7-05b-agendamento-pos-cirurgia.md`)
 - [x] **F7-06** Estoque baixo → e-mail do financeiro (ver `docs/implementation/F7-06-estoque-baixo-financeiro.md`)
 - [x] **F7-07** Cadastro: segundo telefone + observação (parente / sem WhatsApp) (ver `docs/implementation/F7-07-segundo-telefone.md`)
 - [x] **F7-08** Odontograma em **formato de cruz** (FDI, três vistas). Ref: `docs/assets/odontograma-formato-cruz.png` (ver `docs/implementation/F7-08-odontograma-cruz.md`)
@@ -226,8 +227,13 @@ Itens de código prontos, ainda sem validação em dispositivo real (fica no fec
 - [ ] **F7-04/F7-05 desktop/viewport:** Maria, canal configurado, pós-cirurgia texto livre; recarregar e o registro permanece (número de teste)
 - [ ] **F7-04/F7-05 segundo telefone:** paciente sem telefone aproveitável; destino mostra o segundo e a observação
 - [ ] **F7-04/F7-05 anamnese:** enviar questionário pré-consulta; tablet **não** dispara; copiar link permanece
-- [ ] **F7-04/F7-05 canal ausente:** botões desabilitados; copiar link ok; nenhum disparo
+- [ ] **F7-04/F7-05 canal ausente:** Enviar agora desabilitado; copiar link na anamnese ok; nenhum disparo imediato
 - [ ] **F7-04/F7-05 visualizador:** não vê aba Pós-cirurgia nem botão de enviar WhatsApp
+- [ ] **F7-05b desktop/viewport:** Maria, texto + data/hora futura, Agendar envio; recarregar e permanece Agendado
+- [ ] **F7-05b cron:** com canal no ar, job vira Enviado (curl local ou esperar 5 min)
+- [ ] **F7-05b cancelar:** Agendado → Cancelar; o cron não dispara
+- [ ] **F7-05b canal ausente:** Agendar grava; Enviar agora desabilitado
+- [ ] **F7-05b horário passado:** recusa na tela
 
 ### Pendente com o Felipe (não bloqueia F7-01 a F7-09 em código)
 

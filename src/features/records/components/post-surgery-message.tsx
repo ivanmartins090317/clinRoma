@@ -2,18 +2,24 @@
 
 import { useState, useTransition } from "react";
 
-import { sendPostSurgeryWhatsAppAction } from "@/features/records/actions";
+import {
+  cancelPostSurgeryWhatsAppAction,
+  schedulePostSurgeryWhatsAppAction,
+  sendPostSurgeryWhatsAppAction,
+} from "@/features/records/whatsapp-actions";
 import {
   PATIENT_MESSAGE_BODY_MAX,
   PATIENT_MESSAGE_COPY,
   PATIENT_MESSAGE_STATUS,
   validatePostSurgeryBody,
 } from "@/features/records/domain/patient-message";
+import { validateScheduleInput } from "@/features/records/domain/post-surgery-schedule";
 import type {
   PostSurgeryMessageView,
   WhatsAppDestinationView,
 } from "@/features/records/queries";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
@@ -35,20 +41,57 @@ export function PostSurgeryMessage({
   messages,
 }: PostSurgeryMessageProps) {
   const [body, setBody] = useState("");
+  const [datetimeLocal, setDatetimeLocal] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
-  const canSubmit =
-    canSend && channelConfigured && destination.hasDestination && !isPending;
+  const hasDestination = destination.hasDestination;
+  const canSchedule = canSend && hasDestination && !isPending;
+  const canSendNow = canSchedule && channelConfigured;
 
-  function send() {
+  function resetAlerts() {
     setError(null);
     setSuccess(null);
+  }
 
-    const validationError = validatePostSurgeryBody(body);
-    if (validationError) {
-      setError(validationError);
+  function schedule() {
+    resetAlerts();
+    const bodyError = validatePostSurgeryBody(body);
+    if (bodyError) {
+      setError(bodyError);
+      return;
+    }
+    const scheduleError = validateScheduleInput(datetimeLocal);
+    if ("error" in scheduleError) {
+      setError(scheduleError.error);
+      return;
+    }
+
+    startTransition(async () => {
+      const result = await schedulePostSurgeryWhatsAppAction({
+        patientId,
+        appointmentId,
+        body,
+        datetimeLocal,
+      });
+
+      if (result.error) {
+        setError(result.error);
+        return;
+      }
+
+      setSuccess(PATIENT_MESSAGE_COPY.successScheduled);
+      setBody("");
+      setDatetimeLocal("");
+    });
+  }
+
+  function sendNow() {
+    resetAlerts();
+    const bodyError = validatePostSurgeryBody(body);
+    if (bodyError) {
+      setError(bodyError);
       return;
     }
 
@@ -69,6 +112,23 @@ export function PostSurgeryMessage({
     });
   }
 
+  function cancel(messageId: string) {
+    resetAlerts();
+    startTransition(async () => {
+      const result = await cancelPostSurgeryWhatsAppAction({
+        messageId,
+        patientId,
+      });
+
+      if (result.error) {
+        setError(result.error);
+        return;
+      }
+
+      setSuccess(PATIENT_MESSAGE_COPY.successCancelled);
+    });
+  }
+
   return (
     <div className="space-y-6">
       <section className="space-y-3">
@@ -86,7 +146,26 @@ export function PostSurgeryMessage({
           }}
           className="min-h-32"
         />
-        {destination.hasDestination ? (
+        <div className="space-y-2">
+          <Label htmlFor="post-surgery-schedule">
+            {PATIENT_MESSAGE_COPY.scheduleAt}
+          </Label>
+          <Input
+            id="post-surgery-schedule"
+            type="datetime-local"
+            value={datetimeLocal}
+            disabled={!canSend || isPending}
+            onChange={(event) => {
+              setDatetimeLocal(event.target.value);
+              setSuccess(null);
+            }}
+            className="min-h-11"
+          />
+          <p className="text-sm text-muted-foreground">
+            {PATIENT_MESSAGE_COPY.scheduleHelp}
+          </p>
+        </div>
+        {hasDestination ? (
           <p className="text-sm text-muted-foreground">{destination.notice}</p>
         ) : (
           <p className="text-sm text-muted-foreground">
@@ -98,27 +177,49 @@ export function PostSurgeryMessage({
             {PATIENT_MESSAGE_COPY.channelUnavailable}
           </p>
         ) : null}
-        <Button
-          type="button"
-          disabled={!canSubmit}
-          onClick={send}
-          className="min-h-11"
-        >
-          {PATIENT_MESSAGE_COPY.send}
-        </Button>
+        <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+          <Button
+            type="button"
+            disabled={!canSchedule}
+            onClick={schedule}
+            className="min-h-11"
+          >
+            {PATIENT_MESSAGE_COPY.schedule}
+          </Button>
+          <Button
+            type="button"
+            variant="secondary"
+            disabled={!canSendNow}
+            onClick={sendNow}
+            className="min-h-11"
+          >
+            {PATIENT_MESSAGE_COPY.sendNow}
+          </Button>
+        </div>
         {success ? <p className="text-sm text-foreground">{success}</p> : null}
         {error ? <p className="text-sm text-destructive">{error}</p> : null}
       </section>
 
-      <PostSurgeryMessageList messages={messages} />
+      <PostSurgeryMessageList
+        messages={messages}
+        canSend={canSend}
+        isPending={isPending}
+        onCancel={cancel}
+      />
     </div>
   );
 }
 
 function PostSurgeryMessageList({
   messages,
+  canSend,
+  isPending,
+  onCancel,
 }: {
   messages: PostSurgeryMessageView[];
+  canSend: boolean;
+  isPending: boolean;
+  onCancel: (messageId: string) => void;
 }) {
   if (messages.length === 0) {
     return (
@@ -142,18 +243,36 @@ function PostSurgeryMessageList({
             </p>
             <p
               className={
-                message.status === PATIENT_MESSAGE_STATUS.sent
-                  ? "text-sm font-medium"
-                  : "text-sm font-medium text-destructive"
+                message.status === PATIENT_MESSAGE_STATUS.failed
+                  ? "text-sm font-medium text-destructive"
+                  : "text-sm font-medium"
               }
             >
               {message.statusLabel}
             </p>
           </div>
+          {message.scheduledLabel ? (
+            <p className="text-sm text-muted-foreground">
+              {message.status === PATIENT_MESSAGE_STATUS.pending
+                ? `Para ${message.scheduledLabel}`
+                : `Horário ${message.scheduledLabel}`}
+            </p>
+          ) : null}
           <p className="text-sm text-muted-foreground">
             {message.destinationLabel}
           </p>
           <p className="whitespace-pre-wrap text-sm">{message.body}</p>
+          {canSend && message.canCancel ? (
+            <Button
+              type="button"
+              variant="secondary"
+              disabled={isPending}
+              onClick={() => onCancel(message.id)}
+              className="min-h-11"
+            >
+              {PATIENT_MESSAGE_COPY.cancel}
+            </Button>
+          ) : null}
         </li>
       ))}
     </ul>

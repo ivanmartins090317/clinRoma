@@ -55,6 +55,7 @@
 - Logs e auditoria: destino **mascarado**, sem corpo da mensagem, sem nome completo do paciente.
 - Quem envia = quem já escreve prontuário (admin, dentista, recepção). Visualizador e auxiliar: recusa na interface e no servidor (fail secure).
 - Destino: telefone do cadastro se aproveitável; senão o segundo telefone. Sem flag "tem WhatsApp".
+- Agendamento pós-cirurgia: o cron dispara o texto já gravado; destino mascarado; sem corpo em log. Cancelar só o pendente.
 
 ## PHI / prontuário
 

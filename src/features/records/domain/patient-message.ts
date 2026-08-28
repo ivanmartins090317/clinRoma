@@ -11,6 +11,7 @@ export const PATIENT_MESSAGE_STATUS = {
   pending: "pending",
   sent: "sent",
   failed: "failed",
+  cancelled: "cancelled",
 } as const;
 
 export type PatientMessagePurpose =
@@ -22,21 +23,34 @@ export type PatientMessageStatus =
 export const PATIENT_MESSAGE_COPY = {
   tab: "Pós-cirurgia",
   composer: "Mensagem para o paciente",
+  scheduleAt: "Data e hora do envio",
+  schedule: "Agendar envio",
+  sendNow: "Enviar agora",
   send: "Enviar WhatsApp",
   sendAnamnesis: "Enviar questionário por WhatsApp",
+  cancel: "Cancelar",
   success: "Mensagem enviada.",
+  successScheduled: "Mensagem agendada.",
+  successCancelled: "Envio cancelado.",
   successAnamnesis: "Questionário enviado por WhatsApp.",
   failure: "Não foi possível enviar a mensagem.",
   emptyBody: "Escreva a mensagem antes de enviar.",
   tooLong: "Mensagem muito longa.",
+  missingSchedule: "Informe a data e a hora do envio.",
+  invalidSchedule: "Data e hora inválidas.",
+  pastSchedule: "Escolha uma data e hora futuras.",
   forbidden: "Sem permissão para enviar WhatsApp.",
   noDestination:
     "Cadastre o telefone do paciente ou um segundo contato para enviar WhatsApp.",
-  channelUnavailable:
+  channelUnavailable: "WhatsApp da clínica indisponível. Tente mais tarde.",
+  channelUnavailableInvite:
     "WhatsApp da clínica indisponível. Copie o link ou tente mais tarde.",
+  scheduleHelp: "A mensagem sai até 5 minutos depois do horário.",
   statusSent: "Enviado",
   statusFailed: "Falhou",
-  emptyList: "Nenhuma mensagem pós-cirurgia enviada ainda.",
+  statusScheduled: "Agendado",
+  statusCancelled: "Cancelado",
+  emptyList: "Nenhuma mensagem pós-cirurgia ainda.",
   inviteBodyLead:
     "Olá. Segue o questionário de saúde da Clínica Neo Roma para preencher antes da consulta. Vale por 7 dias.",
 } as const;
@@ -90,6 +104,12 @@ export function canSendPatientWhatsAppRole(role: UserRole): boolean {
 export function messageStatusLabel(status: PatientMessageStatus): string {
   if (status === PATIENT_MESSAGE_STATUS.sent) {
     return PATIENT_MESSAGE_COPY.statusSent;
+  }
+  if (status === PATIENT_MESSAGE_STATUS.pending) {
+    return PATIENT_MESSAGE_COPY.statusScheduled;
+  }
+  if (status === PATIENT_MESSAGE_STATUS.cancelled) {
+    return PATIENT_MESSAGE_COPY.statusCancelled;
   }
   return PATIENT_MESSAGE_COPY.statusFailed;
 }

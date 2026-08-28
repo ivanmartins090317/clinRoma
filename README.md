@@ -116,6 +116,7 @@ Cron de lembretes (dev):
 
 ```bash
 curl -k -H "Authorization: Bearer SEU_CRON_SECRET" https://localhost:3000/api/cron/process-reminders
+curl -k -H "Authorization: Bearer SEU_CRON_SECRET" https://localhost:3000/api/cron/process-patient-messages
 ```
 
 Deploy produção: checklist em `docs/manual-dev/08-fase-6-lembrete-piloto.md`.

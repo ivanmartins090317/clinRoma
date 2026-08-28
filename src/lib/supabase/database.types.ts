@@ -632,6 +632,8 @@ export type Database = {
           created_by: string | null;
           created_at: string;
           sent_at: string | null;
+          scheduled_at: string | null;
+          attempt_count: number;
         };
         Insert: {
           id?: string;
@@ -646,6 +648,8 @@ export type Database = {
           created_by?: string | null;
           created_at?: string;
           sent_at?: string | null;
+          scheduled_at?: string | null;
+          attempt_count?: number;
         };
         Update: {
           id?: string;
@@ -660,6 +664,8 @@ export type Database = {
           created_by?: string | null;
           created_at?: string;
           sent_at?: string | null;
+          scheduled_at?: string | null;
+          attempt_count?: number;
         };
         Relationships: [];
       };
@@ -730,7 +736,7 @@ export type Database = {
       anamnesis_invite_status: "open" | "used" | "revoked";
       patient_message_purpose: "post_surgery" | "anamnesis_invite";
       patient_message_contact_source: "patient_phone" | "secondary_phone";
-      patient_message_status: "pending" | "sent" | "failed";
+      patient_message_status: "pending" | "sent" | "failed" | "cancelled";
     };
     CompositeTypes: Record<string, never>;
   };

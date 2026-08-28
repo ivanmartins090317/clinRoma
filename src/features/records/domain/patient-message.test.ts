@@ -15,7 +15,10 @@ import {
   validatePostSurgeryBody,
 } from "@/features/records/domain/patient-message";
 import { canSendPatientWhatsApp } from "@/features/records/permissions";
-import { sendPostSurgeryWhatsAppSchema } from "@/features/records/schemas";
+import {
+  sendPostSurgeryWhatsAppSchema,
+  schedulePostSurgeryWhatsAppSchema,
+} from "@/features/records/schemas";
 
 describe("corpo da mensagem pós-cirurgia", () => {
   it("recusa vazio ou só espaços", () => {
@@ -100,6 +103,19 @@ describe("recusa e canal", () => {
         body: "Gelo 20 min",
       }).success,
     ).toBe(true);
+    expect(
+      schedulePostSurgeryWhatsAppSchema.safeParse({
+        patientId,
+        body: "Gelo 20 min",
+      }).success,
+    ).toBe(false);
+    expect(
+      schedulePostSurgeryWhatsAppSchema.safeParse({
+        patientId,
+        body: "Gelo 20 min",
+        datetimeLocal: "2026-08-29T08:00",
+      }).success,
+    ).toBe(true);
   });
 
   it("não chama o gateway quando o canal está ausente", () => {
@@ -107,9 +123,12 @@ describe("recusa e canal", () => {
     expect(shouldCallWhatsAppGateway(true)).toBe(true);
   });
 
-  it("rótulos da lista são Enviado ou Falhou", () => {
+  it("rótulos da lista cobrem agendado, enviado, falhou e cancelado", () => {
     expect(messageStatusLabel(PATIENT_MESSAGE_STATUS.sent)).toBe("Enviado");
     expect(messageStatusLabel(PATIENT_MESSAGE_STATUS.failed)).toBe("Falhou");
-    expect(messageStatusLabel(PATIENT_MESSAGE_STATUS.pending)).toBe("Falhou");
+    expect(messageStatusLabel(PATIENT_MESSAGE_STATUS.pending)).toBe("Agendado");
+    expect(messageStatusLabel(PATIENT_MESSAGE_STATUS.cancelled)).toBe(
+      "Cancelado",
+    );
   });
 });

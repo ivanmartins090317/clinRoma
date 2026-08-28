@@ -98,6 +98,19 @@ export const sendPostSurgeryWhatsAppSchema = z.object({
     .max(PATIENT_MESSAGE_BODY_MAX, PATIENT_MESSAGE_COPY.tooLong),
 });
 
+export const schedulePostSurgeryWhatsAppSchema =
+  sendPostSurgeryWhatsAppSchema.extend({
+    datetimeLocal: z
+      .string()
+      .trim()
+      .min(1, PATIENT_MESSAGE_COPY.missingSchedule),
+  });
+
+export const cancelPostSurgeryWhatsAppSchema = z.object({
+  messageId: z.string().uuid(),
+  patientId: z.string().uuid(),
+});
+
 export const sendAnamnesisInviteWhatsAppSchema = z.object({
   patientId: z.string().uuid(),
   appointmentId: z.string().uuid().optional(),
@@ -113,6 +126,12 @@ export type SubmitAnamnesisInviteInput = z.infer<
 >;
 export type SendPostSurgeryWhatsAppInput = z.infer<
   typeof sendPostSurgeryWhatsAppSchema
+>;
+export type SchedulePostSurgeryWhatsAppInput = z.infer<
+  typeof schedulePostSurgeryWhatsAppSchema
+>;
+export type CancelPostSurgeryWhatsAppInput = z.infer<
+  typeof cancelPostSurgeryWhatsAppSchema
 >;
 export type SendAnamnesisInviteWhatsAppInput = z.infer<
   typeof sendAnamnesisInviteWhatsAppSchema

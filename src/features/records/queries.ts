@@ -32,6 +32,10 @@ import {
   type PatientMessageStatus,
 } from "@/features/records/domain/patient-message";
 import {
+  canCancelScheduledMessage,
+  formatScheduledAtLabel,
+} from "@/features/records/domain/post-surgery-schedule";
+import {
   formatWhatsAppDestinationNotice,
   formatWhatsAppDigits,
   resolveWhatsAppDestination,
@@ -108,6 +112,9 @@ export interface PostSurgeryMessageView {
   status: PatientMessageStatus;
   statusLabel: string;
   body: string;
+  scheduledAt: string | null;
+  scheduledLabel: string | null;
+  canCancel: boolean;
 }
 
 export interface PatientChartData {
@@ -172,6 +179,7 @@ function mapPostSurgeryMessages(
     destination_digits: string;
     status: PatientMessageStatus;
     body: string;
+    scheduled_at: string | null;
     profiles: { display_name: string } | { display_name: string }[] | null;
   }>,
 ): PostSurgeryMessageView[] {
@@ -186,6 +194,11 @@ function mapPostSurgeryMessages(
       status: row.status,
       statusLabel: messageStatusLabel(row.status),
       body: row.body,
+      scheduledAt: row.scheduled_at,
+      scheduledLabel: row.scheduled_at
+        ? formatScheduledAtLabel(row.scheduled_at)
+        : null,
+      canCancel: canCancelScheduledMessage(row.status),
     };
   });
 }
@@ -234,7 +247,7 @@ export async function getPatientChartData(
       supabase
         .from("patient_messages")
         .select(
-          "id, created_at, destination_digits, status, body, profiles:created_by ( display_name )",
+          "id, created_at, destination_digits, status, body, scheduled_at, profiles:created_by ( display_name )",
         )
         .eq("patient_id", patientId)
         .eq("purpose", PATIENT_MESSAGE_PURPOSE.postSurgery)

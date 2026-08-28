@@ -153,7 +153,7 @@ export function AnamnesisInviteActions({
       )}
       {!channelConfigured ? (
         <p className="text-sm text-muted-foreground">
-          {PATIENT_MESSAGE_COPY.channelUnavailable}
+          {PATIENT_MESSAGE_COPY.channelUnavailableInvite}
         </p>
       ) : null}
       {link ? (
