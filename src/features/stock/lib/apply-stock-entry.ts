@@ -1,6 +1,8 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 
+import type { SupplyQuantitySnapshot } from "@/features/stock/domain/finance-alert";
 import { generateSupplyQrCode } from "@/features/stock/domain/qr-code";
+import { syncFinanceAlertForSupply } from "@/features/stock/lib/enqueue-finance-alert";
 import type { Database } from "@/lib/supabase/database.types";
 
 type AppSupabase = SupabaseClient<Database>;
@@ -15,6 +17,22 @@ function randomQrEntropy(length: number): number[] {
   const values = new Uint32Array(length);
   crypto.getRandomValues(values);
   return Array.from(values);
+}
+
+async function readSupplySnapshot(
+  supabase: AppSupabase,
+  supplyId: string,
+): Promise<SupplyQuantitySnapshot> {
+  const { data } = await supabase
+    .from("supplies")
+    .select("current_quantity, minimum_quantity")
+    .eq("id", supplyId)
+    .maybeSingle();
+
+  return {
+    currentQuantity: Number(data?.current_quantity ?? 0),
+    minimumQuantity: Number(data?.minimum_quantity ?? 0),
+  };
 }
 
 export async function generateUniqueQrCode(
@@ -45,6 +63,7 @@ export async function applyStockEntry(input: {
   expiresAt?: string;
   notes?: string;
 }): Promise<CreatedPackageResult> {
+  const before = await readSupplySnapshot(input.supabase, input.supplyId);
   const qrCode = await generateUniqueQrCode(input.supabase);
 
   const { data: pkg, error: packageError } = await input.supabase
@@ -80,6 +99,8 @@ export async function applyStockEntry(input: {
     throw new Error(movementError.message);
   }
 
+  await syncFinanceAlertForSupply(input.supplyId, before);
+
   return {
     id: pkg.id,
     qrCode: pkg.qr_code,
@@ -94,6 +115,7 @@ export async function applyBulkEntry(input: {
   quantity: number;
   notes?: string;
 }): Promise<void> {
+  const before = await readSupplySnapshot(input.supabase, input.supplyId);
   const { error } = await input.supabase.from("supply_movements").insert({
     supply_id: input.supplyId,
     package_id: null,
@@ -106,4 +128,6 @@ export async function applyBulkEntry(input: {
   if (error) {
     throw new Error(error.message);
   }
+
+  await syncFinanceAlertForSupply(input.supplyId, before);
 }

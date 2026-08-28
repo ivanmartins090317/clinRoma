@@ -3,6 +3,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { resolvePackageStatus } from "@/features/stock/domain/package-status";
 import { validateWithdrawal } from "@/features/stock/domain/withdrawal";
 import { getClinicTodayDate } from "@/features/stock/lib/clinic-date";
+import { syncFinanceAlertForSupply } from "@/features/stock/lib/enqueue-finance-alert";
 import type { Database } from "@/lib/supabase/database.types";
 
 type AppSupabase = SupabaseClient<Database>;
@@ -38,7 +39,8 @@ export async function applyWithdrawal(input: {
         id,
         name,
         unit,
-        current_quantity
+        current_quantity,
+        minimum_quantity
       )
     `,
     )
@@ -101,6 +103,11 @@ export async function applyWithdrawal(input: {
   if (supplyError || !updatedSupply) {
     throw new Error("Falha ao consultar saldo atualizado");
   }
+
+  await syncFinanceAlertForSupply(supply.id, {
+    currentQuantity: Number(supply.current_quantity),
+    minimumQuantity: Number(supply.minimum_quantity),
+  });
 
   return {
     supplyId: supply.id,

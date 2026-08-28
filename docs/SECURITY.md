@@ -41,6 +41,13 @@
 - Quem tem o link válido envia; quem não tem o segredo não lê o paciente.
 - Auditoria de geração e envio: finalidade e paciente; sem corpo do questionário e sem segredo.
 
+## Estoque baixo · e-mail ao financeiro
+
+- Destino só no ambiente (`FINANCE_ALERT_EMAIL`). Vazio ou inválido: a rotina não dispara.
+- E-mail sem PHI (sem paciente, CPF, prontuário ou QR). Destino mascarado se logar.
+- Rotina `/api/cron/process-stock-finance-alerts` protegida por `CRON_SECRET` (mesmo segredo das outras).
+- Falha do aviso não reverte movimentação de estoque. Sem `service_role` no client.
+
 ## PHI / prontuário
 
 - Buckets Storage **privados** (fotos etiqueta, áudio, planilhas).

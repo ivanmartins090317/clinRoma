@@ -1,0 +1,16 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/expire-slot-offers",
+      "schedule": "*/5 * * * *"
+    },
+    {
+      "path": "/api/cron/process-reminders",
+      "schedule": "*/5 * * * *"
+    },
+    {
+      "path": "/api/cron/process-stock-finance-alerts",
+      "schedule": "*/5 * * * *"
+    }
+  ]
+}

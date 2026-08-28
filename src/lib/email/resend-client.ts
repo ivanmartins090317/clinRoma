@@ -21,6 +21,11 @@ export function getReminderFromEmail(): string | null {
   return from || null;
 }
 
+export function getFinanceAlertEmail(): string | null {
+  const destination = process.env.FINANCE_ALERT_EMAIL?.trim();
+  return destination || null;
+}
+
 export function getAppBaseUrl(): string {
   return process.env.NEXT_PUBLIC_APP_URL ?? "https://localhost:3000";
 }

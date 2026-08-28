@@ -2,7 +2,7 @@
 
 Fonte viva do que **ainda falta implementar ou validar**. Atualizar ao concluir cada fase.
 
-Última revisão: **2026-08-26** (F7-03 anamnese isolada em código).
+Última revisão: **2026-08-26** (F7-06 estoque baixo para o financeiro em código).
 
 ---
 
@@ -192,7 +192,7 @@ Felipe gostou da demo (melhor do que esperava). Código da Fase 7 entra por fati
 - [x] **F7-09** Card do paciente: resumo da anamnese + último procedimento (ver `docs/implementation/F7-09-card-paciente.md`)
 - [ ] **F7-04** Automações ao paciente pelo **WhatsApp** (sem inbox neste repo)
 - [ ] **F7-05** Aba pós-cirurgia: mensagem personalizada → WhatsApp
-- [ ] **F7-06** Estoque baixo → e-mail do financeiro (job + config; endereço pendente)
+- [x] **F7-06** Estoque baixo → e-mail do financeiro (ver `docs/implementation/F7-06-estoque-baixo-financeiro.md`)
 - [x] **F7-07** Cadastro: segundo telefone + observação (parente / sem WhatsApp) (ver `docs/implementation/F7-07-segundo-telefone.md`)
 - [x] **F7-08** Odontograma em **formato de cruz** (FDI, três vistas). Ref: `docs/assets/odontograma-formato-cruz.png` (ver `docs/implementation/F7-08-odontograma-cruz.md`)
 
@@ -220,10 +220,13 @@ Itens de código prontos, ainda sem validação em dispositivo real (fica no fec
 - [ ] **F7-03 tablet:** convite de consultório; página sem menu; validade só no dia
 - [ ] **F7-03 visualizador:** não vê aba Anamnese nem botões de convite
 - [ ] **F7-03 db:push:** aplicar `022_anamnesis_convites_f7.sql` no remoto (timeout de conexão na entrega)
+- [ ] **F7-06:** configurar `FINANCE_ALERT_EMAIL` de teste + Resend; retirar Luva até cruzar o mínimo; um e-mail; segunda retirada sem e-mail extra
+- [ ] **F7-06 destino vazio:** sem `FINANCE_ALERT_EMAIL`; cruzar o mínimo; nenhum envio; estoque intacto
+- [ ] **F7-06 varredura:** cron com Anestésico do seed; um e-mail; ciclo seguinte não reenvia
 
-### Pendente com o Felipe (não bloqueia F7-01, F7-02, F7-03, F7-07, F7-08 nem F7-09)
+### Pendente com o Felipe (não bloqueia F7-01, F7-02, F7-03, F7-06, F7-07, F7-08 nem F7-09)
 
-- [ ] E-mail do financeiro (F7-06)
+- [ ] E-mail do financeiro (F7-06) · endereço de produção; o código já aceita env vazio
 - [ ] 2º telefone obrigatório vs opcional
 - [ ] Texto-padrão vs 100% livre no pós-cirurgia
 - [ ] Confirmar link de anamnese sempre via WhatsApp

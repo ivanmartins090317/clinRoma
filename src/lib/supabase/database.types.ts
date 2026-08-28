@@ -471,6 +471,48 @@ export type Database = {
         };
         Relationships: [];
       };
+      stock_finance_alerts: {
+        Row: {
+          id: string;
+          supply_id: string;
+          current_quantity: number;
+          minimum_quantity: number;
+          status: Database["public"]["Enums"]["stock_finance_alert_status"];
+          attempt_count: number;
+          next_attempt_at: string;
+          error_message: string | null;
+          sent_at: string | null;
+          episode_closed_at: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          supply_id: string;
+          current_quantity: number;
+          minimum_quantity: number;
+          status?: Database["public"]["Enums"]["stock_finance_alert_status"];
+          attempt_count?: number;
+          next_attempt_at?: string;
+          error_message?: string | null;
+          sent_at?: string | null;
+          episode_closed_at?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          supply_id?: string;
+          current_quantity?: number;
+          minimum_quantity?: number;
+          status?: Database["public"]["Enums"]["stock_finance_alert_status"];
+          attempt_count?: number;
+          next_attempt_at?: string;
+          error_message?: string | null;
+          sent_at?: string | null;
+          episode_closed_at?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
       supply_sheets: {
         Row: {
           id: string;
@@ -638,6 +680,7 @@ export type Database = {
       supply_unit: "unit" | "box" | "roll" | "bottle";
       reminder_channel: "email" | "whatsapp";
       reminder_status: "pending" | "sent" | "failed";
+      stock_finance_alert_status: "pending" | "sent" | "failed" | "cancelled";
       anamnesis_invite_purpose: "pre_consult" | "office";
       anamnesis_invite_status: "open" | "used" | "revoked";
     };

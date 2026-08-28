@@ -2,11 +2,13 @@
 
 import { revalidatePath } from "next/cache";
 
+import type { SupplyQuantitySnapshot } from "@/features/stock/domain/finance-alert";
 import {
   applyBulkEntry,
   applyStockEntry,
 } from "@/features/stock/lib/apply-stock-entry";
 import { applyWithdrawal } from "@/features/stock/lib/apply-withdrawal";
+import { syncFinanceAlertForSupply } from "@/features/stock/lib/enqueue-finance-alert";
 import {
   listSupplies,
   lookupPackageByQr,
@@ -61,6 +63,31 @@ function canRegisterPackages(role: UserRole): boolean {
 function canScanWithdraw(role: UserRole): boolean {
   return getModuleAccess(role, "stock-scan") === "write";
 }
+
+async function readSupplySnapshot(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  supplyId: string,
+): Promise<SupplyQuantitySnapshot | null> {
+  const { data } = await supabase
+    .from("supplies")
+    .select("current_quantity, minimum_quantity")
+    .eq("id", supplyId)
+    .maybeSingle();
+
+  if (!data) {
+    return null;
+  }
+
+  return {
+    currentQuantity: Number(data.current_quantity),
+    minimumQuantity: Number(data.minimum_quantity),
+  };
+}
+
+const NEW_SUPPLY_SNAPSHOT: SupplyQuantitySnapshot = {
+  currentQuantity: 0,
+  minimumQuantity: 0,
+};
 
 async function assertStockRead() {
   const session = await requireAuthSession("/estoque");
@@ -145,6 +172,7 @@ export async function createSupplyAction(
 
     revalidatePath("/estoque");
     revalidatePath("/hoje");
+    await syncFinanceAlertForSupply(data.id, NEW_SUPPLY_SNAPSHOT);
     return { success: true, supplyId: data.id };
   } catch (error) {
     return {
@@ -169,6 +197,7 @@ export async function updateSupplyAction(
     }
 
     const supabase = await createClient();
+    const before = await readSupplySnapshot(supabase, parsed.data.id);
     const { error } = await supabase
       .from("supplies")
       .update({
@@ -185,6 +214,9 @@ export async function updateSupplyAction(
 
     revalidatePath("/estoque");
     revalidatePath("/hoje");
+    if (before) {
+      await syncFinanceAlertForSupply(parsed.data.id, before);
+    }
     return { success: true, supplyId: parsed.data.id };
   } catch (error) {
     return {
@@ -237,6 +269,10 @@ export async function registerPurchaseAction(
 
     for (const item of parsed.data.items) {
       let supplyId = item.supplyId;
+      const before = supplyId
+        ? ((await readSupplySnapshot(supabase, supplyId)) ??
+          NEW_SUPPLY_SNAPSHOT)
+        : NEW_SUPPLY_SNAPSHOT;
 
       if (!supplyId && item.newSupply) {
         const { data: created, error: createError } = await supabase
@@ -283,6 +319,8 @@ export async function registerPurchaseAction(
           notes: "Entrada a granel via planilha",
         });
       }
+
+      await syncFinanceAlertForSupply(supplyId, before);
     }
 
     revalidatePath("/estoque");
@@ -396,6 +434,7 @@ export async function adjustSupplyAction(
     }
 
     const supabase = await createClient();
+    const before = await readSupplySnapshot(supabase, parsed.data.supplyId);
     const { error } = await supabase.from("supply_movements").insert({
       supply_id: parsed.data.supplyId,
       package_id: null,
@@ -412,6 +451,9 @@ export async function adjustSupplyAction(
 
     revalidatePath("/estoque");
     revalidatePath("/hoje");
+    if (before) {
+      await syncFinanceAlertForSupply(parsed.data.supplyId, before);
+    }
     return { success: true, supplyId: parsed.data.supplyId };
   } catch (error) {
     return {

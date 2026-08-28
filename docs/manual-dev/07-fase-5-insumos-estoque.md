@@ -22,7 +22,7 @@ Controle de insumos com QR por pacote, retirada mobile e alertas operacionais.
 - OCR de planilha
 - Service worker offline
 - Impressora térmica
-- Notificação push/e-mail de estoque baixo
+- Notificação push de estoque baixo. E-mail ao financeiro: F7-06.
 
 ---
 
