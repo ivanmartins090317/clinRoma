@@ -51,6 +51,22 @@ export function isStoppedStatus(status: string | null | undefined): boolean {
   return status === WHATSAPP_SESSION_STATUS.STOPPED;
 }
 
+export function isStartingStatus(status: string | null | undefined): boolean {
+  return status === "STARTING";
+}
+
+export function shouldRefreshPairing(
+  status: string | null | undefined,
+): boolean {
+  return isScanQrStatus(status) || isStartingStatus(status);
+}
+
+export function parseGatewaySessionPayload(payload: unknown): string | null {
+  const record = asRecord(payload);
+  if (typeof record?.status !== "string" || !record.status.trim()) return null;
+  return mapGatewayStatusToDomain(record.status);
+}
+
 export function isSessionStatusEvent(event: string | undefined): boolean {
   return event === SESSION_STATUS_EVENT;
 }

@@ -4,9 +4,12 @@ import {
   CLINIC_WHATSAPP_SESSION,
   isScanQrStatus,
   isSessionWorking,
+  isStartingStatus,
   isStoppedStatus,
   mapGatewayStatusToDomain,
+  parseGatewaySessionPayload,
   parseSessionStatusEvent,
+  shouldRefreshPairing,
 } from "@/features/whatsapp/domain/session-status";
 
 describe("mapGatewayStatusToDomain", () => {
@@ -36,6 +39,21 @@ describe("mapGatewayStatusToDomain", () => {
     expect(isSessionWorking(undefined)).toBe(false);
     expect(isScanQrStatus(null)).toBe(false);
     expect(isStoppedStatus(null)).toBe(false);
+  });
+
+  it("atualiza a tela de pareamento em STARTING e SCAN_QR", () => {
+    expect(isStartingStatus("STARTING")).toBe(true);
+    expect(shouldRefreshPairing("STARTING")).toBe(true);
+    expect(shouldRefreshPairing("SCAN_QR")).toBe(true);
+    expect(shouldRefreshPairing("WORKING")).toBe(false);
+    expect(shouldRefreshPairing("STOPPED")).toBe(false);
+  });
+
+  it("lê o status bruto da sessão no gateway", () => {
+    expect(parseGatewaySessionPayload({ status: "SCAN_QR_CODE" })).toBe(
+      "SCAN_QR",
+    );
+    expect(parseGatewaySessionPayload({ name: "default" })).toBeNull();
   });
 });
 

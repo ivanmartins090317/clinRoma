@@ -7,6 +7,7 @@ import { disconnectWhatsAppSessionAction } from "@/features/whatsapp/actions";
 import {
   isScanQrStatus,
   isSessionWorking,
+  shouldRefreshPairing,
 } from "@/features/whatsapp/domain/session-status";
 import { WHATSAPP_COPY } from "@/features/whatsapp/permissions";
 import { Button } from "@/components/ui/button";
@@ -34,6 +35,7 @@ export function WhatsAppSessionPanel({
   const router = useRouter();
   const working = isSessionWorking(status);
   const showQr = isScanQrStatus(status);
+  const refreshPairing = shouldRefreshPairing(status);
   const [qrTick, setQrTick] = useState(0);
   const [qrFailed, setQrFailed] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -41,16 +43,18 @@ export function WhatsAppSessionPanel({
   const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
-    if (!showQr) return;
+    if (!refreshPairing) return;
 
     const timer = window.setInterval(() => {
-      setQrTick((current) => current + 1);
-      setQrFailed(false);
+      if (showQr) {
+        setQrTick((current) => current + 1);
+        setQrFailed(false);
+      }
       router.refresh();
     }, QR_POLL_MS);
 
     return () => window.clearInterval(timer);
-  }, [showQr, router]);
+  }, [refreshPairing, showQr, router]);
 
   function handleDisconnect() {
     setActionError(null);

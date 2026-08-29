@@ -1,4 +1,7 @@
-import { startClinicWhatsAppSession } from "@/features/whatsapp/actions";
+import {
+  startClinicWhatsAppSession,
+  syncClinicWhatsAppSessionStatus,
+} from "@/features/whatsapp/actions";
 import { WhatsAppSessionPanel } from "@/features/whatsapp/components/whatsapp-session-panel";
 import { isStoppedStatus } from "@/features/whatsapp/domain/session-status";
 import {
@@ -17,12 +20,14 @@ export default async function WhatsAppPage() {
   let status = await getClinicWhatsAppSessionStatus();
   let startError: string | null = null;
 
-  if (
-    canWriteWhatsAppSession(session.profile.role) &&
-    isStoppedStatus(status)
-  ) {
-    const result = await startClinicWhatsAppSession();
-    startError = result.error ?? null;
+  if (canWriteWhatsAppSession(session.profile.role)) {
+    if (isStoppedStatus(status) || status == null) {
+      const result = await startClinicWhatsAppSession();
+      startError = result.error ?? null;
+    } else {
+      await syncClinicWhatsAppSessionStatus();
+    }
+
     status = await getClinicWhatsAppSessionStatus();
   }
 
