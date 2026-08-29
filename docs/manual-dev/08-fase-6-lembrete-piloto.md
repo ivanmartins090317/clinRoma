@@ -9,7 +9,7 @@ Manual operacional da Fase 6 do ClinRoma (Clínica Neo Roma).
 
 - Lembrete **por e-mail ao dentista** após consulta **concluída**
 - Retentativa automática (3 tentativas, backoff 5 e 15 min)
-- Job cron a cada 5 min (`/api/cron/process-reminders`)
+- Job a cada 5 min via VPS (`/api/cron/process-reminders`)
 - Badge de situação na agenda e Hoje
 - Painel de falhas e **Reenviar** (somente admin)
 - Estrutura de homologação manual (relatório HTML + evidências)
@@ -41,7 +41,7 @@ src/app/api/cron/process-reminders/route.ts
 1. Recepção ou dentista marca consulta como **Concluído** na agenda.
 2. Sistema enfileira lembrete (canal e-mail, situação pendente).
 3. Envio imediato na primeira tentativa; falhas reagem com backoff.
-4. Cron reprocessa pendentes elegíveis a cada 5 min.
+4. A VPS acorda o job a cada 5 min; o job reprocessa pendentes elegíveis.
 5. Dentista recebe e-mail com nome parcial do paciente e link para `/pacientes/[id]`.
 
 ### Reenvio manual (admin)
@@ -52,12 +52,12 @@ src/app/api/cron/process-reminders/route.ts
 
 ## Variáveis de ambiente
 
-| Variável            | Obrigatória F6 | Descrição                          |
-| ------------------- | -------------- | ---------------------------------- |
-| `RESEND_API_KEY`    | Sim (envio)    | API key Resend (server-only)       |
-| `RESEND_FROM_EMAIL` | Sim (envio)    | Remetente verificado no Resend     |
-| `CRON_SECRET`       | Sim (cron)     | Bearer do job (mesmo da fila)      |
-| `SUPABASE_SERVICE_ROLE_KEY` | Sim | Enfileiramento e job usam admin client |
+| Variável                    | Obrigatória F6 | Descrição                              |
+| --------------------------- | -------------- | -------------------------------------- |
+| `RESEND_API_KEY`            | Sim (envio)    | API key Resend (server-only)           |
+| `RESEND_FROM_EMAIL`         | Sim (envio)    | Remetente verificado no Resend         |
+| `CRON_SECRET`               | Sim (cron)     | Bearer do job (mesmo da fila)          |
+| `SUPABASE_SERVICE_ROLE_KEY` | Sim            | Enfileiramento e job usam admin client |
 
 Sem `RESEND_*`, lembretes ficam pendentes; admin vê falhas após esgotar tentativas ou erro de configuração.
 
@@ -80,7 +80,7 @@ curl -k -H "Authorization: Bearer SEU_CRON_SECRET" https://localhost:3000/api/cr
 2. `npm run db:push` contra prod (sem seeds de dev em prod).
 3. Projeto Vercel + domínio HTTPS.
 4. Variáveis: Supabase, `NEXT_PUBLIC_APP_URL`, Resend, `CRON_SECRET`, OpenAI, fila.
-5. Confirmar crons ativos em `vercel.json` (ofertas + lembretes).
+5. Confirmar que a hospedagem Hobby não registra relógio nativo e que a VPS acorda os jobs a cada 5 minutos.
 6. Smoke: login admin, concluir consulta, e-mail recebido.
 7. Vincular perfis reais aos dentistas (`dentists.profile_id`).
 

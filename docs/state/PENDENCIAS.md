@@ -2,7 +2,21 @@
 
 Fonte viva do que **ainda falta implementar ou validar**. Atualizar ao concluir cada fase.
 
-Última revisão: **2026-08-28** (oferta da fila por WhatsApp em código).
+Última revisão: **2026-08-29** (relógio VPS + jobs no app publicado).
+
+---
+
+## Relógio e jobs (operacional)
+
+Contrato do piloto (spec `specs/2026-08-29-relogio-vps-jobs-next-hobby.md`):
+
+- Relógio = VPS Campinas, a cada 5 minutos
+- Jobs = as quatro rotinas do app publicado (expiração de ofertas da fila, lembretes pós-consulta, aviso de estoque baixo ao financeiro, mensagens agendadas ao paciente)
+- Hospedagem Hobby = sem relógio nativo
+- Segredo do relógio = já ok (as duas rotinas vivas comprovam)
+- **Enviar agora** = independente do relógio
+
+Esta fatia **não** fecha a Fase 7. A hospedagem do piloto publica `main`. Os dois jobs novos só entram no ar depois que `main` subir com o manifesto vazio.
 
 ---
 

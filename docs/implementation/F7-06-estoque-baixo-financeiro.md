@@ -35,18 +35,18 @@ Migrations `001`–`022` não foram editadas.
 
 ### Borda
 
-| Arquivo                                                  | Função                                                       |
-| -------------------------------------------------------- | ------------------------------------------------------------ |
-| `src/features/stock/lib/enqueue-finance-alert.ts`        | Criar aviso ao cruzar; cancelar pendente ao sair             |
-| `src/features/stock/lib/send-finance-alert-email.ts`     | Montar e enviar via Resend (mesmo cliente e remetente da F6) |
-| `src/features/stock/lib/process-finance-alerts.ts`       | Pendentes + varredura de itens já em reposição               |
-| `src/app/api/cron/process-stock-finance-alerts/route.ts` | Rotina `CRON_SECRET`; resposta só com contagens              |
-| `src/features/stock/actions.ts`                          | Gancho após cadastro, alteração de mínimo, compra e ajuste   |
-| `src/features/stock/lib/apply-withdrawal.ts`             | Gancho após retirada (incluindo override)                    |
-| `src/features/stock/lib/apply-stock-entry.ts`            | Gancho após entrada / pacote                                 |
-| `src/lib/email/resend-client.ts`                         | `getFinanceAlertEmail()` lê `FINANCE_ALERT_EMAIL`            |
-| `.env.example`                                           | `FINANCE_ALERT_EMAIL` com e-mail de teste só em comentário   |
-| `vercel.json`                                            | Crons da fila, lembretes e este aviso (`*/5 * * * *`)        |
+| Arquivo                                                  | Função                                                               |
+| -------------------------------------------------------- | -------------------------------------------------------------------- |
+| `src/features/stock/lib/enqueue-finance-alert.ts`        | Criar aviso ao cruzar; cancelar pendente ao sair                     |
+| `src/features/stock/lib/send-finance-alert-email.ts`     | Montar e enviar via Resend (mesmo cliente e remetente da F6)         |
+| `src/features/stock/lib/process-finance-alerts.ts`       | Pendentes + varredura de itens já em reposição                       |
+| `src/app/api/cron/process-stock-finance-alerts/route.ts` | Rotina `CRON_SECRET`; resposta só com contagens                      |
+| `src/features/stock/actions.ts`                          | Gancho após cadastro, alteração de mínimo, compra e ajuste           |
+| `src/features/stock/lib/apply-withdrawal.ts`             | Gancho após retirada (incluindo override)                            |
+| `src/features/stock/lib/apply-stock-entry.ts`            | Gancho após entrada / pacote                                         |
+| `src/lib/email/resend-client.ts`                         | `getFinanceAlertEmail()` lê `FINANCE_ALERT_EMAIL`                    |
+| `.env.example`                                           | `FINANCE_ALERT_EMAIL` com e-mail de teste só em comentário           |
+| `vercel.json`                                            | Manifesto sem relógio nativo. Job acordado pela VPS a cada 5 minutos |
 
 Hoje e Estoque **sem** mudança visual. Sem acoplamento ao módulo de lembretes.
 

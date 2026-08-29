@@ -1,10 +1,10 @@
 # Fase 7 · Fatia F7-05b · Agendamento pós-cirurgia
 
-| Status | Spec |
-| ------ | ---- |
+| Status          | Spec                                                  |
+| --------------- | ----------------------------------------------------- |
 | código entregue | `specs/2026-08-28-f7-05b-agendamento-pos-cirurgia.md` |
 
-A aba **Pós-cirurgia** agenda o WhatsApp. A WAHA (24h na máquina da clínica) só envia na hora. O ClinRoma guarda o texto e o horário e um cron dispara.
+A aba **Pós-cirurgia** agenda o WhatsApp. A WAHA (24h na máquina da clínica) só envia na hora. O ClinRoma guarda o texto e o horário. O relógio é a VPS Campinas, a cada 5 minutos. **Enviar agora** não passa pelo relógio.
 
 A aba Anamnese **não** muda nesta fatia.
 
@@ -14,7 +14,7 @@ A aba Anamnese **não** muda nesta fatia.
 - **Agendar envio** (funciona mesmo com o canal ausente: a mensagem espera)
 - Atalho **Enviar agora** (continua exigindo o canal)
 - **Cancelar** o que ainda está Agendado
-- Cron a cada 5 min: a mensagem sai até 5 minutos depois do horário (**só Pro ou disparo externo**; conta **Hobby** atual: 1x/dia)
+- Job a cada 5 min via VPS: a mensagem sai até 5 minutos depois do horário. Hospedagem Hobby sem relógio nativo. **Enviar agora** é independente do relógio.
 
 **Não entrega:** modelo de texto, escolher destino, editar o agendado, inbox, QR, instalar a WAHA.
 
@@ -23,8 +23,8 @@ A aba Anamnese **não** muda nesta fatia.
 1. Login dentista (`dentist@clinroma.dev`) → Maria Silva → Pós-cirurgia
 2. Texto + data/hora futura → **Agendar envio** → lista mostra Agendado
 3. Recarregar: o registro permanece
-4. Com o canal no ar, chamar o cron ou esperar 5 min → Enviado
-5. **Enviar agora** segue o disparo imediato
+4. Com o canal no ar, a VPS acorda o job (até 5 min depois do horário) → Enviado
+5. **Enviar agora** segue o disparo imediato, sem o relógio
 6. **Cancelar** num Agendado impede o disparo
 
 Canal ausente: Enviar agora desabilitado; agendar grava.

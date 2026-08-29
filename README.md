@@ -121,7 +121,7 @@ curl -k -H "Authorization: Bearer SEU_CRON_SECRET" https://localhost:3000/api/cr
 
 Deploy produção: checklist em `docs/manual-dev/08-fase-6-lembrete-piloto.md`.
 
-**Vercel Hobby (conta atual):** cron nativo só 1 vez por dia. O `vercel.json` com `*/5 * * * *` **quebra o deploy**. Enviar agora não usa cron. Agendar no ar: chamar o GET com `CRON_SECRET`, ou subir para Pro.
+**Relógio do piloto:** VPS Campinas, a cada 5 minutos. Os jobs são as quatro rotinas do app publicado (expiração da fila, lembretes, estoque baixo ao financeiro, mensagens agendadas ao paciente). A hospedagem Hobby não registra relógio nativo. **Enviar agora** não usa o relógio.
 
 #### Contas de teste (desenvolvimento)
 

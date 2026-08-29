@@ -11,7 +11,7 @@ A Fase 7 inteira **ainda está aberta**. Este capítulo cobre o e-mail de reposi
 - Aviso por e-mail quando o insumo **entra em reposição** (mínimo > 0 e quantidade atual **menor** que o mínimo, incluindo zerado)
 - Um e-mail por insumo por episódio; segunda queda no mesmo episódio não reenvia
 - Pendente é cancelado se o item for reposto antes do envio
-- Varredura a cada 5 min: retentativa + itens já abaixo (ex.: Anestésico do seed) sem reenviar a cada ciclo
+- Varredura a cada 5 min via VPS: retentativa + itens já abaixo (ex.: Anestésico do seed) sem reenviar a cada ciclo. Hospedagem Hobby sem relógio nativo.
 - Destino: `FINANCE_ALERT_EMAIL` no ambiente. Vazio ou inválido: **não dispara**
 
 **Não entrega:** tela `/configuracoes`, digest com vários insumos, painel de falhas deste aviso, WhatsApp, mudança visual na Hoje/Estoque, fechamento da Fase 7 inteira. Endereço de produção do Felipe continua pendente.
