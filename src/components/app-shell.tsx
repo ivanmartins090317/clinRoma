@@ -4,6 +4,7 @@ import {
   CalendarDays,
   Home,
   LayoutGrid,
+  MessageCircle,
   Package,
   PanelLeft,
   QrCode,
@@ -30,6 +31,8 @@ interface AppShellProps {
   displayName: string;
   role: UserRole;
   activeDentistCount: number;
+  whatsappSessionStatus?: string | null;
+  showWhatsAppChip?: boolean;
 }
 
 const NAV_ICONS: Record<string, LucideIcon> = {
@@ -39,13 +42,16 @@ const NAV_ICONS: Record<string, LucideIcon> = {
   waitlist: LayoutGrid,
   stock: Package,
   "stock-scan": QrCode,
+  whatsapp: MessageCircle,
 };
 
-/** Módulos da barra inferior mobile (5 itens; Scan QR fica sob Estoque). */
+/** Módulos da barra inferior mobile (5 itens; Scan QR e WhatsApp ficam fora). */
 export function getMobileNavModules(
   modules: readonly ClinicModule[],
 ): ClinicModule[] {
-  return modules.filter((module) => module.id !== "stock-scan");
+  return modules.filter(
+    (module) => module.id !== "stock-scan" && module.id !== "whatsapp",
+  );
 }
 
 export function filterModulesByAccess(
@@ -63,7 +69,17 @@ function isNavActive(pathname: string, href: string): boolean {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-function EnvChips({ activeDentistCount }: { activeDentistCount: number }) {
+function EnvChips({
+  activeDentistCount,
+  showWhatsAppChip = false,
+  whatsappSessionStatus = null,
+}: {
+  activeDentistCount: number;
+  showWhatsAppChip?: boolean;
+  whatsappSessionStatus?: string | null;
+}) {
+  const whatsappWorking = whatsappSessionStatus === "WORKING";
+
   return (
     <div
       aria-label="Estado do sistema"
@@ -98,6 +114,26 @@ function EnvChips({ activeDentistCount }: { activeDentistCount: number }) {
         />
         QR estoque ativo
       </span>
+      {showWhatsAppChip ? (
+        <span
+          className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-neo-cream-line bg-neo-cream-soft px-2.5 py-1 text-[12.5px] text-muted-foreground"
+          title={
+            whatsappWorking
+              ? "WhatsApp da clínica conectado"
+              : "WhatsApp da clínica desconectado"
+          }
+        >
+          <span
+            aria-hidden
+            className={
+              whatsappWorking
+                ? "size-1.75 rounded-full bg-priority-green"
+                : "size-1.75 animate-pulse rounded-full bg-priority-red"
+            }
+          />
+          {whatsappWorking ? "WhatsApp ligado" : "WhatsApp desligado"}
+        </span>
+      ) : null}
     </div>
   );
 }
@@ -164,6 +200,8 @@ export function AppShell({
   displayName,
   role,
   activeDentistCount,
+  whatsappSessionStatus = null,
+  showWhatsAppChip = false,
 }: AppShellProps) {
   const pathname = usePathname();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(
@@ -284,7 +322,11 @@ export function AppShell({
         <header className="safe-area-top hidden border-b border-neo-cream-line bg-neo-white md:block">
           <div className="flex items-center justify-between gap-4 px-7 py-2.5">
             <div className="flex min-w-0 items-center gap-3">
-              <EnvChips activeDentistCount={activeDentistCount} />
+              <EnvChips
+                activeDentistCount={activeDentistCount}
+                showWhatsAppChip={showWhatsAppChip}
+                whatsappSessionStatus={whatsappSessionStatus}
+              />
             </div>
             <div className="flex shrink-0 items-center gap-2.5 text-sm text-muted-foreground">
               <span>{displayName}</span>

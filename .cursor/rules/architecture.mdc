@@ -16,7 +16,7 @@ src/
     fila/resposta/  link público do paciente
     api/            webhooks e jobs
   features/
-    agenda/ · patients/ · records/ · stock/ · waitlist/ · reminders/
+    agenda/ · patients/ · records/ · stock/ · waitlist/ · reminders/ · whatsapp/
       components/ · actions.ts · queries.ts · schemas.ts
   components/ui/    shadcn
   lib/

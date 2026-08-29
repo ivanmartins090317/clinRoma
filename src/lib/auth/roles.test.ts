@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  canWriteWhatsAppSession,
+  refuseWhatsAppWrite,
+} from "@/features/whatsapp/permissions";
+import {
   canAccessModule,
   canAccessPath,
   getAllowedModuleIds,
@@ -22,8 +26,34 @@ const ROLES: UserRole[] = [
 
 describe("roles matrix", () => {
   it("admin acessa todos os módulos com escrita", () => {
-    expect(getAllowedModuleIds("admin")).toHaveLength(6);
+    expect(getAllowedModuleIds("admin")).toHaveLength(7);
     expect(getModuleAccess("admin", "stock-scan")).toBe("write");
+    expect(getModuleAccess("admin", "whatsapp")).toBe("write");
+  });
+
+  it("recepção escreve no WhatsApp; dentista, auxiliar e visualizador não", () => {
+    expect(getModuleAccess("reception", "whatsapp")).toBe("write");
+    expect(canWriteWhatsAppSession("reception")).toBe(true);
+    expect(canWriteWhatsAppSession("admin")).toBe(true);
+    expect(canWriteWhatsAppSession("dentist")).toBe(false);
+    expect(canWriteWhatsAppSession("room_assistant")).toBe(false);
+    expect(canWriteWhatsAppSession("viewer")).toBe(false);
+    expect(canAccessPath("reception", "/whatsapp")).toBe(true);
+    expect(canAccessPath("admin", "/whatsapp")).toBe(true);
+    expect(canAccessPath("dentist", "/whatsapp")).toBe(false);
+    expect(canAccessPath("room_assistant", "/whatsapp")).toBe(false);
+    expect(canAccessPath("viewer", "/whatsapp")).toBe(false);
+    expect(refuseWhatsAppWrite("dentist")).toBe(
+      "Sem permissão para gerenciar o WhatsApp da clínica.",
+    );
+    expect(refuseWhatsAppWrite("room_assistant")).toBe(
+      "Sem permissão para gerenciar o WhatsApp da clínica.",
+    );
+    expect(refuseWhatsAppWrite("viewer")).toBe(
+      "Sem permissão para gerenciar o WhatsApp da clínica.",
+    );
+    expect(refuseWhatsAppWrite("admin")).toBeNull();
+    expect(refuseWhatsAppWrite("reception")).toBeNull();
   });
 
   it("auxiliar de sala só acessa estoque e scan", () => {
@@ -55,6 +85,7 @@ describe("route helpers", () => {
   it("resolve módulo correto para paths aninhados", () => {
     expect(resolveModuleForPath("/estoque/scan")).toBe("stock-scan");
     expect(resolveModuleForPath("/estoque")).toBe("stock");
+    expect(resolveModuleForPath("/whatsapp")).toBe("whatsapp");
     expect(resolveModuleForPath("/fila/resposta/token")).toBeNull();
   });
 
@@ -63,6 +94,7 @@ describe("route helpers", () => {
     expect(isPublicRoute("/fila/resposta/abc")).toBe(true);
     expect(isAuthenticatedRoute("/fila/resposta/abc")).toBe(false);
     expect(isAuthenticatedRoute("/agenda")).toBe(true);
+    expect(isAuthenticatedRoute("/whatsapp")).toBe(true);
   });
 
   it("sanitizeReturnTo bloqueia redirect aberto", () => {

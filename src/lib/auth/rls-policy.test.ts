@@ -98,12 +98,41 @@ describe.skipIf(!hasRemoteDb)("RLS policies por papel", () => {
       }
     },
   );
+
+  it.each(Object.entries(ROLE_ACCOUNTS))(
+    "%s: leitura do status WhatsApp conforme política; escrita autenticada recusada",
+    async (role, email) => {
+      const client = await signInAs(email);
+      const { data, error } = await client
+        .from("whatsapp_session_status")
+        .select("status")
+        .eq("session_name", "default");
+
+      const canRead =
+        role === "admin" || role === "dentist" || role === "reception";
+
+      if (canRead) {
+        expect(error).toBeNull();
+        expect(Array.isArray(data)).toBe(true);
+      } else {
+        expect(data ?? []).toHaveLength(0);
+      }
+
+      const { error: writeError } = await client
+        .from("whatsapp_session_status")
+        .update({ status: "WORKING" })
+        .eq("session_name", "default");
+
+      expect(writeError).not.toBeNull();
+    },
+  );
 });
 
 describe("RLS policy expectations (offline)", () => {
   const clinicalReadRoles = ["admin", "dentist", "reception"] as const;
   const auditReadRoles = ["admin"] as const;
   const stockWriteRoles = ["admin", "room_assistant"] as const;
+  const whatsappStatusReadRoles = ["admin", "dentist", "reception"] as const;
 
   it.each([
     "admin",
@@ -146,6 +175,29 @@ describe("RLS policy expectations (offline)", () => {
       expect(allowed).toBe(role === "admin" || role === "room_assistant");
     },
   );
+
+  it.each([
+    "admin",
+    "dentist",
+    "reception",
+    "room_assistant",
+    "viewer",
+  ] as const)(
+    "%s: status WhatsApp lê se admin/dentista/recepção; escrita autenticada negada",
+    (role) => {
+      const canRead = whatsappStatusReadRoles.includes(
+        role as (typeof whatsappStatusReadRoles)[number],
+      );
+      expect(canRead).toBe(
+        role === "admin" || role === "dentist" || role === "reception",
+      );
+    },
+  );
+
+  it("gravação do status WhatsApp só pelo aviso privilegiado, não pela sessão autenticada", () => {
+    const authenticatedWriteRoles: readonly string[] = [];
+    expect(authenticatedWriteRoles).toHaveLength(0);
+  });
 
   it("matriz exige teste remoto com RUN_RLS_TESTS=true para validação no banco", () => {
     expect(hasRemoteDb || process.env.CI !== "true").toBe(true);

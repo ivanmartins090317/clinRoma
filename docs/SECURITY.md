@@ -58,6 +58,15 @@
 - Agendamento pós-cirurgia: o job dispara o texto já gravado; destino mascarado; sem corpo em log. Cancelar só o pendente. Hospedagem Hobby: sem relógio nativo. O relógio é a VPS Campinas, a cada 5 minutos.
 - Oferta da fila: disparo imediato no `createSlotOfferAction`; falha grava `patient_messages` `slot_offer` pendente. O mesmo cron `/api/cron/process-patient-messages` retenta. Depois de 40 min o job cancela sem enviar link morto. Texto sem nome do paciente, CPF ou prontuário.
 
+## WhatsApp · tela de pareamento e aviso de sessão
+
+- Chave e endereço do gateway **só no servidor**. O navegador recebe o QR pelo proxy autenticado (`/api/whatsapp/qr`). Sem cache público (`Cache-Control: no-store`).
+- Aviso público `/api/webhooks/waha`: só evento de mudança de sessão (`session.status`). HMAC sha512 no header `X-Webhook-Hmac` com `WHATSAPP_WEBHOOK_SECRET`. **Não** reutilizar `CRON_SECRET`.
+- Assinatura inválida ou ausente: recusa, status antigo permanece. Aviso de outro tipo: ignora, não grava.
+- Quem está autenticado **lê** o status (admin, dentista, recepção) se o papel tiver direito. Ninguém grava o status pela sessão. Gravação só pelo aviso, com `service_role`.
+- Aviso de sessão **não** carrega paciente: sem PHI em log (só sessão e status).
+- Admin e recepção: escrita (iniciar, QR, desconectar). Dentista, auxiliar e visualizador: recusa na interface e no servidor (fail secure).
+
 ## PHI / prontuário
 
 - Buckets Storage **privados** (fotos etiqueta, áudio, planilhas).

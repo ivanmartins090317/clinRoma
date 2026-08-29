@@ -2,7 +2,7 @@
 
 Fonte viva do que **ainda falta implementar ou validar**. Atualizar ao concluir cada fase.
 
-Última revisão: **2026-08-29** (relógio VPS + jobs no app publicado).
+Última revisão: **2026-08-29** (F7-10 tela de QR WhatsApp em código; Fase 7 aberta).
 
 ---
 
@@ -213,6 +213,7 @@ Felipe gostou da demo (melhor do que esperava). Código da Fase 7 entra por fati
 - [x] **F7-06** Estoque baixo → e-mail do financeiro (ver `docs/implementation/F7-06-estoque-baixo-financeiro.md`)
 - [x] **F7-07** Cadastro: segundo telefone + observação (parente / sem WhatsApp) (ver `docs/implementation/F7-07-segundo-telefone.md`)
 - [x] **F7-08** Odontograma em **formato de cruz** (FDI, três vistas). Ref: `docs/assets/odontograma-formato-cruz.png` (ver `docs/implementation/F7-08-odontograma-cruz.md`)
+- [x] **F7-10** Tela de QR da sessão WhatsApp (ver `docs/implementation/F7-10-tela-qr-whatsapp.md`)
 
 **Ordem sugerida:** F7-07 → F7-09 → F7-02 → F7-08 → F7-03 → F7-05/F7-04 → F7-06.
 
@@ -252,7 +253,19 @@ Itens de código prontos, ainda sem validação em dispositivo real (fica no fec
 - [ ] **F7-05b canal ausente:** Agendar grava; Enviar agora desabilitado
 - [ ] **F7-05b horário passado:** recusa na tela
 
-### Pendente com o Felipe (não bloqueia F7-01 a F7-09 em código)
+### Homologação operacional · Tela QR WhatsApp (F7-10)
+
+Código entregue. A fatia **não homologa** sem o aviso do gateway no ar. **Não** fecha a Fase 7.
+
+- [ ] Configurar no gateway o aviso `session.status` da sessão `default` apontando para o app publicado, HMAC = `WHATSAPP_WEBHOOK_SECRET` (diferente do `CRON_SECRET`)
+- [ ] Homologar o QR com **número de teste** (~7 dias), não o número pessoal do Felipe
+- [ ] Recepção: abrir `/whatsapp` com status `STOPPED`, ver QR em `SCAN_QR`, parear, chip verde
+- [ ] Admin: desconectar com confirmação; conferir que os disparos param até novo pareamento
+- [ ] Dentista: card na Hoje sem link; `/whatsapp` negado
+- [ ] Auxiliar e visualizador: sem item, chip, card e tela
+- [ ] Chip e card leem o persistido (sem o menu perguntar ao gateway)
+
+### Pendente com o Felipe (não bloqueia F7-01 a F7-10 em código)
 
 - [ ] E-mail do financeiro (F7-06) · endereço de produção; o código já aceita env vazio
 - [ ] 2º telefone obrigatório vs opcional

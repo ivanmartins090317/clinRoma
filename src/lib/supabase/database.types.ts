@@ -669,6 +669,24 @@ export type Database = {
         };
         Relationships: [];
       };
+      whatsapp_session_status: {
+        Row: {
+          session_name: string;
+          status: string;
+          updated_at: string;
+        };
+        Insert: {
+          session_name: string;
+          status: string;
+          updated_at?: string;
+        };
+        Update: {
+          session_name?: string;
+          status?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       audit_log: {
         Row: {
           id: string;

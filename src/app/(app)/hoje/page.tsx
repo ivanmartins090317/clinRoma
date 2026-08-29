@@ -13,6 +13,12 @@ import {
 } from "@/features/agenda/queries";
 import { HomeHero } from "@/components/layout/home-hero";
 import { StatCard } from "@/components/layout/stat-card";
+import { WhatsAppStatusCard } from "@/features/whatsapp/components/whatsapp-status-card";
+import {
+  canOpenWhatsAppPairing,
+  canSeeWhatsAppStatusCard,
+} from "@/features/whatsapp/permissions";
+import { getClinicWhatsAppSessionStatus } from "@/features/whatsapp/queries";
 import { ReminderFailuresPanel } from "@/features/reminders/components/reminder-failures-panel";
 import { ReminderStatusBadge } from "@/features/reminders/components/reminder-status-badge";
 import {
@@ -36,6 +42,7 @@ export default async function HojePage() {
   const session = await requireAuthSession("/hoje");
   const isAdmin = session.profile.role === "admin";
   const showScanShortcut = canAccessModule(session.profile.role, "stock-scan");
+  const showWhatsAppCard = canSeeWhatsAppStatusCard(session.profile.role);
 
   const [
     dentists,
@@ -43,12 +50,14 @@ export default async function HojePage() {
     waitlistSummary,
     stockAlerts,
     failedReminders,
+    whatsappSessionStatus,
   ] = await Promise.all([
     getActiveDentists(),
     getTodayAppointments(),
     getWaitlistSummary(),
     getStockAlerts(),
     isAdmin ? getRecentFailedReminders() : Promise.resolve([]),
+    showWhatsAppCard ? getClinicWhatsAppSessionStatus() : Promise.resolve(null),
   ]);
 
   const remindersByAppointmentId = await getRemindersByAppointmentIds(
@@ -104,6 +113,13 @@ export default async function HojePage() {
           warn={stockAlerts.length > 0}
         />
       </section>
+
+      {showWhatsAppCard ? (
+        <WhatsAppStatusCard
+          status={whatsappSessionStatus}
+          showPairingLink={canOpenWhatsAppPairing(session.profile.role)}
+        />
+      ) : null}
 
       <section className="rounded-(--radius) border border-[#f0e3db] bg-neo-white p-5 shadow-neo md:p-5.5">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
@@ -296,7 +312,12 @@ export default async function HojePage() {
                     {SUPPLY_UNIT_LABELS[alert.unit]}
                   </p>
                 </div>
-                <Button asChild variant="secondary" size="sm" className="min-h-11 w-full sm:w-auto">
+                <Button
+                  asChild
+                  variant="secondary"
+                  size="sm"
+                  className="min-h-11 w-full sm:w-auto"
+                >
                   <Link href="/estoque">Ver insumo</Link>
                 </Button>
               </li>

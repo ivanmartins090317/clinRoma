@@ -58,6 +58,12 @@ export const CLINROMA_MODULES: ClinicModule[] = [
     href: "/estoque/scan",
     description: "Retirada por leitura de pacote",
   },
+  {
+    id: "whatsapp",
+    label: "WhatsApp",
+    href: "/whatsapp",
+    description: "Pareamento da sessão da clínica",
+  },
 ];
 
 export const WAITLIST_COLORS: Record<

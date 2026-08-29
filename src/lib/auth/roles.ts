@@ -13,6 +13,7 @@ const MODULE_IDS = [
   "waitlist",
   "stock",
   "stock-scan",
+  "whatsapp",
 ] as const;
 
 export type ModuleId = (typeof MODULE_IDS)[number];
@@ -25,6 +26,7 @@ const ROLE_MODULE_MATRIX: Record<UserRole, Record<ModuleId, ModuleAccess>> = {
     waitlist: "write",
     stock: "write",
     "stock-scan": "write",
+    whatsapp: "write",
   },
   dentist: {
     today: "read",
@@ -33,6 +35,7 @@ const ROLE_MODULE_MATRIX: Record<UserRole, Record<ModuleId, ModuleAccess>> = {
     waitlist: "read",
     stock: "read",
     "stock-scan": "none",
+    whatsapp: "none",
   },
   reception: {
     today: "read",
@@ -41,6 +44,7 @@ const ROLE_MODULE_MATRIX: Record<UserRole, Record<ModuleId, ModuleAccess>> = {
     waitlist: "write",
     stock: "read",
     "stock-scan": "none",
+    whatsapp: "write",
   },
   room_assistant: {
     today: "none",
@@ -49,6 +53,7 @@ const ROLE_MODULE_MATRIX: Record<UserRole, Record<ModuleId, ModuleAccess>> = {
     waitlist: "none",
     stock: "read",
     "stock-scan": "write",
+    whatsapp: "none",
   },
   viewer: {
     today: "read",
@@ -57,6 +62,7 @@ const ROLE_MODULE_MATRIX: Record<UserRole, Record<ModuleId, ModuleAccess>> = {
     waitlist: "none",
     stock: "none",
     "stock-scan": "none",
+    whatsapp: "none",
   },
 };
 
@@ -67,6 +73,7 @@ const PATH_MODULE_MAP: Array<{ prefix: string; moduleId: ModuleId }> = [
   { prefix: "/fila", moduleId: "waitlist" },
   { prefix: "/estoque/scan", moduleId: "stock-scan" },
   { prefix: "/estoque", moduleId: "stock" },
+  { prefix: "/whatsapp", moduleId: "whatsapp" },
 ];
 
 export const AUTHENTICATED_ROUTE_PREFIXES = [
@@ -75,6 +82,7 @@ export const AUTHENTICATED_ROUTE_PREFIXES = [
   "/pacientes",
   "/fila",
   "/estoque",
+  "/whatsapp",
   "/acesso-negado",
 ] as const;
 

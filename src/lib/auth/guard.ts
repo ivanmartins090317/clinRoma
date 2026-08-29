@@ -36,6 +36,7 @@ export function getDeniedModuleLabel(pathname: string): string | null {
     waitlist: "Fila Kanban",
     stock: "Estoque",
     "stock-scan": "Scan QR",
+    whatsapp: "WhatsApp",
   };
 
   if (!moduleId) {
