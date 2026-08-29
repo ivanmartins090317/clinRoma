@@ -28,7 +28,7 @@
 - Página pública: só nome parcial + horário oferecido; sem prontuário completo.
 - Checkbox de consentimento antes de aceitar/recusar.
 - Registrar `patient_slot_responses` com timestamp; sem logar IP completo em texto claro (hash se necessário).
-- Link enviado por canal acordado com a clínica (SMS/WhatsApp manual da recepção na v1).
+- Link enviado no disparo WhatsApp ao ofertar (texto fixo + URL). Copiar o link permanece como fallback. Página pública e token de 40 min não mudam.
 
 ## LGPD / convite de anamnese
 
@@ -55,7 +55,8 @@
 - Logs e auditoria: destino **mascarado**, sem corpo da mensagem, sem nome completo do paciente.
 - Quem envia = quem já escreve prontuário (admin, dentista, recepção). Visualizador e auxiliar: recusa na interface e no servidor (fail secure).
 - Destino: telefone do cadastro se aproveitável; senão o segundo telefone. Sem flag "tem WhatsApp".
-- Agendamento pós-cirurgia: o cron dispara o texto já gravado; destino mascarado; sem corpo em log. Cancelar só o pendente.
+- Agendamento pós-cirurgia: o cron dispara o texto já gravado; destino mascarado; sem corpo em log. Cancelar só o pendente. Conta **Vercel Hobby**: cron nativo só 1x/dia; intervalo `*/5` não é válido nesse plano.
+- Oferta da fila: disparo imediato no `createSlotOfferAction`; falha grava `patient_messages` `slot_offer` pendente. O mesmo cron `/api/cron/process-patient-messages` retenta. Depois de 40 min o job cancela sem enviar link morto. Texto sem nome do paciente, CPF ou prontuário.
 
 ## PHI / prontuário
 

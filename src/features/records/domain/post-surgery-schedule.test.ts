@@ -60,10 +60,19 @@ describe("horário de agendamento (America/Sao_Paulo)", () => {
 describe("vencimento para o cron", () => {
   const now = new Date("2026-08-29T11:00:00.000Z");
 
-  it("só processa pós-cirurgia pendente com horário vencido", () => {
+  it("processa pós-cirurgia ou oferta da fila pendente com horário vencido", () => {
     expect(
       isDueScheduledMessage({
         purpose: PATIENT_MESSAGE_PURPOSE.postSurgery,
+        status: PATIENT_MESSAGE_STATUS.pending,
+        scheduledAt: "2026-08-29T11:00:00.000Z",
+        attemptCount: 0,
+        now,
+      }),
+    ).toBe(true);
+    expect(
+      isDueScheduledMessage({
+        purpose: PATIENT_MESSAGE_PURPOSE.slotOffer,
         status: PATIENT_MESSAGE_STATUS.pending,
         scheduledAt: "2026-08-29T11:00:00.000Z",
         attemptCount: 0,

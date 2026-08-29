@@ -14,7 +14,7 @@ Manual operacional da fila de encaixe. Registro técnico: [`docs/implementation/
 
 ## O que não entrega
 
-- Envio automático de SMS/WhatsApp
+- Envio automático de SMS (WhatsApp da oferta: ver [18-fase-4-fila-oferta-whatsapp.md](./18-fase-4-fila-oferta-whatsapp.md))
 - Reoferta em cascata ao expirar
 - Homologação `manual-report` formal (Fase 6)
 
@@ -35,8 +35,8 @@ src/app/api/cron/expire-slot-offers/   job
 
 1. Recepção inclui paciente na fila (`/fila` → Nova entrada)
 2. Cancelamento na agenda libera slot → **Oferecer vaga na fila**
-3. Sistema valida conflito, gera link, card vai para **Oferta enviada**
-4. Recepção copia link e envia manualmente (WhatsApp/SMS)
+3. Sistema valida conflito, gera link, dispara WhatsApp e o card vai para **Oferta enviada**
+4. Recepção confere o status do WhatsApp e, se precisar, copia o link
 5. Paciente abre link no celular, marca LGPD, aceita
 6. Consulta aparece na agenda e em Hoje; card vai para **Agendado**
 
@@ -84,7 +84,7 @@ npm run test -- src/features/waitlist
 
 ## Homologação manual sugerida
 
-- [ ] Recepção: incluir paciente, ofertar horário, copiar link
+- [ ] Recepção: incluir paciente, ofertar horário, conferir WhatsApp e copiar link
 - [ ] Paciente (viewport estreita): aceitar pelo link seed
 - [ ] Verificar consulta confirmada na agenda
 - [ ] Recusar oferta em cenário separado (card volta a Aguardando)

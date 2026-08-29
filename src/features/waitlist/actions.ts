@@ -25,6 +25,12 @@ import { requireAuthSession } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
 import { hasSupabaseConfig } from "@/lib/env";
 import type { UserRole } from "@/types/clinroma";
+import {
+  cancelPendingSlotOfferMessages,
+  sendSlotOfferWhatsApp,
+} from "@/features/waitlist/lib/send-slot-offer-whatsapp";
+
+import type { WhatsappDeliveryStatus } from "@/features/waitlist/domain/slot-offer-whatsapp";
 
 export interface WaitlistActionResult {
   success?: boolean;
@@ -32,6 +38,8 @@ export interface WaitlistActionResult {
   offerUrl?: string;
   offerToken?: string;
   entryId?: string;
+  expiresAt?: string;
+  whatsappStatus?: WhatsappDeliveryStatus;
 }
 
 function canWriteWaitlist(role: UserRole): boolean {
@@ -274,7 +282,7 @@ export async function createSlotOfferAction(
     const supabase = await createClient();
     const { data: entry, error: entryError } = await supabase
       .from("waitlist_entries")
-      .select("id, status, preferred_dentist_id")
+      .select("id, status, preferred_dentist_id, patient_id")
       .eq("id", parsed.data.entryId)
       .maybeSingle();
 
@@ -338,6 +346,26 @@ export async function createSlotOfferAction(
     const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://localhost:3000";
     const offerUrl = `${appUrl.replace(/\/$/, "")}/fila/resposta/${token}`;
 
+    const { data: dentist } = await supabase
+      .from("dentists")
+      .select("full_name")
+      .eq("id", parsed.data.dentistId)
+      .maybeSingle();
+
+    let whatsappStatus: WhatsappDeliveryStatus = "skipped";
+    try {
+      const delivery = await sendSlotOfferWhatsApp({
+        patientId: entry.patient_id,
+        actorId: session.profile.id,
+        offerUrl,
+        startsAt,
+        dentistName: dentist?.full_name ?? "Dentista",
+      });
+      whatsappStatus = delivery.status;
+    } catch {
+      whatsappStatus = "queued";
+    }
+
     revalidatePath("/fila");
     revalidatePath("/hoje");
     revalidatePath("/agenda");
@@ -347,6 +375,8 @@ export async function createSlotOfferAction(
       offerUrl,
       offerToken: token,
       entryId: parsed.data.entryId,
+      expiresAt: expiresAt.toISOString(),
+      whatsappStatus,
     };
   } catch (error) {
     return {
@@ -384,17 +414,29 @@ export async function cancelSlotOfferAction(
       return { error: mapDatabaseError(offerError) };
     }
 
-    const { error: entryError } = await supabase
+    const { data: entry, error: entryError } = await supabase
       .from("waitlist_entries")
       .update({
         status: "waiting",
         updated_at: new Date().toISOString(),
       })
       .eq("id", parsed.data.entryId)
-      .eq("status", "offered");
+      .eq("status", "offered")
+      .select("patient_id")
+      .maybeSingle();
 
     if (entryError) {
       return { error: mapDatabaseError(entryError) };
+    }
+
+    if (entry?.patient_id) {
+      try {
+        await cancelPendingSlotOfferMessages(entry.patient_id);
+      } catch {
+        console.error(
+          "[waitlist] não foi possível cancelar WhatsApp pendente da oferta",
+        );
+      }
     }
 
     revalidatePath("/fila");

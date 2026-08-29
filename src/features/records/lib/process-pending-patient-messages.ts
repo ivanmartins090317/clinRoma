@@ -7,13 +7,16 @@ import {
 } from "@/features/records/domain/patient-message";
 import {
   POST_SURGERY_MAX_ATTEMPTS,
+  RETRYABLE_MESSAGE_PURPOSES,
   isDueScheduledMessage,
   nextStatusAfterSendAttempt,
 } from "@/features/records/domain/post-surgery-schedule";
+import { isSlotOfferWhatsAppExpired } from "@/features/waitlist/domain/slot-offer-whatsapp";
 import { createAdminClient } from "@/lib/supabase/admin";
 import {
   isWhatsAppChannelConfigured,
   sendWhatsApp,
+  type SendWhatsAppResult,
 } from "@/lib/whatsapp/send-whatsapp";
 
 export interface ProcessPendingPatientMessagesResult {
@@ -23,7 +26,21 @@ export interface ProcessPendingPatientMessagesResult {
   skipped: number;
 }
 
-export async function processPendingPatientMessages(): Promise<ProcessPendingPatientMessagesResult> {
+export interface ProcessPendingPatientMessagesDeps {
+  isChannelConfigured?: () => boolean;
+  admin?: ReturnType<typeof createAdminClient>;
+  send?: (input: {
+    destino: string;
+    texto: string;
+  }) => Promise<SendWhatsAppResult>;
+  now?: Date;
+}
+
+const RETRYABLE_PURPOSES = [...RETRYABLE_MESSAGE_PURPOSES];
+
+export async function processPendingPatientMessages(
+  deps: ProcessPendingPatientMessagesDeps = {},
+): Promise<ProcessPendingPatientMessagesResult> {
   const result: ProcessPendingPatientMessagesResult = {
     processed: 0,
     sent: 0,
@@ -31,20 +48,22 @@ export async function processPendingPatientMessages(): Promise<ProcessPendingPat
     skipped: 0,
   };
 
-  if (!isWhatsAppChannelConfigured()) {
+  const isConfigured = deps.isChannelConfigured ?? isWhatsAppChannelConfigured;
+  if (!isConfigured()) {
     return result;
   }
 
-  const admin = createAdminClient();
-  const now = new Date();
+  const admin = deps.admin ?? createAdminClient();
+  const send = deps.send ?? sendWhatsApp;
+  const now = deps.now ?? new Date();
   const nowIso = now.toISOString();
 
   const { data: rows, error } = await admin
     .from("patient_messages")
     .select(
-      "id, patient_id, destination_digits, body, status, purpose, scheduled_at, attempt_count",
+      "id, patient_id, destination_digits, body, status, purpose, scheduled_at, attempt_count, created_at",
     )
-    .eq("purpose", PATIENT_MESSAGE_PURPOSE.postSurgery)
+    .in("purpose", RETRYABLE_PURPOSES)
     .eq("status", PATIENT_MESSAGE_STATUS.pending)
     .not("scheduled_at", "is", null)
     .lte("scheduled_at", nowIso)
@@ -53,12 +72,28 @@ export async function processPendingPatientMessages(): Promise<ProcessPendingPat
     .limit(25);
 
   if (error) {
-    throw new Error("Não foi possível buscar mensagens pós-cirurgia pendentes");
+    throw new Error("Não foi possível buscar mensagens pendentes");
   }
 
   const patientIds = new Set<string>();
 
   for (const row of rows ?? []) {
+    if (
+      row.purpose === PATIENT_MESSAGE_PURPOSE.slotOffer &&
+      isSlotOfferWhatsAppExpired(row.created_at, now)
+    ) {
+      await admin
+        .from("patient_messages")
+        .update({
+          status: PATIENT_MESSAGE_STATUS.cancelled,
+          error_message: null,
+        })
+        .eq("id", row.id)
+        .eq("status", PATIENT_MESSAGE_STATUS.pending);
+      result.skipped += 1;
+      continue;
+    }
+
     if (
       !isDueScheduledMessage({
         purpose: row.purpose,
@@ -89,7 +124,7 @@ export async function processPendingPatientMessages(): Promise<ProcessPendingPat
 
     result.processed += 1;
 
-    const sendResult = await sendWhatsApp({
+    const sendResult = await send({
       destino: row.destination_digits,
       texto: row.body,
     });

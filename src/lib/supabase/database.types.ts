@@ -734,7 +734,8 @@ export type Database = {
       stock_finance_alert_status: "pending" | "sent" | "failed" | "cancelled";
       anamnesis_invite_purpose: "pre_consult" | "office";
       anamnesis_invite_status: "open" | "used" | "revoked";
-      patient_message_purpose: "post_surgery" | "anamnesis_invite";
+      patient_message_purpose:
+        "post_surgery" | "anamnesis_invite" | "slot_offer";
       patient_message_contact_source: "patient_phone" | "secondary_phone";
       patient_message_status: "pending" | "sent" | "failed" | "cancelled";
     };

@@ -5,6 +5,7 @@ export const PATIENT_MESSAGE_BODY_MAX = 2000;
 export const PATIENT_MESSAGE_PURPOSE = {
   postSurgery: "post_surgery",
   anamnesisInvite: "anamnesis_invite",
+  slotOffer: "slot_offer",
 } as const;
 
 export const PATIENT_MESSAGE_STATUS = {

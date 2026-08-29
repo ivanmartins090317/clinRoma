@@ -14,7 +14,7 @@ A aba Anamnese **não** muda nesta fatia.
 - **Agendar envio** (funciona mesmo com o canal ausente: a mensagem espera)
 - Atalho **Enviar agora** (continua exigindo o canal)
 - **Cancelar** o que ainda está Agendado
-- Cron a cada 5 min: a mensagem sai até 5 minutos depois do horário
+- Cron a cada 5 min: a mensagem sai até 5 minutos depois do horário (**só Pro ou disparo externo**; conta **Hobby** atual: 1x/dia)
 
 **Não entrega:** modelo de texto, escolher destino, editar o agendado, inbox, QR, instalar a WAHA.
 

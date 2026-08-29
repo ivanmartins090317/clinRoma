@@ -46,4 +46,5 @@ Adapter WAHA (`send-whatsapp.ts`) **não** mudou o contrato HTTP.
 ## Pendências
 
 - Homologação com WAHA no ar e número de teste: agendar, esperar o cron (ou chamar o endpoint), cancelar, Enviar agora
+- **Vercel Hobby (2026-08-28):** cron nativo 1x/dia. `*/5` no `vercel.json` falha o deploy. Até Pro: curl/`CRON_SECRET` ou job na VPS. Enviar agora não depende disso.
 - Ops da VPS continua fora desta fatia

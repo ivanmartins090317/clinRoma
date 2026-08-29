@@ -22,7 +22,7 @@ export async function GET(request: Request) {
     });
   } catch {
     return NextResponse.json(
-      { error: "Não foi possível processar mensagens pós-cirurgia" },
+      { error: "Não foi possível processar mensagens pendentes" },
       { status: 500 },
     );
   }

@@ -74,10 +74,24 @@ export function validateScheduleInput(
   return { scheduledAt };
 }
 
+export const RETRYABLE_MESSAGE_PURPOSES = [
+  PATIENT_MESSAGE_PURPOSE.postSurgery,
+  PATIENT_MESSAGE_PURPOSE.slotOffer,
+] as const;
+
+export function isRetryableMessagePurpose(
+  purpose: PatientMessagePurpose | string,
+): boolean {
+  return (
+    purpose === PATIENT_MESSAGE_PURPOSE.postSurgery ||
+    purpose === PATIENT_MESSAGE_PURPOSE.slotOffer
+  );
+}
+
 export function isDueScheduledMessage(
   input: ScheduledMessageDueInput,
 ): boolean {
-  if (input.purpose !== PATIENT_MESSAGE_PURPOSE.postSurgery) return false;
+  if (!isRetryableMessagePurpose(input.purpose)) return false;
   if (input.status !== PATIENT_MESSAGE_STATUS.pending) return false;
   if (input.attemptCount >= POST_SURGERY_MAX_ATTEMPTS) return false;
   if (!input.scheduledAt) return false;

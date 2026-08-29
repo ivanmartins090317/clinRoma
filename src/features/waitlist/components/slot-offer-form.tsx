@@ -28,6 +28,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { SlotOfferLink } from "@/features/waitlist/components/slot-offer-link";
+import {
+  SLOT_OFFER_WHATSAPP_COPY,
+  type WhatsappDeliveryStatus,
+} from "@/features/waitlist/domain/slot-offer-whatsapp";
 
 interface SlotOfferPrefill {
   dentistId?: string;
@@ -63,12 +67,15 @@ export function SlotOfferForm({
   const [error, setError] = useState<string | null>(null);
   const [offerUrl, setOfferUrl] = useState<string | null>(null);
   const [expiresAt, setExpiresAt] = useState<string | null>(null);
+  const [whatsappStatus, setWhatsappStatus] =
+    useState<WhatsappDeliveryStatus | null>(null);
   const [isPending, startTransition] = useTransition();
 
   function resetState() {
     setError(null);
     setOfferUrl(null);
     setExpiresAt(null);
+    setWhatsappStatus(null);
   }
 
   function handleSubmit() {
@@ -94,7 +101,11 @@ export function SlotOfferForm({
 
       if (result.offerUrl) {
         setOfferUrl(result.offerUrl);
-        setExpiresAt(new Date(Date.now() + 40 * 60 * 1000).toISOString());
+        setExpiresAt(
+          result.expiresAt ??
+            new Date(Date.now() + 40 * 60 * 1000).toISOString(),
+        );
+        setWhatsappStatus(result.whatsappStatus ?? "skipped");
         onSuccess?.();
       }
     });
@@ -118,7 +129,11 @@ export function SlotOfferForm({
         </DialogHeader>
 
         {offerUrl && expiresAt ? (
-          <SlotOfferLink offerUrl={offerUrl} expiresAt={expiresAt} />
+          <SlotOfferLink
+            offerUrl={offerUrl}
+            expiresAt={expiresAt}
+            whatsappStatus={whatsappStatus ?? undefined}
+          />
         ) : (
           <div className="space-y-4">
             <div className="space-y-2">
@@ -193,7 +208,9 @@ export function SlotOfferForm({
                 disabled={isPending || !entry}
                 className="min-h-11"
               >
-                {isPending ? "Gerando..." : "Gerar link"}
+                {isPending
+                  ? SLOT_OFFER_WHATSAPP_COPY.offering
+                  : SLOT_OFFER_WHATSAPP_COPY.offerButton}
               </Button>
             </>
           )}

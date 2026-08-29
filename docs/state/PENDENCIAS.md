@@ -2,7 +2,7 @@
 
 Fonte viva do que **ainda falta implementar ou validar**. Atualizar ao concluir cada fase.
 
-Última revisão: **2026-08-28** (F7-05b agendamento pós-cirurgia em código).
+Última revisão: **2026-08-28** (oferta da fila por WhatsApp em código).
 
 ---
 
@@ -92,6 +92,8 @@ Referência: `specs/2026-08-18-fase-4-fila-kanban.md` · `docs/implementation/F4
 - [x] Kanban real em `/fila` (desktop DnD + mobile abas/menu)
 - [x] CRUD fila com LGPD e unicidade de entrada ativa
 - [x] Oferta de horário com token opaco, hash, validade 40 min
+- [x] WhatsApp no instante da oferta (`sendWhatsApp`); copiar link como fallback
+- [x] Falha de envio grava `patient_messages` `slot_offer` pendente no cron `process-patient-messages`
 - [x] Página pública `/fila/resposta/[token]` aceitar/recusar
 - [x] Aceite cria consulta `confirmed` com validação de conflito
 - [x] API pública + cron de expiração
@@ -99,10 +101,11 @@ Referência: `specs/2026-08-18-fase-4-fila-kanban.md` · `docs/implementation/F4
 - [x] Atalho oferta pós-cancelamento na agenda
 - [x] Testes Vitest de domínio (expiração, token, nome parcial, transições)
 - [x] Documentação F4 em `docs/implementation/` e `docs/manual-dev/`
+- [x] Documentação da fatia WhatsApp: `F4-fila-oferta-whatsapp.md`, `18-fase-4-fila-oferta-whatsapp.md`
 
 ### Fechamento operacional (homologação manual)
 
-- [ ] Recepção: incluir paciente, ofertar horário, copiar link
+- [ ] Recepção: incluir paciente, ofertar horário, conferir WhatsApp e copiar link (fallback)
 - [ ] Paciente (mobile/viewport estreita): aceitar link seed → consulta na agenda
 - [ ] Cenário recusa: card volta a Aguardando
 - [ ] Expiração: cron ou curl manual + link expirado na UI pública

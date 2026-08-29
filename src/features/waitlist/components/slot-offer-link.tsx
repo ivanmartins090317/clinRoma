@@ -4,6 +4,11 @@ import { useEffect, useState } from "react";
 
 import { getSlotOfferRemainingMs } from "@/features/waitlist/domain/slot-offer-expiry";
 import {
+  SLOT_OFFER_WHATSAPP_COPY,
+  whatsappStatusNotice,
+  type WhatsappDeliveryStatus,
+} from "@/features/waitlist/domain/slot-offer-whatsapp";
+import {
   formatClinicDateTime,
   formatClinicTime,
 } from "@/features/agenda/types";
@@ -67,9 +72,14 @@ export function SlotOfferCountdown({
 interface SlotOfferLinkProps {
   offerUrl: string;
   expiresAt: string;
+  whatsappStatus?: WhatsappDeliveryStatus;
 }
 
-export function SlotOfferLink({ offerUrl, expiresAt }: SlotOfferLinkProps) {
+export function SlotOfferLink({
+  offerUrl,
+  expiresAt,
+  whatsappStatus,
+}: SlotOfferLinkProps) {
   const [remainingMs, setRemainingMs] = useState(() =>
     getSlotOfferRemainingMs(new Date(expiresAt)),
   );
@@ -95,6 +105,11 @@ export function SlotOfferLink({ offerUrl, expiresAt }: SlotOfferLinkProps) {
 
   return (
     <div className="space-y-2 rounded-lg border border-border bg-muted/40 p-3 text-sm">
+      {whatsappStatus ? (
+        <p className="font-medium text-foreground">
+          {whatsappStatusNotice(whatsappStatus)}
+        </p>
+      ) : null}
       <p className="font-medium text-foreground">
         {formatRemaining(remainingMs)}
       </p>
@@ -104,10 +119,12 @@ export function SlotOfferLink({ offerUrl, expiresAt }: SlotOfferLinkProps) {
         onClick={handleCopy}
         className="inline-flex min-h-11 items-center rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground"
       >
-        {copied ? "Link copiado" : "Copiar link"}
+        {copied
+          ? SLOT_OFFER_WHATSAPP_COPY.copied
+          : SLOT_OFFER_WHATSAPP_COPY.copyLink}
       </button>
       <p className="text-xs text-muted-foreground">
-        Envie este link ao paciente por SMS ou WhatsApp. Válido por 40 minutos.
+        {SLOT_OFFER_WHATSAPP_COPY.fallbackHelp}
       </p>
     </div>
   );

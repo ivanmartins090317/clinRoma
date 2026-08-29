@@ -121,6 +121,8 @@ curl -k -H "Authorization: Bearer SEU_CRON_SECRET" https://localhost:3000/api/cr
 
 Deploy produção: checklist em `docs/manual-dev/08-fase-6-lembrete-piloto.md`.
 
+**Vercel Hobby (conta atual):** cron nativo só 1 vez por dia. O `vercel.json` com `*/5 * * * *` **quebra o deploy**. Enviar agora não usa cron. Agendar no ar: chamar o GET com `CRON_SECRET`, ou subir para Pro.
+
 #### Contas de teste (desenvolvimento)
 
 Senha comum: `ClinRomaDev2026!`
