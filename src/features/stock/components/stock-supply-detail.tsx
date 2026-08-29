@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { StockAdjustmentForm } from "@/features/stock/components/stock-adjustment-form";
 import { StockLabelSheet } from "@/features/stock/components/stock-label-sheet";
 import { StockPackageForm } from "@/features/stock/components/stock-package-form";
+import { StockSupplyNameEditor } from "@/features/stock/components/stock-supply-name-editor";
 import { cn } from "@/lib/utils";
 
 interface StockSupplyDetailProps {
@@ -133,7 +134,11 @@ export function StockSupplyDetail({
     <div className="space-y-6">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h3 className="text-xl font-semibold">{supply.name}</h3>
+          <StockSupplyNameEditor
+            supply={supply}
+            canEdit={canManage}
+            onSaved={onRefresh}
+          />
           <p className="mt-1 text-sm text-muted-foreground">
             Saldo {supply.currentQuantity} {supply.unitLabel} · mínimo{" "}
             {supply.minimumQuantity}
