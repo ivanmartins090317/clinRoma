@@ -2,7 +2,7 @@
 
 Fonte viva do que **ainda falta implementar ou validar**. Atualizar ao concluir cada fase.
 
-Última revisão: **2026-08-29** (F7-10 tela de QR WhatsApp em código; Fase 7 aberta).
+Última revisão: **2026-08-31** (F7-11 gestão de acessos em código; Fase 7 aberta).
 
 ---
 
@@ -265,7 +265,34 @@ Código entregue. A fatia **não homologa** sem o aviso do gateway no ar. **Não
 - [ ] Auxiliar e visualizador: sem item, chip, card e tela
 - [ ] Chip e card leem o persistido (sem o menu perguntar ao gateway)
 
-### Pendente com o Felipe (não bloqueia F7-01 a F7-10 em código)
+### Gestão de acessos · Equipe (F7-11)
+
+Código entregue (ver `docs/implementation/F7-11-gestao-acessos.md`). **Não** fecha a Fase 7.
+
+- [x] Módulo `team` e rota `/equipe` restritos ao admin
+- [x] Criar colaborador com convite por e-mail ou senha temporária
+- [x] Trocar papel, desativar e reativar acesso; reenviar convite
+- [x] Travas no banco: autorrebaixamento e último admin ativo
+- [x] `handle_new_user` deixa de aceitar papel do metadata do signup
+- [x] Botão de conta no celular com os módulos fora da dock e o Sair que faltava
+- [ ] **db:push:** aplicar `028_team_access_f7.sql` no remoto. Sem ela o admin ainda consegue rebaixar o próprio papel: o remoto aceita `UPDATE` em `profiles` mesmo com a `001` concedendo só `SELECT` (drift), e é a `028` que revoga o grant amplo e instala as travas
+- [ ] Conferir no painel Supabase se o signup público está desabilitado
+- [ ] Confirmar `RESEND_FROM_EMAIL` antes de usar o modo convite por e-mail
+
+Homologação manual pendente:
+
+- [ ] Admin cria colaborador por convite; o link define senha e o login entra
+- [ ] Admin cria colaborador com senha temporária; a senha aparece uma vez e o login entra
+- [ ] Admin troca papel de um colaborador e o menu dele muda na sessão seguinte
+- [ ] Admin desativa colaborador e o login recusa com "Conta desativada"
+- [ ] Admin tenta alterar o próprio papel e recebe recusa
+- [ ] Admin tenta rebaixar o único admin ativo e recebe recusa
+- [ ] Dentista, recepção, auxiliar e visualizador não veem o item Equipe e têm `/equipe` negado
+- [x] Celular: botão de conta abre Equipe, WhatsApp e Scan QR para o admin (conferido em 390x844)
+- [ ] Celular: botão de conta mostra só WhatsApp para a recepção e só Scan QR para a auxiliar
+- [ ] Celular: Sair da conta funciona pelo botão de conta em iPhone e Android real
+
+### Pendente com o Felipe (não bloqueia F7-01 a F7-11 em código)
 
 - [ ] E-mail do financeiro (F7-06) · endereço de produção; o código já aceita env vazio
 - [ ] 2º telefone obrigatório vs opcional

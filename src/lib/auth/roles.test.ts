@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import { canManageTeam } from "@/features/team/domain/team-guards";
 import {
   canWriteWhatsAppSession,
   refuseWhatsAppWrite,
@@ -26,9 +27,21 @@ const ROLES: UserRole[] = [
 
 describe("roles matrix", () => {
   it("admin acessa todos os módulos com escrita", () => {
-    expect(getAllowedModuleIds("admin")).toHaveLength(7);
+    expect(getAllowedModuleIds("admin")).toHaveLength(8);
     expect(getModuleAccess("admin", "stock-scan")).toBe("write");
     expect(getModuleAccess("admin", "whatsapp")).toBe("write");
+    expect(getModuleAccess("admin", "team")).toBe("write");
+  });
+
+  it("gestão de equipe é exclusiva do admin", () => {
+    expect(canManageTeam("admin")).toBe(true);
+    expect(canAccessPath("admin", "/equipe")).toBe(true);
+
+    for (const role of ROLES.filter((item) => item !== "admin")) {
+      expect(getModuleAccess(role, "team")).toBe("none");
+      expect(canManageTeam(role)).toBe(false);
+      expect(canAccessPath(role, "/equipe")).toBe(false);
+    }
   });
 
   it("recepção escreve no WhatsApp; dentista, auxiliar e visualizador não", () => {
@@ -86,6 +99,7 @@ describe("route helpers", () => {
     expect(resolveModuleForPath("/estoque/scan")).toBe("stock-scan");
     expect(resolveModuleForPath("/estoque")).toBe("stock");
     expect(resolveModuleForPath("/whatsapp")).toBe("whatsapp");
+    expect(resolveModuleForPath("/equipe")).toBe("team");
     expect(resolveModuleForPath("/fila/resposta/token")).toBeNull();
   });
 
@@ -95,6 +109,7 @@ describe("route helpers", () => {
     expect(isAuthenticatedRoute("/fila/resposta/abc")).toBe(false);
     expect(isAuthenticatedRoute("/agenda")).toBe(true);
     expect(isAuthenticatedRoute("/whatsapp")).toBe(true);
+    expect(isAuthenticatedRoute("/equipe")).toBe(true);
   });
 
   it("sanitizeReturnTo bloqueia redirect aberto", () => {

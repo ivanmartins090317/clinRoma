@@ -64,6 +64,12 @@ export const CLINROMA_MODULES: ClinicModule[] = [
     href: "/whatsapp",
     description: "Pareamento da sessão da clínica",
   },
+  {
+    id: "team",
+    label: "Equipe",
+    href: "/equipe",
+    description: "Colaboradores, papéis e acessos",
+  },
 ];
 
 export const WAITLIST_COLORS: Record<

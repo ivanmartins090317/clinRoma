@@ -8,6 +8,7 @@ import {
   Package,
   PanelLeft,
   QrCode,
+  ShieldCheck,
   Users,
   type LucideIcon,
 } from "lucide-react";
@@ -17,6 +18,7 @@ import { usePathname } from "next/navigation";
 import { useState, type ReactNode } from "react";
 
 import { ClinicLogo } from "@/components/clinic-logo";
+import { MobileAccountMenu } from "@/components/mobile-account-menu";
 import { Button } from "@/components/ui/button";
 import { UserAvatar } from "@/components/user-avatar";
 import { LogoutForm } from "@/features/auth/components/logout-form";
@@ -43,14 +45,26 @@ const NAV_ICONS: Record<string, LucideIcon> = {
   stock: Package,
   "stock-scan": QrCode,
   whatsapp: MessageCircle,
+  team: ShieldCheck,
 };
 
-/** Módulos da barra inferior mobile (5 itens; Scan QR e WhatsApp ficam fora). */
+const MOBILE_NAV_EXCLUDED_MODULE_IDS = ["stock-scan", "whatsapp", "team"];
+
+/** Módulos da barra inferior mobile (5 itens; Scan QR, WhatsApp e Equipe ficam fora). */
 export function getMobileNavModules(
   modules: readonly ClinicModule[],
 ): ClinicModule[] {
   return modules.filter(
-    (module) => module.id !== "stock-scan" && module.id !== "whatsapp",
+    (module) => !MOBILE_NAV_EXCLUDED_MODULE_IDS.includes(module.id),
+  );
+}
+
+/** O que sobrou da dock vai para o menu de conta, senão fica sem caminho no celular. */
+export function getMobileSecondaryModules(
+  modules: readonly ClinicModule[],
+): ClinicModule[] {
+  return modules.filter((module) =>
+    MOBILE_NAV_EXCLUDED_MODULE_IDS.includes(module.id),
   );
 }
 
@@ -212,6 +226,7 @@ export function AppShell({
     allowedModuleIds,
   );
   const mobileNavModules = getMobileNavModules(visibleModules);
+  const mobileSecondaryModules = getMobileSecondaryModules(visibleModules);
   const roleLabel = getRoleLabel(role);
 
   function toggleSidebar() {
@@ -339,12 +354,12 @@ export function AppShell({
           <div className="page-container">{children}</div>
         </main>
 
-        {mobileNavModules.length > 0 ? (
-          <nav
-            aria-label="Navegação principal"
-            className="pointer-events-none fixed inset-x-0 bottom-0 z-50 flex justify-center px-4 pb-[calc(0.875rem+env(safe-area-inset-bottom))] md:hidden"
-          >
-            <div className="pointer-events-auto flex items-center gap-0.5 rounded-full border border-neo-cream-100/10 bg-neo-burgundy-900/92 p-1.5 shadow-neo-lg backdrop-blur-md">
+        <div className="pointer-events-none fixed inset-x-0 bottom-0 z-50 flex items-center justify-center gap-2 px-4 pb-[calc(0.875rem+env(safe-area-inset-bottom))] md:hidden">
+          {mobileNavModules.length > 0 ? (
+            <nav
+              aria-label="Navegação principal"
+              className="pointer-events-auto flex items-center gap-0.5 rounded-full border border-neo-cream-100/10 bg-neo-burgundy-900/92 p-1.5 shadow-neo-lg backdrop-blur-md"
+            >
               {mobileNavModules.map((module) => {
                 const active = isNavActive(pathname, module.href);
                 const Icon = NAV_ICONS[module.id] ?? Home;
@@ -370,9 +385,16 @@ export function AppShell({
                   </Link>
                 );
               })}
-            </div>
-          </nav>
-        ) : null}
+            </nav>
+          ) : null}
+
+          <MobileAccountMenu
+            displayName={displayName}
+            role={role}
+            modules={mobileSecondaryModules}
+            icons={NAV_ICONS}
+          />
+        </div>
       </div>
     </div>
   );

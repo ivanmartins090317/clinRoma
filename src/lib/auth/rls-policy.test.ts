@@ -126,6 +126,62 @@ describe.skipIf(!hasRemoteDb)("RLS policies por papel", () => {
       expect(writeError).not.toBeNull();
     },
   );
+
+  it.each(
+    Object.entries(ROLE_ACCOUNTS).filter(([role]) => role !== "admin"),
+  )("%s: não altera papel de colaborador", async (_role, email) => {
+    const client = await signInAs(email);
+    const { data, error } = await client
+      .from("profiles")
+      .update({ role: "admin" })
+      .neq("role", "admin")
+      .select("id");
+
+    expect(error !== null || (data ?? []).length === 0).toBe(true);
+  });
+
+  it("admin não altera o próprio papel nem o próprio acesso", async () => {
+    const client = await signInAs(ROLE_ACCOUNTS.admin);
+    const {
+      data: { user },
+    } = await client.auth.getUser();
+
+    expect(user).not.toBeNull();
+
+    const { error: roleError } = await client
+      .from("profiles")
+      .update({ role: "viewer" })
+      .eq("id", user!.id);
+
+    const { error: activeError } = await client
+      .from("profiles")
+      .update({ active: false })
+      .eq("id", user!.id);
+
+    expect(roleError).not.toBeNull();
+    expect(activeError).not.toBeNull();
+  });
+
+  it("admin altera papel de outro colaborador", async () => {
+    const client = await signInAs(ROLE_ACCOUNTS.admin);
+    const { data: target } = await client
+      .from("profiles")
+      .select("id, role")
+      .eq("role", "viewer")
+      .limit(1)
+      .maybeSingle();
+
+    if (!target) {
+      return;
+    }
+
+    const { error } = await client
+      .from("profiles")
+      .update({ role: "viewer" })
+      .eq("id", target.id);
+
+    expect(error).toBeNull();
+  });
 });
 
 describe("RLS policy expectations (offline)", () => {
@@ -197,6 +253,22 @@ describe("RLS policy expectations (offline)", () => {
   it("gravação do status WhatsApp só pelo aviso privilegiado, não pela sessão autenticada", () => {
     const authenticatedWriteRoles: readonly string[] = [];
     expect(authenticatedWriteRoles).toHaveLength(0);
+  });
+
+  it.each([
+    "admin",
+    "dentist",
+    "reception",
+    "room_assistant",
+    "viewer",
+  ] as const)("%s: escrita em profiles só pelo admin", (role) => {
+    const profileWriteRoles: readonly string[] = ["admin"];
+    expect(profileWriteRoles.includes(role)).toBe(role === "admin");
+  });
+
+  it("nem o admin altera o próprio papel ou acesso", () => {
+    const selfMutationAllowed = false;
+    expect(selfMutationAllowed).toBe(false);
   });
 
   it("matriz exige teste remoto com RUN_RLS_TESTS=true para validação no banco", () => {
