@@ -2,7 +2,7 @@
 
 Fonte viva do que **ainda falta implementar ou validar**. Atualizar ao concluir cada fase.
 
-Última revisão: **2026-09-01** (migrations remotas em dia; decisões Felipe fechadas; homologação parcial WhatsApp/fila/estoque; relatório manual expandido para 63 TCs / FL-01…FL-11).
+Última revisão: **2026-09-01** (homologação FL-01 e FL-02; FL-03: TC-13 a TC-15; 15/63; BG-01 baixo e BG-02 médio abertos).
 
 ---
 
@@ -24,11 +24,13 @@ Código já está em `main`. Relógio da VPS + jobs do app publicado. Esta fatia
 
 Itens da F1 já codificados, mas ainda não homologados manualmente:
 
-- [ ] Login como recepção (`reception@clinroma.dev`) e navegação só nos módulos permitidos
-- [ ] Login como dentista e tentativa de acessar Scan QR (deve negar)
-- [ ] Login como auxiliar (`assistant@clinroma.dev`): Estoque + Scan OK; Agenda/Pacientes/Fila negados
+- [x] Login como admin (`admin@clinroma.dev`): 8 módulos no menu (TC-01, 2026-09-01)
+- [x] Login como recepção (`reception@clinroma.dev`) e navegação só nos módulos permitidos (TC-02, 2026-09-01)
+- [x] Login como dentista e tentativa de acessar Scan QR (deve negar) (TC-03, 2026-09-01; BG-01: hero "Nova consulta" visível sem escrita)
+- [x] Login como auxiliar (`assistant@clinroma.dev`): Estoque + Scan OK; Agenda/Pacientes/Fila negados (TC-04, 2026-09-01; screenshot pendente)
+- [x] Login como visualizador (`viewer@clinroma.dev`): cadastro e agenda leitura; sem prontuário clínico, fila, estoque, WhatsApp e Equipe (TC-05, 2026-09-01; screenshot pendente)
 - [ ] Visitante em `/fila/resposta/exemplo-token` sem redirect ao login e sem shell interno
-- [ ] Logout limpa sessão; `/agenda` volta a exigir login
+- [x] Logout limpa sessão; rota autenticada volta a exigir login (TC-06, 2026-09-01)
 - [ ] Rodar `npm run format:check` limpo no repo (ajustar arquivos legados da F0)
 - [ ] Regerar `database.types.ts` via `npm run db:types` (requer Docker para Supabase CLI)
 
@@ -38,13 +40,13 @@ Itens da F1 já codificados, mas ainda não homologados manualmente:
 
 Código entregue (ver `docs/implementation/F2-agenda.md`). Homologação manual pendente:
 
-- [ ] Recepção (desktop): criar consulta em slot livre, buscar paciente seed
-- [ ] Recepção: remarcar arrastando com confirmação
-- [ ] Recepção: cancelar consulta (slot liberado)
-- [ ] Recepção: tentar conflito de horário (mesmo dentista) e ver mensagem de bloqueio
-- [ ] Dentista (mobile/viewport estreito): lista do dia filtrada no Dr. Felipe Roma, somente leitura
-- [ ] Visualizador: ver agenda sem ações de escrita
-- [ ] Auxiliar: acesso a `/agenda` negado (403)
+- [x] Recepção (desktop): criar consulta em slot livre, buscar paciente seed (TC-07, 2026-09-01)
+- [x] Recepção: remarcar arrastando com confirmação (TC-08, 2026-09-01)
+- [x] Recepção: cancelar consulta (slot liberado; oferta da fila sem encaixe automático) (TC-09, 2026-09-01)
+- [x] Recepção: tentar conflito de horário (mesmo dentista) e ver mensagem de bloqueio (TC-10, 2026-09-01)
+- [x] Dentista (mobile/viewport estreito): lista do dia filtrada no Dr. Felipe Roma, somente leitura (TC-11, 2026-09-01)
+- [x] Visualizador: ver agenda sem ações de escrita (TC-05 e TC-12, 2026-09-01)
+- [x] Auxiliar: acesso a `/agenda` negado (403) (TC-04, 2026-09-01)
 - [ ] Verificar bundle mobile sem `react-big-calendar` (dynamic import só em `md+`)
 
 **Pronto quando:** recepção marca/remarca/cancela consulta; dentista vê agenda do dia no celular.
@@ -85,11 +87,11 @@ Referência: `specs/2026-08-18-fase-3-pacientes-prontuario.md` · `docs/implemen
 
 ### Fechamento operacional (homologação manual)
 
-- [ ] **iPhone real:** fluxo evolução + foto + áudio + transcrição sem reload (§8.5 spec)
-- [ ] **Android real:** mesmo fluxo com WebM/Opus
-- [ ] Desktop: recepção cadastra paciente; dentista anamnese + odontograma
+- [x] **iPhone real:** fluxo evolução + foto + áudio + transcrição sem reload (§8.5 spec) (TC-14, 2026-09-01)
+- [x] **Android real:** mesmo fluxo com WebM/Opus (TC-15, 2026-09-01; BG-02: card só após reload)
+- [x] Desktop: recepção cadastra paciente (TC-13, 2026-09-01); dentista anamnese + odontograma ainda pendente
 - [ ] Configurar `OPENAI_API_KEY` no ambiente de dev para transcrição real
-- [ ] Visualizador: só cadastro, sem abas clínicas
+- [x] Visualizador: só cadastro, sem abas clínicas (TC-05, 2026-09-01)
 
 **Pronto quando:** dentista documenta atendimento no celular com áudio transcrito; recepção cadastra e localiza pacientes.
 
@@ -181,10 +183,10 @@ Referência: `specs/2026-08-18-fase-6-lembrete-piloto.md` · `docs/implementatio
 
 - [ ] Configurar `RESEND_API_KEY` e `RESEND_FROM_EMAIL` no ambiente de teste
 - [ ] **FL-06:** concluir consulta → e-mail em `dentist@clinroma.dev`
-- [ ] Executar FL-01…FL-11 (63 TCs, 5 perfis + visitante) com evidências desktop e mobile
+- [ ] Executar FL-01…FL-11 (63 TCs, 5 perfis + visitante) com evidências desktop e mobile · **15/63** (FL-01 e FL-02 completos; TC-13 a TC-15 aprovados 2026-09-01)
 - [ ] iPhone e Android nos fluxos áudio, scan, PWA e lembrete
-- [ ] Preencher `docs/relatorio-testes-manuais.html` e `docs/evidencias/`
-- [ ] Nenhum bug crítico/alto aberto nos fluxos P0
+- [ ] Preencher `docs/relatorio-testes-manuais.html` e `docs/evidencias/` (FL-01, FL-02, TC-13 a TC-15; TC-04 e TC-05 sem screenshot)
+- [ ] Nenhum bug crítico/alto aberto nos fluxos P0 (BG-01 baixo; BG-02 médio: histórico Android só após reload)
 - [ ] Deploy produção (Supabase prod + Vercel) conforme checklist manual-dev § Deploy
 
 ### Pós-piloto
@@ -224,7 +226,7 @@ Itens de código prontos, ainda sem validação em dispositivo real (fica no fec
 
 - [ ] **iPhone real:** corrigir transcrição na ficha (F7-01), recarregar e confirmar que o texto permanece
 - [ ] **Android real:** mesmo fluxo F7-01
-- [ ] **F7-07 desktop/viewport:** cadastrar com segundo telefone + observação; reabrir a ficha; incluir depois; remover o bloco
+- [x] **F7-07 desktop/viewport:** cadastrar com segundo telefone + observação; reabrir a ficha; incluir depois; remover o bloco (TC-13, 2026-09-01)
 - [ ] **F7-07 visualizador:** lê o segundo contato no resumo e não edita
 - [ ] **F7-09 desktop/viewport:** abrir Maria e ver anamnese vigente + Restauração sem entrar nas abas; toque abre Anamnese / Evoluções
 - [ ] **F7-09 visualizador:** vê o cadastro e **não** vê os dois blocos clínicos

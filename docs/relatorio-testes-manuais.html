@@ -309,6 +309,7 @@
         background: var(--bg-soft);
         min-height: 90px;
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
         text-align: center;
@@ -316,14 +317,22 @@
         font-size: 0.75rem;
         color: var(--ink-3);
         cursor: pointer;
+        gap: 6px;
+        overflow: hidden;
       }
       .evidence-item img {
         max-width: 100%;
+        max-height: 110px;
+        object-fit: cover;
         border-radius: 8px;
         display: block;
       }
       .evidence-item.missing img {
         display: none;
+      }
+      .evidence-item:not(.missing) {
+        border-style: solid;
+        background: var(--bg-card);
       }
       #lightbox {
         display: none;
@@ -387,7 +396,7 @@
           </div>
           <div>
             <span>Status do plano</span>
-            Pendente de execução
+            Em execução (15/63 · FL-01 e FL-02 completos, FL-03 em curso)
           </div>
         </div>
         <div class="scoreboard" id="scoreboard"></div>
@@ -541,18 +550,21 @@
               </tr>
             </thead>
             <tbody>
-              <tr data-flow="auth" data-status="pending" data-roles="admin">
+              <tr data-flow="auth" data-status="pass" data-roles="admin">
                 <td class="code">TC-01</td>
                 <td><span class="pill admin">Admin</span></td>
                 <td>
                   Login <code>admin@clinroma.dev</code>. Menu mostra Hoje, Agenda,
                   Pacientes, Fila, Estoque, Scan QR, WhatsApp e Equipe. As oito
                   rotas abrem.
+                  <br /><small>Aprovado 01/09/2026 · evidência
+                  <code>tc01-login-admin.png</code> (Admin Piloto, 8 itens no
+                  menu, Equipe aberta).</small>
                 </td>
                 <td class="hide-sm">Desktop</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
-              <tr data-flow="auth" data-status="pending" data-roles="reception">
+              <tr data-flow="auth" data-status="pass" data-roles="reception">
                 <td class="code">TC-02</td>
                 <td><span class="pill reception">Recepção</span></td>
                 <td>
@@ -560,11 +572,15 @@
                   Fila e WhatsApp. <code>/estoque/scan</code> e
                   <code>/equipe</code> caem em acesso negado. Scan não aparece no
                   menu.
+                  <br /><small>Aprovado 01/09/2026 · evidência
+                  <code>tc02-login-recepcao.png</code> (Recepção Neo Roma; menu
+                  Hoje, Agenda, Pacientes, Fila, Estoque, WhatsApp; sem Scan e
+                  sem Equipe).</small>
                 </td>
                 <td class="hide-sm">Desktop</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
-              <tr data-flow="auth" data-status="pending" data-roles="dentist">
+              <tr data-flow="auth" data-status="pass" data-roles="dentist">
                 <td class="code">TC-03</td>
                 <td><span class="pill dentist">Dentista</span></td>
                 <td>
@@ -572,11 +588,16 @@
                   criar/ofertar. <code>/estoque/scan</code>,
                   <code>/whatsapp</code> e <code>/equipe</code> negados. Sem
                   marcar consulta.
+                  <br /><small>Aprovado 01/09/2026 · evidência
+                  <code>tc03-login-dentista.png</code> (Dr. Felipe Roma; menu
+                  Hoje, Agenda, Pacientes, Fila, Estoque; sem Scan, WhatsApp e
+                  Equipe). Observação: o hero ainda mostra "Nova consulta"
+                  (BG-01, baixo); a agenda e a action bloqueiam a escrita.</small>
                 </td>
                 <td class="hide-sm">Desktop</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
-              <tr data-flow="auth" data-status="pending" data-roles="assistant">
+              <tr data-flow="auth" data-status="pass" data-roles="assistant">
                 <td class="code">TC-04</td>
                 <td><span class="pill assistant">Auxiliar</span></td>
                 <td>
@@ -584,30 +605,39 @@
                   <code>/hoje</code>, <code>/agenda</code>,
                   <code>/pacientes</code>, <code>/fila</code>,
                   <code>/whatsapp</code> e <code>/equipe</code> negados.
+                  <br /><small>Aprovado 01/09/2026 · confirmação do executor:
+                  somente Estoque e Scan; rotas proibidas abrem em acesso
+                  negado. Screenshot ainda não anexado.</small>
                 </td>
                 <td class="hide-sm">Celular</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
-              <tr data-flow="auth" data-status="pending" data-roles="viewer">
+              <tr data-flow="auth" data-status="pass" data-roles="viewer">
                 <td class="code">TC-05</td>
                 <td><span class="pill viewer">Visualizador</span></td>
                 <td>
                   Login <code>viewer@clinroma.dev</code>. Paciente seed: só
                   cadastro, sem abas clínicas. Fila, Estoque, Scan, WhatsApp e
                   Equipe negados. Agenda sem botões de escrita.
+                  <br /><small>Aprovado 01/09/2026 · confirmação do executor.
+                  Screenshot ainda não anexado.</small>
                 </td>
                 <td class="hide-sm">Desktop</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
-              <tr data-flow="auth" data-status="pending" data-roles="admin">
+              <tr data-flow="auth" data-status="pass" data-roles="admin">
                 <td class="code">TC-06</td>
                 <td><span class="pill admin">Admin</span></td>
                 <td>
                   Sair da conta. Abrir <code>/agenda</code> redireciona para
                   login. Sessão anterior não reabre módulos.
+                  <br /><small>Aprovado 01/09/2026 · evidência
+                  <code>tc06-logout-redirect-login.png</code>
+                  (<code>neo-roma.vercel.app/login?returnTo=%2Fhoje</code>).
+                  Executor: qualquer rota sem sessão cai no login.</small>
                 </td>
                 <td class="hide-sm">Desktop</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
             </tbody>
           </table>
@@ -632,64 +662,86 @@
               </tr>
             </thead>
             <tbody>
-              <tr data-flow="agenda" data-status="pending" data-roles="reception">
+              <tr data-flow="agenda" data-status="pass" data-roles="reception">
                 <td class="code">TC-07</td>
                 <td><span class="pill reception">Recepção</span></td>
                 <td>
                   Desktop: criar consulta em slot livre, buscar paciente seed.
                   Consulta aparece na coluna do dentista e em Hoje.
+                  <br /><small>Aprovado 01/09/2026 · evidência
+                  <code>tc07-consulta-maria-silva.png</code> (semana, Dr. Felipe
+                  Roma, Maria Silva 17:00–18:00 em 01/09). Print da Hoje não
+                  anexado.</small>
                 </td>
                 <td class="hide-sm">Desktop</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
-              <tr data-flow="agenda" data-status="pending" data-roles="reception">
+              <tr data-flow="agenda" data-status="pass" data-roles="reception">
                 <td class="code">TC-08</td>
                 <td><span class="pill reception">Recepção</span></td>
                 <td>
                   Remarcar arrastando no calendário. Diálogo de confirmação.
                   Após confirmar, o horário antigo fica livre.
+                  <br /><small>Aprovado 01/09/2026 · evidência
+                  <code>tc08-remarcar-confirmacao.png</code> (diálogo "Remarcar
+                  consulta de Maria Silva para 18:00?").</small>
                 </td>
                 <td class="hide-sm">Desktop</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
-              <tr data-flow="agenda" data-status="pending" data-roles="reception">
+              <tr data-flow="agenda" data-status="pass" data-roles="reception">
                 <td class="code">TC-09</td>
                 <td><span class="pill reception">Recepção</span></td>
                 <td>
                   Cancelar consulta. Slot liberado. Atalho de oferta da fila
                   permanece disponível se a regra da tela mostrar.
+                  <br /><small>Aprovado 01/09/2026 · evidência
+                  <code>tc09-cancelar-oferta-fila.png</code> (modal "Oferecer
+                  vaga na fila", próximo Ana Oliveira, botão "Continuar com
+                  horário liberado"; sem encaixe automático).</small>
                 </td>
                 <td class="hide-sm">Desktop</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
-              <tr data-flow="agenda" data-status="pending" data-roles="reception">
+              <tr data-flow="agenda" data-status="pass" data-roles="reception">
                 <td class="code">TC-10</td>
                 <td><span class="pill reception">Recepção</span></td>
                 <td>
                   Tentar o mesmo horário no mesmo dentista. Mensagem de conflito.
                   Nada é gravado.
+                  <br /><small>Aprovado 01/09/2026 · evidência
+                  <code>tc10-conflito-horario.png</code> ("Horário indisponível
+                  para Dr. Felipe Roma").</small>
                 </td>
                 <td class="hide-sm">Desktop</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
-              <tr data-flow="agenda" data-status="pending" data-roles="dentist">
+              <tr data-flow="agenda" data-status="pass" data-roles="dentist">
                 <td class="code">TC-11</td>
                 <td><span class="pill dentist">Dentista</span></td>
                 <td>
                   Viewport estreito: lista do dia filtrada no Dr. Felipe Roma.
                   Somente leitura. Sem criar, remarcar ou concluir.
+                  <br /><small>Aprovado 01/09/2026 · evidência
+                  <code>tc11-agenda-dentista-celular.png</code> (celular, lista
+                  do dia 01/09, Dr. Felipe Roma, card IVAN xalala 17:00–18:00;
+                  sem botão Nova consulta).</small>
                 </td>
                 <td class="hide-sm">Celular</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
-              <tr data-flow="agenda" data-status="pending" data-roles="viewer">
+              <tr data-flow="agenda" data-status="pass" data-roles="viewer">
                 <td class="code">TC-12</td>
                 <td><span class="pill viewer">Visualizador</span></td>
                 <td>
                   Vê a agenda. Sem arrastar, sem novo horário, sem cancelar.
+                  <br /><small>Aprovado 01/09/2026 · evidência
+                  <code>tc12-visualizador-agenda-leitura.png</code> (perfil
+                  Visualização; semana; consulta IVAN xalala visível; sem Nova
+                  consulta nem ações de escrita).</small>
                 </td>
                 <td class="hide-sm">Desktop</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
             </tbody>
           </table>
@@ -714,35 +766,47 @@
               </tr>
             </thead>
             <tbody>
-              <tr data-flow="records" data-status="pending" data-roles="reception">
+              <tr data-flow="records" data-status="pass" data-roles="reception">
                 <td class="code">TC-13</td>
                 <td><span class="pill reception">Recepção</span></td>
                 <td>
                   Cadastrar paciente com consentimento LGPD e segundo telefone
                   opcional + observação. Reabrir a ficha: dados permanecem.
                   Remover o bloco do segundo telefone e salvar.
+                  <br /><small>Aprovado 01/09/2026 · evidência
+                  <code>tc13-cadastro-paciente.png</code> (ficha "Teste novo
+                  paciente TC-13" reaberta; segundo telefone vazio após remover
+                  o bloco).</small>
                 </td>
                 <td class="hide-sm">Desktop</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
-              <tr data-flow="records" data-status="pending" data-roles="dentist">
+              <tr data-flow="records" data-status="pass" data-roles="dentist">
                 <td class="code">TC-14</td>
                 <td><span class="pill dentist">Dentista</span></td>
                 <td>
                   iPhone: evolução + foto + áudio + transcrição sem recarregar a
                   ficha. Texto aparece na evolução.
+                  <br /><small>Aprovado 01/09/2026 · evidência
+                  <code>tc14-evolucao-iphone.png</code> (iPhone, 19:29, "Teste
+                  de evolução", áudio 00:10, transcrição concluída, foto
+                  anexada, "Salvar correção").</small>
                 </td>
                 <td class="hide-sm">iPhone</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
-              <tr data-flow="records" data-status="pending" data-roles="dentist">
+              <tr data-flow="records" data-status="pass" data-roles="dentist">
                 <td class="code">TC-15</td>
                 <td><span class="pill dentist">Dentista</span></td>
                 <td>
                   Android: mesmo fluxo (WebM/Opus). Transcrição conclui.
+                  <br /><small>Aprovado 01/09/2026 · evidência
+                  <code>tc15-evolucao-android.png</code> (Android, "Teste com
+                  Android", áudio + transcrição concluída + foto). BG-02: o
+                  card só apareceu no histórico após reload.</small>
                 </td>
                 <td class="hide-sm">Android</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
               <tr data-flow="records" data-status="pending" data-roles="dentist">
                 <td class="code">TC-16</td>
@@ -1440,13 +1504,49 @@
 
       <section>
         <h2>Log de bugs</h2>
-        <p class="bugs-empty" id="bugs">Nenhum bug registrado. Ao reprovar um TC, gravar BG-XX com severidade (crítico / alto / médio / baixo).</p>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Sev.</th>
+              <th>TC</th>
+              <th>Descrição</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="code">BG-01</td>
+              <td><span class="pill viewer">Baixo</span></td>
+              <td class="code">TC-03</td>
+              <td>
+                Na tela Hoje o dentista vê o botão dourado "Nova consulta". O
+                atalho do hero não consulta o papel: dentista (e visualizador)
+                não podem marcar consulta. Na agenda o botão some
+                (<code>canWrite</code>) e a server action recusa.                 Cosmético /
+                ruído de UX, sem furo de autorização.
+              </td>
+              <td>Aberto</td>
+            </tr>
+            <tr>
+              <td class="code">BG-02</td>
+              <td><span class="pill reception">Médio</span></td>
+              <td class="code">TC-15</td>
+              <td>
+                Android: foto, áudio e transcrição gravam, mas o card da
+                evolução nova não desce para o histórico até recarregar a
+                tela. No iPhone (TC-14) o card aparece sem reload. Workaround:
+                atualizar a página. Sem perda de dado.
+              </td>
+              <td>Aberto</td>
+            </tr>
+          </tbody>
+        </table>
       </section>
 
       <footer>
         ClinRoma · Clínica Neo Roma · POP-QA adaptado · Marca burgundy/gold ·
-        Evidências em docs/evidencias/ · Atualizado 2026-09-01 (plano expandido:
-        5 perfis + F7 + FL-08)
+        Evidências em docs/evidencias/ · Atualizado 2026-09-01 (FL-01 e FL-02 completos, TC-13 a TC-15 · BG-01 e BG-02 abertos)
       </footer>
     </div>
     <script>
@@ -1474,12 +1574,21 @@
       };
 
       const EVIDENCE_HINTS = [
-        ["tc01", "Login admin, 8 módulos"],
+        ["tc01-login-admin.png", "Login admin, 8 módulos"],
+        ["tc02-login-recepcao.png", "Login recepção, menu permitido"],
+        ["tc03-login-dentista.png", "Login dentista, menu permitido"],
+        ["tc06-logout-redirect-login.png", "Logout: rota sem sessão vai ao login"],
+        ["tc07-consulta-maria-silva.png", "Recepção: consulta na agenda do dentista"],
+        ["tc08-remarcar-confirmacao.png", "Recepção: diálogo ao remarcar"],
+        ["tc09-cancelar-oferta-fila.png", "Cancelar: oferta da fila sem encaixe automático"],
+        ["tc10-conflito-horario.png", "Conflito: horário indisponível"],
+        ["tc11-agenda-dentista-celular.png", "Dentista: lista do dia no celular"],
+        ["tc12-visualizador-agenda-leitura.png", "Visualizador: agenda só leitura"],
+        ["tc13-cadastro-paciente.png", "Recepção: cadastro paciente + 2º telefone"],
+        ["tc14-evolucao-iphone.png", "Dentista iPhone: evolução + áudio + transcrição"],
+        ["tc15-evolucao-android.png", "Dentista Android: evolução (card após reload)"],
         ["tc04", "Auxiliar: só estoque e scan"],
         ["tc05", "Visualizador sem prontuário"],
-        ["tc11", "Lista do dia no celular"],
-        ["tc14", "Áudio iPhone"],
-        ["tc15", "Áudio Android"],
         ["tc21", "Oferta WhatsApp"],
         ["tc22", "Link público LGPD"],
         ["tc27", "Scan CR-DEV001"],
@@ -1581,11 +1690,17 @@
         document.getElementById("tc-matrix").innerHTML = head + body;
 
         document.getElementById("gallery").innerHTML = EVIDENCE_HINTS.map(
-          ([file, caption]) => `
-          <div class="evidence-item missing" data-file="${file}" onclick="openLightbox('evidencias/${file}.jpeg')">
-            <img src="evidencias/${file}.jpeg" alt="${caption}" onerror="this.parentElement.classList.add('missing')" />
-            <span>${caption}<br /><code>${file}.jpeg</code></span>
-          </div>`,
+          ([file, caption]) => {
+            const src = file.includes(".")
+              ? `evidencias/${file}`
+              : `evidencias/${file}.jpeg`;
+            const name = file.includes(".") ? file : `${file}.jpeg`;
+            return `
+          <div class="evidence-item" data-file="${file}" onclick="openLightbox('${src}')">
+            <img src="${src}" alt="${caption}" onerror="this.parentElement.classList.add('missing')" />
+            <span>${caption}<br /><code>${name}</code></span>
+          </div>`;
+          },
         ).join("");
       }
 
