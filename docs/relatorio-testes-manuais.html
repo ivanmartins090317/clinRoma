@@ -6,17 +6,28 @@
     <title>ClinRoma · Homologação manual MVP</title>
     <style>
       :root {
-        --bg-page: #f7f0e8;
+        --bg-page: #f8efe9;
         --bg-card: #ffffff;
-        --border: #e8e4df;
-        --primary: #301010;
-        --accent: #d09010;
-        --pass: #3d7a5c;
-        --fail: #b8323a;
-        --pending: #8a8480;
-        --text: #2a2523;
-        --muted: #8a8480;
-        --radius: 12px;
+        --bg-soft: #f6e9e2;
+        --border: #eadcd4;
+        --primary: #3d1118;
+        --primary-soft: #7d2f3f;
+        --accent: #d9a441;
+        --accent-soft: #f3e2c2;
+        --pass: #2c6547;
+        --pass-bg: #dcece1;
+        --fail: #a92238;
+        --fail-bg: #f7dee2;
+        --block: #9a6b12;
+        --block-bg: #f6e8c8;
+        --pending: #7d685f;
+        --pending-bg: #eadcd4;
+        --text: #231512;
+        --muted: #5f4c44;
+        --ink-3: #7d685f;
+        --radius: 14px;
+        --shadow: 0 1px 2px rgba(42, 13, 19, 0.06),
+          0 4px 14px rgba(42, 13, 19, 0.07);
         --font: system-ui, "Segoe UI", sans-serif;
       }
       * {
@@ -30,227 +41,1565 @@
         line-height: 1.5;
       }
       .wrap {
-        max-width: 960px;
+        max-width: 1100px;
         margin: 0 auto;
-        padding: 24px 16px 48px;
+        padding: 24px 16px 56px;
       }
       header {
-        border-bottom: 1px solid var(--border);
-        padding-bottom: 20px;
-        margin-bottom: 24px;
+        margin-bottom: 20px;
       }
       h1 {
-        font-size: 1.75rem;
-        margin: 0 0 8px;
+        font-size: 1.7rem;
+        margin: 0 0 6px;
         color: var(--primary);
+      }
+      .lede {
+        margin: 0 0 16px;
+        color: var(--muted);
+        max-width: 68ch;
+      }
+      .meta {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 8px 16px;
+        font-size: 0.85rem;
+        margin-bottom: 16px;
+      }
+      .meta span {
+        display: block;
+        color: var(--ink-3);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
       }
       .scoreboard {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-        gap: 12px;
-        margin: 20px 0;
+        grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+        gap: 10px;
+        margin: 12px 0 8px;
       }
       .score {
         background: var(--bg-card);
         border: 1px solid var(--border);
         border-radius: var(--radius);
-        padding: 16px;
+        padding: 14px 10px;
         text-align: center;
+        box-shadow: var(--shadow);
       }
       .score strong {
         display: block;
-        font-size: 1.5rem;
+        font-size: 1.45rem;
         color: var(--primary);
       }
-      section {
+      .score.pass strong {
+        color: var(--pass);
+      }
+      .score.fail strong {
+        color: var(--fail);
+      }
+      .progress {
+        height: 10px;
+        background: var(--bg-soft);
+        border-radius: 99px;
+        overflow: hidden;
+        margin: 12px 0 4px;
+        border: 1px solid var(--border);
+      }
+      .progress > i {
+        display: block;
+        height: 100%;
+        background: var(--pass);
+        width: 0;
+      }
+      .progress-label {
+        font-size: 0.8rem;
+        color: var(--muted);
+        margin-bottom: 20px;
+      }
+      section,
+      details.flow {
         background: var(--bg-card);
         border: 1px solid var(--border);
         border-radius: var(--radius);
-        padding: 20px;
-        margin-bottom: 16px;
+        padding: 18px 18px 8px;
+        margin-bottom: 12px;
+        box-shadow: var(--shadow);
+      }
+      details.flow {
+        padding: 0;
+      }
+      details.flow > summary {
+        cursor: pointer;
+        list-style: none;
+        padding: 16px 18px;
+        font-weight: 650;
+        font-size: 1.02rem;
+        color: var(--primary);
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: baseline;
+      }
+      details.flow > summary::-webkit-details-marker {
+        display: none;
+      }
+      details.flow > summary::after {
+        content: attr(data-count);
+        font-weight: 500;
+        font-size: 0.78rem;
+        color: var(--muted);
+        white-space: nowrap;
+      }
+      .flow-body {
+        padding: 0 18px 16px;
+      }
+      .hint {
+        font-size: 0.85rem;
+        color: var(--muted);
+        margin: 0 0 12px;
       }
       h2 {
-        font-size: 1.1rem;
-        margin: 0 0 12px;
+        font-size: 1.05rem;
+        margin: 0 0 10px;
+        color: var(--primary);
       }
       table {
         width: 100%;
         border-collapse: collapse;
-        font-size: 0.9rem;
+        font-size: 0.84rem;
       }
       th,
       td {
         border-bottom: 1px solid var(--border);
-        padding: 10px 8px;
+        padding: 9px 8px;
         text-align: left;
         vertical-align: top;
       }
-      .status-pendente {
+      th {
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--ink-3);
+        font-weight: 650;
+      }
+      .code {
+        font-variant-numeric: tabular-nums;
+        font-weight: 650;
+        white-space: nowrap;
+        color: var(--primary);
+      }
+      .pill {
+        display: inline-block;
+        font-size: 0.72rem;
+        font-weight: 650;
+        padding: 2px 8px;
+        border-radius: 99px;
+        background: var(--bg-soft);
+        color: var(--primary);
+        white-space: nowrap;
+      }
+      .pill.admin {
+        background: #3d1118;
+        color: #fff;
+      }
+      .pill.reception {
+        background: #f3e2c2;
+        color: #3d1118;
+      }
+      .pill.dentist {
+        background: #dcece1;
+        color: #2c6547;
+      }
+      .pill.assistant {
+        background: #eadcd4;
+        color: #3d1118;
+      }
+      .pill.viewer {
+        background: #f6e9e2;
+        color: #5f4c44;
+      }
+      .pill.public {
+        background: #f7dee2;
+        color: #a92238;
+      }
+      .status {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.75rem;
+        font-weight: 650;
+        padding: 3px 9px;
+        border-radius: 99px;
+        white-space: nowrap;
+      }
+      .status::before {
+        content: "";
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: currentColor;
+      }
+      .status.pending {
         color: var(--pending);
+        background: var(--pending-bg);
       }
-      .status-aprovado {
+      .status.pass {
         color: var(--pass);
-        font-weight: 600;
+        background: var(--pass-bg);
       }
-      .status-reprovado {
+      .status.fail {
         color: var(--fail);
-        font-weight: 600;
+        background: var(--fail-bg);
+      }
+      .status.block {
+        color: var(--block);
+        background: var(--block-bg);
+      }
+      .matrix-wrap {
+        overflow-x: auto;
+      }
+        .matrix {
+          font-size: 0.78rem;
+        }
+        .matrix td,
+        .matrix th {
+          text-align: center;
+          white-space: nowrap;
+          padding: 7px 5px;
+        }
+      .matrix th:first-child,
+      .matrix td:first-child {
+        text-align: left;
+        font-weight: 650;
+      }
+      .cell-e {
+        background: #dcece1;
+        color: #2c6547;
+        font-weight: 700;
+      }
+      .cell-l {
+        background: #f3e2c2;
+        color: #9a6b12;
+        font-weight: 700;
+      }
+      .cell-n {
+        color: var(--ink-3);
+      }
+      .legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        font-size: 0.8rem;
+        color: var(--muted);
+        margin: 8px 0 0;
+      }
+      .accounts td:nth-child(2) {
+        font-family: ui-monospace, Consolas, monospace;
+        font-size: 0.8rem;
+      }
+      .gallery {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 10px;
+        margin-top: 8px;
+      }
+      .evidence-item {
+        border: 1px dashed var(--border);
+        border-radius: 10px;
+        background: var(--bg-soft);
+        min-height: 90px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 10px;
+        font-size: 0.75rem;
+        color: var(--ink-3);
+        cursor: pointer;
+      }
+      .evidence-item img {
+        max-width: 100%;
+        border-radius: 8px;
+        display: block;
+      }
+      .evidence-item.missing img {
+        display: none;
+      }
+      #lightbox {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(35, 21, 18, 0.86);
+        z-index: 40;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+      }
+      #lightbox.open {
+        display: flex;
+      }
+      #lightbox img {
+        max-width: 96vw;
+        max-height: 90vh;
+        border-radius: 8px;
       }
       footer {
-        margin-top: 32px;
-        font-size: 0.85rem;
+        margin-top: 28px;
+        font-size: 0.82rem;
         color: var(--muted);
+      }
+      .bugs-empty {
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+      @media (max-width: 720px) {
+        .hide-sm {
+          display: none;
+        }
       }
     </style>
   </head>
   <body>
+    <div id="lightbox" onclick="closeLightbox()">
+      <img id="lightbox-img" alt="Evidência ampliada" onclick="event.stopPropagation()" />
+    </div>
     <div class="wrap">
       <header>
         <h1>ClinRoma · Homologação manual MVP</h1>
-        <p>Piloto Clínica Neo Roma · Relatório POP-QA (adaptado) · Status inicial: pendente execução</p>
+        <p class="lede">
+          Piloto Clínica Neo Roma. Plano completo: 5 perfis, 8 módulos, fluxos P0
+          da Fase 6 e fatias F7 (prontuário, WhatsApp, equipe). Executar no app
+          em HTTPS (<code>https://localhost:3000</code> ou ambiente indicado).
+          Sem Playwright. Evidências em <code>docs/evidencias/</code>.
+        </p>
+        <div class="meta">
+          <div>
+            <span>Ambiente</span>
+            Dev / pré-produção
+          </div>
+          <div>
+            <span>Senha seed</span>
+            ClinRomaDev2026!
+          </div>
+          <div>
+            <span>Dispositivos P0</span>
+            Desktop, iPhone e Android reais
+          </div>
+          <div>
+            <span>Status do plano</span>
+            Pendente de execução
+          </div>
+        </div>
         <div class="scoreboard" id="scoreboard"></div>
+        <div class="progress"><i id="progress-bar"></i></div>
+        <p class="progress-label" id="progress-label"></p>
       </header>
 
       <section>
-        <h2>FL-01 · Login e papéis</h2>
-        <table>
+        <h2>Contas seed (somente dev)</h2>
+        <p class="hint">
+          Nunca usar esta senha em produção. O dentista de teste está vinculado
+          ao Dr. Felipe Roma. Paciente seed para prontuário: Maria Silva.
+        </p>
+        <table class="accounts">
           <thead>
             <tr>
-              <th>TC</th>
-              <th>Descrição</th>
-              <th>Status</th>
+              <th>Perfil</th>
+              <th>E-mail</th>
+              <th>O que validar neste relatório</th>
             </tr>
           </thead>
           <tbody>
-            <tr data-flow="auth">
-              <td>TC-01</td>
-              <td>Login admin e acesso a todos os módulos</td>
-              <td class="status-pendente">Pendente</td>
+            <tr>
+              <td><span class="pill admin">Admin</span></td>
+              <td>admin@clinroma.dev</td>
+              <td>Acesso total, Equipe, WhatsApp, estoque, reenvio de lembrete</td>
             </tr>
-            <tr data-flow="auth">
-              <td>TC-02</td>
-              <td>Recepção bloqueada em Scan QR</td>
-              <td class="status-pendente">Pendente</td>
+            <tr>
+              <td><span class="pill reception">Recepção</span></td>
+              <td>reception@clinroma.dev</td>
+              <td>Agenda, fila, cadastro, pareamento WhatsApp; sem Scan, Equipe e evolução</td>
             </tr>
-            <tr data-flow="auth">
-              <td>TC-03</td>
-              <td>Visualizador sem prontuário clínico</td>
-              <td class="status-pendente">Pendente</td>
+            <tr>
+              <td><span class="pill dentist">Dentista</span></td>
+              <td>dentist@clinroma.dev</td>
+              <td>Prontuário no celular, agenda e fila só leitura; sem Scan, Equipe e /whatsapp</td>
             </tr>
-          </tbody>
-        </table>
-      </section>
-
-      <section>
-        <h2>FL-02 · Agenda</h2>
-        <table>
-          <tbody>
-            <tr data-flow="agenda">
-              <td>TC-04</td>
-              <td>CRUD consulta e conflito de horário</td>
-              <td class="status-pendente">Pendente</td>
+            <tr>
+              <td><span class="pill assistant">Auxiliar</span></td>
+              <td>assistant@clinroma.dev</td>
+              <td>Estoque + Scan (PWA); resto negado, inclusive cadastro de insumo</td>
             </tr>
-            <tr data-flow="agenda">
-              <td>TC-05</td>
-              <td>Lista mobile do dia por dentista</td>
-              <td class="status-pendente">Pendente</td>
+            <tr>
+              <td><span class="pill viewer">Visualizador</span></td>
+              <td>viewer@clinroma.dev</td>
+              <td>Cadastro e agenda leitura; sem prontuário clínico, fila, estoque, WhatsApp e Equipe</td>
             </tr>
           </tbody>
         </table>
       </section>
 
       <section>
-        <h2>FL-03 · Prontuário (mobile real)</h2>
-        <table>
-          <tbody>
-            <tr data-flow="records">
-              <td>TC-06</td>
-              <td>Evolução + áudio + transcrição iPhone</td>
-              <td class="status-pendente">Pendente</td>
-            </tr>
-            <tr data-flow="records">
-              <td>TC-07</td>
-              <td>Mesmo fluxo Android</td>
-              <td class="status-pendente">Pendente</td>
-            </tr>
-          </tbody>
-        </table>
+        <h2>Matriz de permissão (fonte: roles.ts)</h2>
+        <p class="hint">
+          E = escrita. L = leitura. Não = módulo ausente no menu e recusado na
+          rota. Prontuário fino (evolução, transcrição) vale só para admin e
+          dentista, mesmo com escrita em Pacientes.
+        </p>
+        <div class="matrix-wrap">
+          <table class="matrix">
+            <thead>
+              <tr>
+                <th>Perfil</th>
+                <th>Hoje</th>
+                <th>Agenda</th>
+                <th>Pacientes</th>
+                <th>Fila</th>
+                <th>Estoque</th>
+                <th>Scan</th>
+                <th>WhatsApp</th>
+                <th>Equipe</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Admin</td>
+                <td class="cell-e">E</td>
+                <td class="cell-e">E</td>
+                <td class="cell-e">E</td>
+                <td class="cell-e">E</td>
+                <td class="cell-e">E</td>
+                <td class="cell-e">E</td>
+                <td class="cell-e">E</td>
+                <td class="cell-e">E</td>
+              </tr>
+              <tr>
+                <td>Recepção</td>
+                <td class="cell-l">L</td>
+                <td class="cell-e">E</td>
+                <td class="cell-e">E</td>
+                <td class="cell-e">E</td>
+                <td class="cell-l">L</td>
+                <td class="cell-n">Não</td>
+                <td class="cell-e">E</td>
+                <td class="cell-n">Não</td>
+              </tr>
+              <tr>
+                <td>Dentista</td>
+                <td class="cell-l">L</td>
+                <td class="cell-l">L</td>
+                <td class="cell-e">E</td>
+                <td class="cell-l">L</td>
+                <td class="cell-l">L</td>
+                <td class="cell-n">Não</td>
+                <td class="cell-n">Não</td>
+                <td class="cell-n">Não</td>
+              </tr>
+              <tr>
+                <td>Auxiliar</td>
+                <td class="cell-n">Não</td>
+                <td class="cell-n">Não</td>
+                <td class="cell-n">Não</td>
+                <td class="cell-n">Não</td>
+                <td class="cell-l">L</td>
+                <td class="cell-e">E</td>
+                <td class="cell-n">Não</td>
+                <td class="cell-n">Não</td>
+              </tr>
+              <tr>
+                <td>Visualizador</td>
+                <td class="cell-l">L</td>
+                <td class="cell-l">L</td>
+                <td class="cell-l">L</td>
+                <td class="cell-n">Não</td>
+                <td class="cell-n">Não</td>
+                <td class="cell-n">Não</td>
+                <td class="cell-n">Não</td>
+                <td class="cell-n">Não</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="legend" id="profile-coverage"></p>
+      </section>
+
+      <details class="flow" open>
+        <summary data-flow="auth">FL-01 · Login e papéis</summary>
+        <div class="flow-body">
+          <p class="hint">
+            Um login por perfil. Conferir menu visível e recusa ao abrir a URL
+            proibida (não basta o item sumir).
+          </p>
+          <table>
+            <thead>
+              <tr>
+                <th>TC</th>
+                <th>Perfil</th>
+                <th>Caso e resultado esperado</th>
+                <th class="hide-sm">Disp.</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-flow="auth" data-status="pending" data-roles="admin">
+                <td class="code">TC-01</td>
+                <td><span class="pill admin">Admin</span></td>
+                <td>
+                  Login <code>admin@clinroma.dev</code>. Menu mostra Hoje, Agenda,
+                  Pacientes, Fila, Estoque, Scan QR, WhatsApp e Equipe. As oito
+                  rotas abrem.
+                </td>
+                <td class="hide-sm">Desktop</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+              <tr data-flow="auth" data-status="pending" data-roles="reception">
+                <td class="code">TC-02</td>
+                <td><span class="pill reception">Recepção</span></td>
+                <td>
+                  Login <code>reception@clinroma.dev</code>. Vê Agenda, Pacientes,
+                  Fila e WhatsApp. <code>/estoque/scan</code> e
+                  <code>/equipe</code> caem em acesso negado. Scan não aparece no
+                  menu.
+                </td>
+                <td class="hide-sm">Desktop</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+              <tr data-flow="auth" data-status="pending" data-roles="dentist">
+                <td class="code">TC-03</td>
+                <td><span class="pill dentist">Dentista</span></td>
+                <td>
+                  Login <code>dentist@clinroma.dev</code>. Agenda e fila sem
+                  criar/ofertar. <code>/estoque/scan</code>,
+                  <code>/whatsapp</code> e <code>/equipe</code> negados. Sem
+                  marcar consulta.
+                </td>
+                <td class="hide-sm">Desktop</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+              <tr data-flow="auth" data-status="pending" data-roles="assistant">
+                <td class="code">TC-04</td>
+                <td><span class="pill assistant">Auxiliar</span></td>
+                <td>
+                  Login <code>assistant@clinroma.dev</code>. Só Estoque e Scan.
+                  <code>/hoje</code>, <code>/agenda</code>,
+                  <code>/pacientes</code>, <code>/fila</code>,
+                  <code>/whatsapp</code> e <code>/equipe</code> negados.
+                </td>
+                <td class="hide-sm">Celular</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+              <tr data-flow="auth" data-status="pending" data-roles="viewer">
+                <td class="code">TC-05</td>
+                <td><span class="pill viewer">Visualizador</span></td>
+                <td>
+                  Login <code>viewer@clinroma.dev</code>. Paciente seed: só
+                  cadastro, sem abas clínicas. Fila, Estoque, Scan, WhatsApp e
+                  Equipe negados. Agenda sem botões de escrita.
+                </td>
+                <td class="hide-sm">Desktop</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+              <tr data-flow="auth" data-status="pending" data-roles="admin">
+                <td class="code">TC-06</td>
+                <td><span class="pill admin">Admin</span></td>
+                <td>
+                  Sair da conta. Abrir <code>/agenda</code> redireciona para
+                  login. Sessão anterior não reabre módulos.
+                </td>
+                <td class="hide-sm">Desktop</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
+
+      <details class="flow">
+        <summary data-flow="agenda">FL-02 · Agenda</summary>
+        <div class="flow-body">
+          <p class="hint">
+            Quem marca é recepção (e admin). Dentista e visualizador só consultam.
+            Auxiliar já coberto no TC-04.
+          </p>
+          <table>
+            <thead>
+              <tr>
+                <th>TC</th>
+                <th>Perfil</th>
+                <th>Caso e resultado esperado</th>
+                <th class="hide-sm">Disp.</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-flow="agenda" data-status="pending" data-roles="reception">
+                <td class="code">TC-07</td>
+                <td><span class="pill reception">Recepção</span></td>
+                <td>
+                  Desktop: criar consulta em slot livre, buscar paciente seed.
+                  Consulta aparece na coluna do dentista e em Hoje.
+                </td>
+                <td class="hide-sm">Desktop</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+              <tr data-flow="agenda" data-status="pending" data-roles="reception">
+                <td class="code">TC-08</td>
+                <td><span class="pill reception">Recepção</span></td>
+                <td>
+                  Remarcar arrastando no calendário. Diálogo de confirmação.
+                  Após confirmar, o horário antigo fica livre.
+                </td>
+                <td class="hide-sm">Desktop</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+              <tr data-flow="agenda" data-status="pending" data-roles="reception">
+                <td class="code">TC-09</td>
+                <td><span class="pill reception">Recepção</span></td>
+                <td>
+                  Cancelar consulta. Slot liberado. Atalho de oferta da fila
+                  permanece disponível se a regra da tela mostrar.
+                </td>
+                <td class="hide-sm">Desktop</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+              <tr data-flow="agenda" data-status="pending" data-roles="reception">
+                <td class="code">TC-10</td>
+                <td><span class="pill reception">Recepção</span></td>
+                <td>
+                  Tentar o mesmo horário no mesmo dentista. Mensagem de conflito.
+                  Nada é gravado.
+                </td>
+                <td class="hide-sm">Desktop</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+              <tr data-flow="agenda" data-status="pending" data-roles="dentist">
+                <td class="code">TC-11</td>
+                <td><span class="pill dentist">Dentista</span></td>
+                <td>
+                  Viewport estreito: lista do dia filtrada no Dr. Felipe Roma.
+                  Somente leitura. Sem criar, remarcar ou concluir.
+                </td>
+                <td class="hide-sm">Celular</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+              <tr data-flow="agenda" data-status="pending" data-roles="viewer">
+                <td class="code">TC-12</td>
+                <td><span class="pill viewer">Visualizador</span></td>
+                <td>
+                  Vê a agenda. Sem arrastar, sem novo horário, sem cancelar.
+                </td>
+                <td class="hide-sm">Desktop</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
+
+      <details class="flow">
+        <summary data-flow="records">FL-03 · Prontuário</summary>
+        <div class="flow-body">
+          <p class="hint">
+            Áudio e foto em iPhone e Android reais (HTTPS). Evolução só dentista
+            e admin. Recepção cadastra e lê; não registra evolução.
+          </p>
+          <table>
+            <thead>
+              <tr>
+                <th>TC</th>
+                <th>Perfil</th>
+                <th>Caso e resultado esperado</th>
+                <th class="hide-sm">Disp.</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-flow="records" data-status="pending" data-roles="reception">
+                <td class="code">TC-13</td>
+                <td><span class="pill reception">Recepção</span></td>
+                <td>
+                  Cadastrar paciente com consentimento LGPD e segundo telefone
+                  opcional + observação. Reabrir a ficha: dados permanecem.
+                  Remover o bloco do segundo telefone e salvar.
+                </td>
+                <td class="hide-sm">Desktop</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+              <tr data-flow="records" data-status="pending" data-roles="dentist">
+                <td class="code">TC-14</td>
+                <td><span class="pill dentist">Dentista</span></td>
+                <td>
+                  iPhone: evolução + foto + áudio + transcrição sem recarregar a
+                  ficha. Texto aparece na evolução.
+                </td>
+                <td class="hide-sm">iPhone</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+              <tr data-flow="records" data-status="pending" data-roles="dentist">
+                <td class="code">TC-15</td>
+                <td><span class="pill dentist">Dentista</span></td>
+                <td>
+                  Android: mesmo fluxo (WebM/Opus). Transcrição conclui.
+                </td>
+                <td class="hide-sm">Android</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+              <tr data-flow="records" data-status="pending" data-roles="dentist">
+                <td class="code">TC-16</td>
+                <td><span class="pill dentist">Dentista</span></td>
+                <td>
+                  F7-01: corrigir o texto da transcrição, recarregar a ficha, o
+                  texto corrigido permanece. Áudio original intacto.
+                </td>
+                <td class="hide-sm">Celular</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+              <tr data-flow="records" data-status="pending" data-roles="dentist">
+                <td class="code">TC-17</td>
+                <td><span class="pill dentist">Dentista</span></td>
+                <td>
+                  F7-02: Maria, aba Evoluções, buscar <code>dente 24</code>. Só
+                  a extração. Limpar restaura a lista.
+                </td>
+                <td class="hide-sm">Desktop</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+              <tr data-flow="records" data-status="pending" data-roles="reception">
+                <td class="code">TC-18</td>
+                <td><span class="pill reception">Recepção</span></td>
+                <td>
+                  Filtra o histórico. Não vê o formulário de nova evolução nem
+                  botão de salvar correção de transcrição.
+                </td>
+                <td class="hide-sm">Desktop</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+              <tr data-flow="records" data-status="pending" data-roles="dentist">
+                <td class="code">TC-19</td>
+                <td><span class="pill dentist">Dentista</span></td>
+                <td>
+                  F7-08: cruz reconhecível. Marcar face oclusal do 24, recarregar,
+                  achado permanece. Dente 36 oclusal do seed visível.
+                </td>
+                <td class="hide-sm">Desktop</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+              <tr data-flow="records" data-status="pending" data-roles="viewer">
+                <td class="code">TC-20</td>
+                <td><span class="pill viewer">Visualizador</span></td>
+                <td>
+                  Vê cadastro (inclui segundo contato no resumo). Não vê
+                  Anamnese, Odontograma, Evoluções, Pós-cirurgia nem busca.
+                </td>
+                <td class="hide-sm">Desktop</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
+
+      <details class="flow">
+        <summary data-flow="waitlist">FL-04 · Fila Kanban</summary>
+        <div class="flow-body">
+          <p class="hint">
+            Oferta dispara WhatsApp. Copiar link é fallback. Página pública:
+            consentimento LGPD, nome parcial, sem prontuário.
+          </p>
+          <table>
+            <thead>
+              <tr>
+                <th>TC</th>
+                <th>Perfil</th>
+                <th>Caso e resultado esperado</th>
+                <th class="hide-sm">Disp.</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-flow="waitlist" data-status="pending" data-roles="reception">
+                <td class="code">TC-21</td>
+                <td><span class="pill reception">Recepção</span></td>
+                <td>
+                  Ofertar horário a quem está em Aguardando. Link chega por
+                  WhatsApp (número de teste). Copiar link continua visível.
+                </td>
+                <td class="hide-sm">Desktop</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+              <tr data-flow="waitlist" data-status="pending" data-roles="public">
+                <td class="code">TC-22</td>
+                <td><span class="pill public">Paciente</span></td>
+                <td>
+                  Abrir o link sem login. Consentimento visível. Aceitar cria
+                  consulta confirmed na agenda. Sem shell interno.
+                </td>
+                <td class="hide-sm">Público</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+              <tr data-flow="waitlist" data-status="pending" data-roles="public">
+                <td class="code">TC-23</td>
+                <td><span class="pill public">Paciente</span></td>
+                <td>
+                  Recusar a oferta. Card da fila volta para Aguardando. Sem
+                  consulta nova.
+                </td>
+                <td class="hide-sm">Público</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+              <tr data-flow="waitlist" data-status="pending" data-roles="public">
+                <td class="code">TC-24</td>
+                <td><span class="pill public">Paciente</span></td>
+                <td>
+                  Oferta expirada (cron ou espera de 40 min). Página pública com
+                  mensagem genérica. Sem dados extra do paciente.
+                </td>
+                <td class="hide-sm">Público</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+              <tr data-flow="waitlist" data-status="pending" data-roles="dentist">
+                <td class="code">TC-25</td>
+                <td><span class="pill dentist">Dentista</span></td>
+                <td>
+                  Abre <code>/fila</code>. Vê o Kanban. Sem incluir paciente e
+                  sem enviar oferta.
+                </td>
+                <td class="hide-sm">Desktop</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+              <tr data-flow="waitlist" data-status="pending" data-roles="viewer">
+                <td class="code">TC-26</td>
+                <td><span class="pill viewer">Visualizador</span></td>
+                <td>
+                  <code>/fila</code> negado. Item Fila ausente do menu.
+                </td>
+                <td class="hide-sm">Desktop</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
+
+      <details class="flow">
+        <summary data-flow="stock">FL-05 · Estoque, scan e e-mail financeiro</summary>
+        <div class="flow-body">
+          <p class="hint">
+            Scan é da auxiliar (e admin). Recepção vê alerta na Hoje, não escaneia.
+            F7-06: um e-mail ao cruzar o mínimo; segunda retirada não reenvia.
+          </p>
+          <table>
+            <thead>
+              <tr>
+                <th>TC</th>
+                <th>Perfil</th>
+                <th>Caso e resultado esperado</th>
+                <th class="hide-sm">Disp.</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-flow="stock" data-status="pending" data-roles="assistant">
+                <td class="code">TC-27</td>
+                <td><span class="pill assistant">Auxiliar</span></td>
+                <td>
+                  iPhone: scan <code>CR-DEV001</code>, retirada, saldo atualizado
+                  na lista.
+                </td>
+                <td class="hide-sm">iPhone</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+              <tr data-flow="stock" data-status="pending" data-roles="assistant">
+                <td class="code">TC-28</td>
+                <td><span class="pill assistant">Auxiliar</span></td>
+                <td>Android: mesmo fluxo completo.</td>
+                <td class="hide-sm">Android</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+              <tr data-flow="stock" data-status="pending" data-roles="assistant">
+                <td class="code">TC-29</td>
+                <td><span class="pill assistant">Auxiliar</span></td>
+                <td>
+                  Modo contínuo: 3 pacotes distintos sem voltar à lista.
+                </td>
+                <td class="hide-sm">Celular</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+              <tr data-flow="stock" data-status="pending" data-roles="admin">
+                <td class="code">TC-30</td>
+                <td><span class="pill admin">Admin</span></td>
+                <td>
+                  Cadastro de insumo, folha de etiquetas, alerta Anestésico na
+                  Hoje quando o saldo cruza o mínimo.
+                </td>
+                <td class="hide-sm">Desktop</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+              <tr data-flow="stock" data-status="pending" data-roles="reception">
+                <td class="code">TC-31</td>
+                <td><span class="pill reception">Recepção</span></td>
+                <td>
+                  <code>/estoque/scan</code> negado. Alertas de estoque visíveis
+                  na Hoje.
+                </td>
+                <td class="hide-sm">Desktop</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+              <tr data-flow="stock" data-status="pending" data-roles="assistant">
+                <td class="code">TC-32</td>
+                <td><span class="pill assistant">Auxiliar</span></td>
+                <td>
+                  Scan e entrada de pacote OK. Cadastro base do insumo recusado.
+                </td>
+                <td class="hide-sm">Desktop</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+              <tr data-flow="stock" data-status="pending" data-roles="assistant">
+                <td class="code">TC-33</td>
+                <td><span class="pill assistant">Auxiliar</span></td>
+                <td>
+                  F7-06: cruzar o mínimo com <code>FINANCE_ALERT_EMAIL</code>
+                  preenchido. Um e-mail. Segunda retirada: sem e-mail extra.
+                  Estoque intacto se o destino estiver vazio.
+                </td>
+                <td class="hide-sm">Celular</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
+
+      <details class="flow">
+        <summary data-flow="reminders">FL-06 · Lembrete pós-consulta</summary>
+        <div class="flow-body">
+          <p class="hint">
+            Quem conclui a consulta (recepção ou admin) dispara o e-mail ao
+            dentista. Só o admin reenvia falhas.
+          </p>
+          <table>
+            <thead>
+              <tr>
+                <th>TC</th>
+                <th>Perfil</th>
+                <th>Caso e resultado esperado</th>
+                <th class="hide-sm">Disp.</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-flow="reminders" data-status="pending" data-roles="reception">
+                <td class="code">TC-34</td>
+                <td><span class="pill reception">Recepção</span></td>
+                <td>
+                  Marcar consulta seed como Concluída. Badge de lembrete. E-mail
+                  chega em <code>dentist@clinroma.dev</code> (Resend configurado).
+                </td>
+                <td class="hide-sm">Desktop</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+              <tr data-flow="reminders" data-status="pending" data-roles="admin">
+                <td class="code">TC-35</td>
+                <td><span class="pill admin">Admin</span></td>
+                <td>
+                  Hoje: painel Lembretes com falha. Reenvio zera tentativas e
+                  volta a pendente.
+                </td>
+                <td class="hide-sm">Desktop</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+              <tr data-flow="reminders" data-status="pending" data-roles="dentist,reception">
+                <td class="code">TC-36</td>
+                <td>
+                  <span class="pill dentist">Dentista</span>
+                  <span class="pill reception">Recepção</span>
+                </td>
+                <td>
+                  Veem o badge no detalhe. Sem botão de reenvio.
+                </td>
+                <td class="hide-sm">Desktop</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
+
+      <details class="flow">
+        <summary data-flow="pwa">FL-07 · PWA scan</summary>
+        <div class="flow-body">
+          <p class="hint">Atalho da tela inicial é o caminho diário da auxiliar.</p>
+          <table>
+            <thead>
+              <tr>
+                <th>TC</th>
+                <th>Perfil</th>
+                <th>Caso e resultado esperado</th>
+                <th class="hide-sm">Disp.</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-flow="pwa" data-status="pending" data-roles="assistant">
+                <td class="code">TC-37</td>
+                <td><span class="pill assistant">Auxiliar</span></td>
+                <td>
+                  iOS: adicionar à tela inicial. Abrir o atalho cai em Scan (ou
+                  login e depois Scan). Câmera pede permissão.
+                </td>
+                <td class="hide-sm">iPhone</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+              <tr data-flow="pwa" data-status="pending" data-roles="assistant">
+                <td class="code">TC-38</td>
+                <td><span class="pill assistant">Auxiliar</span></td>
+                <td>Android: mesmo atalho e abertura direta do Scan.</td>
+                <td class="hide-sm">Android</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
+
+      <details class="flow">
+        <summary data-flow="security">FL-08 · Segurança smoke</summary>
+        <div class="flow-body">
+          <p class="hint">
+            Superfícies públicas sem enumerar IDs. Recusa por URL direta, não só
+            pelo menu escondido.
+          </p>
+          <table>
+            <thead>
+              <tr>
+                <th>TC</th>
+                <th>Perfil</th>
+                <th>Caso e resultado esperado</th>
+                <th class="hide-sm">Disp.</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-flow="security" data-status="pending" data-roles="public">
+                <td class="code">TC-39</td>
+                <td><span class="pill public">Visitante</span></td>
+                <td>
+                  <code>/fila/resposta/exemplo-token</code> sem login e sem shell
+                  interno. Mensagem genérica. Sem redirect para <code>/login</code>.
+                </td>
+                <td class="hide-sm">Público</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+              <tr data-flow="security" data-status="pending" data-roles="public">
+                <td class="code">TC-40</td>
+                <td><span class="pill public">Visitante</span></td>
+                <td>
+                  Link de anamnese inválido, expirado ou já usado: a mesma
+                  mensagem genérica. Sem menu da clínica e sem PHI.
+                </td>
+                <td class="hide-sm">Público</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+              <tr data-flow="security" data-status="pending" data-roles="dentist">
+                <td class="code">TC-41</td>
+                <td><span class="pill dentist">Dentista</span></td>
+                <td>
+                  Colar na barra: <code>/estoque/scan</code>,
+                  <code>/whatsapp</code> e <code>/equipe</code>. Os três caem em
+                  acesso negado.
+                </td>
+                <td class="hide-sm">Desktop</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+              <tr data-flow="security" data-status="pending" data-roles="assistant">
+                <td class="code">TC-42</td>
+                <td><span class="pill assistant">Auxiliar</span></td>
+                <td>
+                  Colar <code>/agenda</code>, <code>/pacientes</code> e
+                  <code>/fila</code>. Os três negados.
+                </td>
+                <td class="hide-sm">Celular</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
+
+      <details class="flow">
+        <summary data-flow="f7-records">FL-09 · Card, anamnese isolada e 2º telefone</summary>
+        <div class="flow-body">
+          <p class="hint">
+            Fatias F7-03, F7-07 e F7-09. Tablet da clínica é o caminho oficial da
+            anamnese; WhatsApp do questionário é opcional.
+          </p>
+          <table>
+            <thead>
+              <tr>
+                <th>TC</th>
+                <th>Perfil</th>
+                <th>Caso e resultado esperado</th>
+                <th class="hide-sm">Disp.</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-flow="f7-records" data-status="pending" data-roles="dentist">
+                <td class="code">TC-43</td>
+                <td><span class="pill dentist">Dentista</span></td>
+                <td>
+                  Abrir Maria: card com anamnese vigente e último procedimento
+                  (Restauração) sem entrar nas abas. Toque abre Anamnese / Evoluções.
+                </td>
+                <td class="hide-sm">Desktop</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+              <tr data-flow="f7-records" data-status="pending" data-roles="viewer">
+                <td class="code">TC-44</td>
+                <td><span class="pill viewer">Visualizador</span></td>
+                <td>
+                  Vê o cadastro. Não vê os dois blocos clínicos do card.
+                </td>
+                <td class="hide-sm">Desktop</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+              <tr data-flow="f7-records" data-status="pending" data-roles="viewer">
+                <td class="code">TC-45</td>
+                <td><span class="pill viewer">Visualizador</span></td>
+                <td>
+                  Lê o segundo contato no resumo. Sem formulário de edição.
+                </td>
+                <td class="hide-sm">Desktop</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+              <tr data-flow="f7-records" data-status="pending" data-roles="dentist">
+                <td class="code">TC-46</td>
+                <td><span class="pill dentist">Dentista</span></td>
+                <td>
+                  Preencher questionário papel (Sim/Não) na ficha da Maria.
+                  Recarregar: v2 vigente. Versão v1 do seed continua no histórico.
+                </td>
+                <td class="hide-sm">Desktop</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+              <tr data-flow="f7-records" data-status="pending" data-roles="reception,public">
+                <td class="code">TC-47</td>
+                <td>
+                  <span class="pill reception">Recepção</span>
+                  <span class="pill public">Paciente</span>
+                </td>
+                <td>
+                  Gerar link pré-consulta, abrir sem login, enviar com
+                  consentimento. Recarregar o mesmo link: mensagem genérica.
+                  Tablet não dispara WhatsApp.
+                </td>
+                <td class="hide-sm">Público</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+              <tr data-flow="f7-records" data-status="pending" data-roles="reception">
+                <td class="code">TC-48</td>
+                <td><span class="pill reception">Recepção</span></td>
+                <td>
+                  Convite de consultório no tablet: página sem menu da clínica.
+                  Validade só no dia (fuso SP).
+                </td>
+                <td class="hide-sm">Tablet</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
+
+      <details class="flow">
+        <summary data-flow="whatsapp">FL-10 · WhatsApp (sessão e pós-cirurgia)</summary>
+        <div class="flow-body">
+          <p class="hint">
+            Admin e recepção pareiam. Dentista só lê o card na Hoje. Auxiliar e
+            visualizador não veem a feature. Número pessoal do Felipe fora desta
+            homologação; usar número de teste.
+          </p>
+          <table>
+            <thead>
+              <tr>
+                <th>TC</th>
+                <th>Perfil</th>
+                <th>Caso e resultado esperado</th>
+                <th class="hide-sm">Disp.</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-flow="whatsapp" data-status="pending" data-roles="reception">
+                <td class="code">TC-49</td>
+                <td><span class="pill reception">Recepção</span></td>
+                <td>
+                  Tela <code>/whatsapp</code>: iniciar sessão, QR em SCAN_QR,
+                  chip verde quando WORKING. Disparo de teste ok.
+                </td>
+                <td class="hide-sm">Desktop</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+              <tr data-flow="whatsapp" data-status="pending" data-roles="admin">
+                <td class="code">TC-50</td>
+                <td><span class="pill admin">Admin</span></td>
+                <td>
+                  Desconectar com confirmação. Chip/card refletem sessão caída.
+                  Disparos param até novo pareamento.
+                </td>
+                <td class="hide-sm">Desktop</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+              <tr data-flow="whatsapp" data-status="pending" data-roles="dentist">
+                <td class="code">TC-51</td>
+                <td><span class="pill dentist">Dentista</span></td>
+                <td>
+                  Card na Hoje sem link Abrir pareamento.
+                  <code>/whatsapp</code> negado. Texto pede recepção ou admin.
+                </td>
+                <td class="hide-sm">Desktop</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+              <tr data-flow="whatsapp" data-status="pending" data-roles="assistant,viewer">
+                <td class="code">TC-52</td>
+                <td>
+                  <span class="pill assistant">Auxiliar</span>
+                  <span class="pill viewer">Visualizador</span>
+                </td>
+                <td>
+                  Sem item de menu, sem chip, sem card e sem tela. Rota negada.
+                </td>
+                <td class="hide-sm">Desktop</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+              <tr data-flow="whatsapp" data-status="pending" data-roles="dentist">
+                <td class="code">TC-53</td>
+                <td><span class="pill dentist">Dentista</span></td>
+                <td>
+                  Aba Pós-cirurgia: Enviar agora com número de teste. Mensagem
+                  chega. Destino mascarado em qualquer log visível.
+                </td>
+                <td class="hide-sm">Desktop</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+              <tr data-flow="whatsapp" data-status="pending" data-roles="dentist">
+                <td class="code">TC-54</td>
+                <td><span class="pill dentist">Dentista</span></td>
+                <td>
+                  Paciente sem telefone aproveitável: destino mostra o segundo
+                  telefone e a observação.
+                </td>
+                <td class="hide-sm">Desktop</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+              <tr data-flow="whatsapp" data-status="pending" data-roles="dentist">
+                <td class="code">TC-55</td>
+                <td><span class="pill dentist">Dentista</span></td>
+                <td>
+                  Agendar envio. Cron (VPS, 5 min) dispara e vira Enviado.
+                  Horário passado recusa na tela.
+                </td>
+                <td class="hide-sm">Desktop</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+              <tr data-flow="whatsapp" data-status="pending" data-roles="dentist">
+                <td class="code">TC-56</td>
+                <td><span class="pill dentist">Dentista</span></td>
+                <td>
+                  Agendado: Cancelar. O cron não dispara. Sem canal: Agendar
+                  grava e Enviar agora fica desabilitado.
+                </td>
+                <td class="hide-sm">Desktop</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
+
+      <details class="flow">
+        <summary data-flow="team">FL-11 · Equipe (gestão de acessos)</summary>
+        <div class="flow-body">
+          <p class="hint">
+            Exclusivo do admin. Não usar a conta seed admin como único admin ao
+            testar rebaixamento: a trava do último admin ativo deve recusar.
+          </p>
+          <table>
+            <thead>
+              <tr>
+                <th>TC</th>
+                <th>Perfil</th>
+                <th>Caso e resultado esperado</th>
+                <th class="hide-sm">Disp.</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-flow="team" data-status="pending" data-roles="admin">
+                <td class="code">TC-57</td>
+                <td><span class="pill admin">Admin</span></td>
+                <td>
+                  Criar colaborador por convite. O e-mail chega. O link define
+                  senha e o login entra no papel escolhido.
+                </td>
+                <td class="hide-sm">Desktop</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+              <tr data-flow="team" data-status="pending" data-roles="admin">
+                <td class="code">TC-58</td>
+                <td><span class="pill admin">Admin</span></td>
+                <td>
+                  Criar com senha temporária. A senha aparece uma vez. Login
+                  entra.
+                </td>
+                <td class="hide-sm">Desktop</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+              <tr data-flow="team" data-status="pending" data-roles="admin">
+                <td class="code">TC-59</td>
+                <td><span class="pill admin">Admin</span></td>
+                <td>
+                  Trocar o papel de um colaborador de teste. Na sessão seguinte
+                  o menu dele muda.
+                </td>
+                <td class="hide-sm">Desktop</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+              <tr data-flow="team" data-status="pending" data-roles="admin">
+                <td class="code">TC-60</td>
+                <td><span class="pill admin">Admin</span></td>
+                <td>
+                  Desativar colaborador. Login recusa com "Conta desativada".
+                  Reativar permite entrar de novo.
+                </td>
+                <td class="hide-sm">Desktop</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+              <tr data-flow="team" data-status="pending" data-roles="admin">
+                <td class="code">TC-61</td>
+                <td><span class="pill admin">Admin</span></td>
+                <td>
+                  Tentar alterar o próprio papel: recusa. Tentar rebaixar o
+                  único admin ativo: recusa.
+                </td>
+                <td class="hide-sm">Desktop</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+              <tr data-flow="team" data-status="pending" data-roles="dentist,reception,assistant,viewer">
+                <td class="code">TC-62</td>
+                <td>
+                  <span class="pill dentist">Dentista</span>
+                  <span class="pill reception">Recepção</span>
+                  <span class="pill assistant">Auxiliar</span>
+                  <span class="pill viewer">Visualizador</span>
+                </td>
+                <td>
+                  Sem item Equipe no menu. <code>/equipe</code> negado nos quatro
+                  papéis.
+                </td>
+                <td class="hide-sm">Desktop</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+              <tr data-flow="team" data-status="pending" data-roles="admin,reception,assistant">
+                <td class="code">TC-63</td>
+                <td>
+                  <span class="pill admin">Admin</span>
+                  <span class="pill reception">Recepção</span>
+                  <span class="pill assistant">Auxiliar</span>
+                </td>
+                <td>
+                  Celular, botão de conta: admin vê Equipe, WhatsApp e Scan.
+                  Recepção só WhatsApp. Auxiliar só Scan. Sair funciona em
+                  iPhone e Android.
+                </td>
+                <td class="hide-sm">Celular</td>
+                <td><span class="status pending">Pendente</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
+
+      <section>
+        <h2>Matriz de cobertura dos TCs</h2>
+        <p class="hint">Quantos casos citam cada perfil (um TC pode contar em mais de um).</p>
+        <div class="scoreboard" id="role-board"></div>
+        <div class="matrix-wrap" style="margin-top: 12px">
+          <table class="matrix" id="tc-matrix"></table>
+        </div>
       </section>
 
       <section>
-        <h2>FL-04 · Fila Kanban</h2>
-        <table>
-          <tbody>
-            <tr data-flow="waitlist">
-              <td>TC-08</td>
-              <td>Oferta de horário e link público LGPD</td>
-              <td class="status-pendente">Pendente</td>
-            </tr>
-          </tbody>
-        </table>
-      </section>
-
-      <section>
-        <h2>FL-05 · Estoque e scan</h2>
-        <table>
-          <tbody>
-            <tr data-flow="stock">
-              <td>TC-09</td>
-              <td>Scan CR-DEV001 e saldo atualizado</td>
-              <td class="status-pendente">Pendente</td>
-            </tr>
-          </tbody>
-        </table>
-      </section>
-
-      <section>
-        <h2>FL-06 · Lembrete pós-consulta</h2>
-        <table>
-          <tbody>
-            <tr data-flow="reminders">
-              <td>TC-10</td>
-              <td>Concluir consulta e e-mail ao dentista</td>
-              <td class="status-pendente">Pendente</td>
-            </tr>
-          </tbody>
-        </table>
-      </section>
-
-      <section>
-        <h2>FL-07 · PWA scan</h2>
-        <table>
-          <tbody>
-            <tr data-flow="pwa">
-              <td>TC-11</td>
-              <td>Atalho na tela inicial iOS/Android</td>
-              <td class="status-pendente">Pendente</td>
-            </tr>
-          </tbody>
-        </table>
+        <h2>Galeria de evidências</h2>
+        <p class="hint">
+          Ao executar, salvar em <code>docs/evidencias/tcNN-descricao-curta.jpeg</code>
+          e o thumbnail abaixo deixa de ser placeholder.
+        </p>
+        <div class="gallery" id="gallery"></div>
       </section>
 
       <section>
         <h2>Log de bugs</h2>
-        <p id="bugs">Nenhum bug registrado.</p>
+        <p class="bugs-empty" id="bugs">Nenhum bug registrado. Ao reprovar um TC, gravar BG-XX com severidade (crítico / alto / médio / baixo).</p>
       </section>
 
-      <footer>ClinRoma · Clínica Neo Roma · Evidências em docs/evidencias/</footer>
+      <footer>
+        ClinRoma · Clínica Neo Roma · POP-QA adaptado · Marca burgundy/gold ·
+        Evidências em docs/evidencias/ · Atualizado 2026-09-01 (plano expandido:
+        5 perfis + F7 + FL-08)
+      </footer>
     </div>
     <script>
-      const testData = {
-        total: 11,
-        pass: 0,
-        fail: 0,
-        block: 0,
-        pending: 11,
+      const FLOW_LABELS = {
+        auth: "FL-01 Login",
+        agenda: "FL-02 Agenda",
+        records: "FL-03 Prontuário",
+        waitlist: "FL-04 Fila",
+        stock: "FL-05 Estoque",
+        reminders: "FL-06 Lembrete",
+        pwa: "FL-07 PWA",
+        security: "FL-08 Segurança",
+        "f7-records": "FL-09 Card/anamnese",
+        whatsapp: "FL-10 WhatsApp",
+        team: "FL-11 Equipe",
       };
-      const el = document.getElementById("scoreboard");
-      el.innerHTML = `
-        <div class="score"><strong>${testData.total}</strong>Total TCs</div>
-        <div class="score"><strong>${testData.pass}</strong>Aprovados</div>
-        <div class="score"><strong>${testData.fail}</strong>Reprovados</div>
-        <div class="score"><strong>${testData.pending}</strong>Pendentes</div>
-      `;
+
+      const ROLE_LABELS = {
+        admin: "Admin",
+        reception: "Recepção",
+        dentist: "Dentista",
+        assistant: "Auxiliar",
+        viewer: "Visualizador",
+        public: "Visitante",
+      };
+
+      const EVIDENCE_HINTS = [
+        ["tc01", "Login admin, 8 módulos"],
+        ["tc04", "Auxiliar: só estoque e scan"],
+        ["tc05", "Visualizador sem prontuário"],
+        ["tc11", "Lista do dia no celular"],
+        ["tc14", "Áudio iPhone"],
+        ["tc15", "Áudio Android"],
+        ["tc21", "Oferta WhatsApp"],
+        ["tc22", "Link público LGPD"],
+        ["tc27", "Scan CR-DEV001"],
+        ["tc34", "E-mail ao dentista"],
+        ["tc37", "PWA iOS"],
+        ["tc49", "QR WhatsApp"],
+        ["tc57", "Convite Equipe"],
+      ];
+
+      function emptyStats() {
+        return { total: 0, pass: 0, fail: 0, block: 0, pending: 0 };
+      }
+
+      function collect() {
+        const rows = [...document.querySelectorAll("tr[data-flow]")];
+        const flows = {};
+        const roles = {};
+        const totals = emptyStats();
+        const byFlowRole = {};
+
+        for (const key of Object.keys(FLOW_LABELS)) {
+          flows[key] = emptyStats();
+          byFlowRole[key] = {};
+        }
+        for (const key of Object.keys(ROLE_LABELS)) roles[key] = 0;
+
+        for (const row of rows) {
+          const flow = row.dataset.flow;
+          const status = row.dataset.status || "pending";
+          const roleList = (row.dataset.roles || "").split(",").filter(Boolean);
+          if (!flows[flow]) flows[flow] = emptyStats();
+          flows[flow].total += 1;
+          flows[flow][status] += 1;
+          totals.total += 1;
+          totals[status] += 1;
+          if (!byFlowRole[flow]) byFlowRole[flow] = {};
+          for (const role of roleList) {
+            roles[role] = (roles[role] || 0) + 1;
+            byFlowRole[flow][role] = (byFlowRole[flow][role] || 0) + 1;
+          }
+        }
+        return { flows, roles, totals, byFlowRole };
+      }
+
+      function initScoreboard() {
+        const { flows, roles, totals, byFlowRole } = collect();
+        const done = totals.pass + totals.fail + totals.block;
+        const pct = totals.total ? Math.round((totals.pass / totals.total) * 100) : 0;
+
+        document.getElementById("scoreboard").innerHTML = `
+          <div class="score"><strong>${totals.total}</strong>Total TCs</div>
+          <div class="score pass"><strong>${totals.pass}</strong>Aprovados</div>
+          <div class="score fail"><strong>${totals.fail}</strong>Reprovados</div>
+          <div class="score"><strong>${totals.block}</strong>Bloqueados</div>
+          <div class="score"><strong>${totals.pending}</strong>Pendentes</div>
+          <div class="score"><strong>${pct}%</strong>Taxa</div>
+        `;
+        document.getElementById("progress-bar").style.width = pct + "%";
+        document.getElementById("progress-label").textContent =
+          `${done} executados de ${totals.total} · ${totals.pending} ainda pendentes`;
+
+        document.querySelectorAll("details.flow > summary[data-flow]").forEach((el) => {
+          const f = flows[el.dataset.flow];
+          if (!f) return;
+          el.setAttribute(
+            "data-count",
+            `${f.pass}/${f.total} ok · ${f.pending} pend.`,
+          );
+        });
+
+        document.getElementById("role-board").innerHTML = Object.entries(ROLE_LABELS)
+          .map(
+            ([id, label]) =>
+              `<div class="score"><strong>${roles[id] || 0}</strong>${label}</div>`,
+          )
+          .join("");
+
+        const roleIds = Object.keys(ROLE_LABELS);
+        const head =
+          "<thead><tr><th>Fluxo</th>" +
+          roleIds.map((id) => `<th>${ROLE_LABELS[id]}</th>`).join("") +
+          "</tr></thead>";
+        const body =
+          "<tbody>" +
+          Object.keys(FLOW_LABELS)
+            .map((flow) => {
+              const cells = roleIds
+                .map((role) => {
+                  const n = byFlowRole[flow]?.[role] || 0;
+                  return n
+                    ? `<td class="cell-e">${n}</td>`
+                    : `<td class="cell-n">·</td>`;
+                })
+                .join("");
+              return `<tr><td>${FLOW_LABELS[flow]}</td>${cells}</tr>`;
+            })
+            .join("") +
+          "</tbody>";
+        document.getElementById("tc-matrix").innerHTML = head + body;
+
+        document.getElementById("gallery").innerHTML = EVIDENCE_HINTS.map(
+          ([file, caption]) => `
+          <div class="evidence-item missing" data-file="${file}" onclick="openLightbox('evidencias/${file}.jpeg')">
+            <img src="evidencias/${file}.jpeg" alt="${caption}" onerror="this.parentElement.classList.add('missing')" />
+            <span>${caption}<br /><code>${file}.jpeg</code></span>
+          </div>`,
+        ).join("");
+      }
+
+      function openLightbox(src) {
+        const img = document.getElementById("lightbox-img");
+        img.src = src;
+        document.getElementById("lightbox").classList.add("open");
+      }
+
+      function closeLightbox() {
+        document.getElementById("lightbox").classList.remove("open");
+      }
+
+      document.addEventListener("DOMContentLoaded", initScoreboard);
     </script>
   </body>
 </html>

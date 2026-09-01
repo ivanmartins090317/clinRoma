@@ -2,7 +2,7 @@
 
 Fonte viva do que **ainda falta implementar ou validar**. Atualizar ao concluir cada fase.
 
-Última revisão: **2026-09-01** (migrations remotas em dia; decisões Felipe fechadas; homologação parcial WhatsApp/fila/estoque).
+Última revisão: **2026-09-01** (migrations remotas em dia; decisões Felipe fechadas; homologação parcial WhatsApp/fila/estoque; relatório manual expandido para 63 TCs / FL-01…FL-11).
 
 ---
 
@@ -181,8 +181,8 @@ Referência: `specs/2026-08-18-fase-6-lembrete-piloto.md` · `docs/implementatio
 
 - [ ] Configurar `RESEND_API_KEY` e `RESEND_FROM_EMAIL` no ambiente de teste
 - [ ] **FL-06:** concluir consulta → e-mail em `dentist@clinroma.dev`
-- [ ] Executar FL-01…FL-08 com evidências desktop e mobile
-- [ ] iPhone e Android nos fluxos áudio, scan e lembrete
+- [ ] Executar FL-01…FL-11 (63 TCs, 5 perfis + visitante) com evidências desktop e mobile
+- [ ] iPhone e Android nos fluxos áudio, scan, PWA e lembrete
 - [ ] Preencher `docs/relatorio-testes-manuais.html` e `docs/evidencias/`
 - [ ] Nenhum bug crítico/alto aberto nos fluxos P0
 - [ ] Deploy produção (Supabase prod + Vercel) conforme checklist manual-dev § Deploy
