@@ -26,4 +26,7 @@ export function getAppointmentStatusLabel(status: AppointmentStatus): string {
 export const WRITABLE_APPOINTMENT_STATUSES: AppointmentStatus[] = [
   "scheduled",
   "confirmed",
+  "in_progress",
+  "completed",
+  "no_show",
 ];

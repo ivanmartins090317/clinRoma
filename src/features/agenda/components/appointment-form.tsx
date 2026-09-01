@@ -6,7 +6,10 @@ import {
   createAppointmentAction,
   updateAppointmentAction,
 } from "@/features/agenda/actions";
-import { WRITABLE_APPOINTMENT_STATUSES } from "@/features/agenda/domain/appointment-status";
+import {
+  getAppointmentStatusLabel,
+  WRITABLE_APPOINTMENT_STATUSES,
+} from "@/features/agenda/domain/appointment-status";
 import { PatientCombobox } from "@/features/agenda/components/patient-combobox";
 import {
   DEFAULT_APPOINTMENT_DURATION_MINUTES,
@@ -263,7 +266,7 @@ export function AppointmentForm({
               <SelectContent>
                 {WRITABLE_APPOINTMENT_STATUSES.map((status) => (
                   <SelectItem key={status} value={status}>
-                    {status === "scheduled" ? "Agendado" : "Confirmado"}
+                    {getAppointmentStatusLabel(status)}
                   </SelectItem>
                 ))}
               </SelectContent>
