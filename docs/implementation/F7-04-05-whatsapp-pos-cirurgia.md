@@ -9,7 +9,7 @@
 
 ## Objetivo
 
-Dar à equipe um **canal único de WhatsApp da clínica** (só disparo) e duas ações na ficha: aba **Pós-cirurgia** (texto livre + histórico) e **Enviar questionário por WhatsApp** na anamnese pré-consulta. Canal ausente no ambiente: não dispara; copiar o link continua. Inbox, QR e conversa ficam fora deste repositório.
+Dar à equipe um **canal único de WhatsApp da clínica** (só disparo) e duas ações na ficha: aba **Pós-cirurgia** (texto-padrão editável + histórico) e **Enviar questionário por WhatsApp** na anamnese pré-consulta (opcional; tablet da clínica permanece). Canal ausente no ambiente: não dispara; copiar o link continua. Inbox, bot e conversa ficam fora deste repositório.
 
 ## Entregue
 

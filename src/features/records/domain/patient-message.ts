@@ -24,6 +24,8 @@ export type PatientMessageStatus =
 export const PATIENT_MESSAGE_COPY = {
   tab: "Pós-cirurgia",
   composer: "Mensagem para o paciente",
+  composerHelp:
+    "Texto-padrão. Altere se o caso pedir. O envio usa o texto que estiver neste campo.",
   scheduleAt: "Data e hora do envio",
   schedule: "Agendar envio",
   sendNow: "Enviar agora",
@@ -55,6 +57,17 @@ export const PATIENT_MESSAGE_COPY = {
   inviteBodyLead:
     "Olá. Segue o questionário de saúde da Clínica Neo Roma para preencher antes da consulta. Vale por 7 dias.",
 } as const;
+
+export const POST_SURGERY_DEFAULT_BODY = [
+  "Olá. Seguem os cuidados após o procedimento na Clínica Neo Roma.",
+  "",
+  "Não cuspa nem faça bochecho forte nas primeiras 24 horas.",
+  "Morda a gaze pelo tempo combinado.",
+  "Evite alimentos quentes e esforço no dia.",
+  "Se o sangramento persistir, a dor for forte ou o inchaço aumentar, ligue para a clínica.",
+  "",
+  "Clínica Neo Roma",
+].join("\n");
 
 const CPF_PATTERN = /\b\d{3}\.?\d{3}\.?\d{3}-?\d{2}\b/;
 

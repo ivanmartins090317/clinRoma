@@ -134,7 +134,7 @@ export function PatientForm({ mode, patient }: PatientFormProps) {
         </p>
         <div className="space-y-2">
           <Label htmlFor="secondaryPhone">
-            {SECONDARY_PHONE_COPY.phoneLabel}
+            {SECONDARY_PHONE_COPY.phoneFieldLabel}
           </Label>
           <Input
             id="secondaryPhone"

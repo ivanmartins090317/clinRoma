@@ -100,14 +100,13 @@ Correção pontual fora do escopo: `src/components/ui/password-input.tsx` tinha 
 | `npm run lint`  | OK · 0 erros · 4 warnings pré-existentes                         |
 | `npm test`      | OK · 370 passed, 26 skipped (49 arquivos)                        |
 | `npm run build` | OK · Next.js 16.3.1 · rota `/equipe` presente                    |
-| `npm run db:push` | **pendente** · migration `028` ainda não aplicada no remoto     |
+| `npm run db:push` | OK · `028_team_access_f7.sql` aplicada no remoto em 2026-09-01 |
 
-Homologação exploratória em viewport de celular (390x844), com a conta `admin@clinroma.dev`: menu de conta abre Scan QR, WhatsApp, Equipe e Sair; `/equipe` lista os cinco colaboradores com e-mail e último acesso; desativar e reativar funcionaram e a lista refletiu o novo estado. Como a `028` ainda não está aplicada, as travas de banco **não** foram exercitadas.
+Homologação exploratória em viewport de celular (390x844), com a conta `admin@clinroma.dev`: menu de conta abre Scan QR, WhatsApp, Equipe e Sair; `/equipe` lista os cinco colaboradores com e-mail e último acesso; desativar e reativar funcionaram e a lista refletiu o novo estado. Migration `028` aplicada no remoto em 2026-09-01.
 
 ## Pendências
 
-- Aplicar `028_team_access_f7.sql` no projeto remoto (`npm run db:push`). Enquanto não for aplicada, o admin consegue rebaixar o próprio papel e deixar a clínica sem administrador ativo
-- Homologação manual: criar colaborador nos dois modos, trocar papel, desativar e conferir que o login recusa a conta inativa
+- Homologação manual: criar colaborador nos dois modos, trocar papel, desativar e conferir que o login recusa a conta inativa; exercitar as travas de autorrebaixamento e último admin
 - Conferir no painel do Supabase se o signup público está desabilitado (a migration já impede autopromoção, mas o cadastro aberto continua indesejado)
 - Confirmar `RESEND_FROM_EMAIL` no ambiente antes de usar o modo convite por e-mail
 

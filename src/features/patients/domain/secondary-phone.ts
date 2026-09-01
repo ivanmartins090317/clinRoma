@@ -10,8 +10,9 @@ export const SECONDARY_PHONE_ERRORS = {
 
 export const SECONDARY_PHONE_COPY = {
   phoneLabel: "Segundo telefone",
+  phoneFieldLabel: "Segundo telefone (opcional)",
   noteLabel: "Observação do contato",
-  help: "Alguns pacientes mais velhos não têm WhatsApp. Este número é de um parente próximo.",
+  help: "Campo opcional. Alguns pacientes mais velhos não têm WhatsApp. Este número é de um parente próximo.",
   notePlaceholder: "filho, esposa, cuidador",
 } as const;
 

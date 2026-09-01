@@ -2,7 +2,7 @@
 
 Fonte viva do que **ainda falta implementar ou validar**. Atualizar ao concluir cada fase.
 
-Última revisão: **2026-08-31** (F7-11 gestão de acessos em código; Fase 7 aberta).
+Última revisão: **2026-09-01** (migrations remotas em dia; decisões Felipe fechadas; homologação parcial WhatsApp/fila/estoque).
 
 ---
 
@@ -16,7 +16,7 @@ Contrato do piloto (spec `specs/2026-08-29-relogio-vps-jobs-next-hobby.md`):
 - Segredo do relógio = já ok (as duas rotinas vivas comprovam)
 - **Enviar agora** = independente do relógio
 
-Esta fatia **não** fecha a Fase 7. A hospedagem do piloto publica `main`. Os dois jobs novos só entram no ar depois que `main` subir com o manifesto vazio.
+Código já está em `main`. Relógio da VPS + jobs do app publicado. Esta fatia **não** fecha a Fase 7.
 
 ---
 
@@ -119,8 +119,9 @@ Referência: `specs/2026-08-18-fase-4-fila-kanban.md` · `docs/implementation/F4
 
 ### Fechamento operacional (homologação manual)
 
-- [ ] Recepção: incluir paciente, ofertar horário, conferir WhatsApp e copiar link (fallback)
-- [ ] Paciente (mobile/viewport estreita): aceitar link seed → consulta na agenda
+- [x] Recepção: ofertar horário e o link chegar por WhatsApp (homologado 2026-09-01, número de teste)
+- [x] Paciente: aceitar o link → consulta confirmada na agenda (homologado 2026-09-01)
+- [ ] Copiar link como fallback (sem WhatsApp)
 - [ ] Cenário recusa: card volta a Aguardando
 - [ ] Expiração: cron ou curl manual + link expirado na UI pública
 - [ ] Dentista: fila somente leitura
@@ -238,17 +239,18 @@ Itens de código prontos, ainda sem validação em dispositivo real (fica no fec
 - [ ] **F7-03 pré-consulta:** gerar link, abrir sem login, enviar, recarregar o mesmo link (mensagem genérica)
 - [ ] **F7-03 tablet:** convite de consultório; página sem menu; validade só no dia
 - [ ] **F7-03 visualizador:** não vê aba Anamnese nem botões de convite
-- [ ] **F7-03 db:push:** aplicar `022_anamnesis_convites_f7.sql` no remoto (timeout de conexão na entrega)
-- [ ] **F7-06:** configurar `FINANCE_ALERT_EMAIL` de teste + Resend; retirar Luva até cruzar o mínimo; um e-mail; segunda retirada sem e-mail extra
+- [x] **F7-03 db:push:** `022_anamnesis_convites_f7.sql` já estava no remoto (conferido no dry-run 2026-09-01)
+- [x] **F7-06:** e-mail de teste (`FINANCE_ALERT_EMAIL`) recebido ao cruzar o mínimo (homologado 2026-09-01)
+- [ ] **F7-06:** segunda retirada sem e-mail extra
 - [ ] **F7-06 destino vazio:** sem `FINANCE_ALERT_EMAIL`; cruzar o mínimo; nenhum envio; estoque intacto
 - [ ] **F7-06 varredura:** cron com Anestésico do seed; um e-mail; ciclo seguinte não reenvia
-- [ ] **F7-04/F7-05 desktop/viewport:** Maria, canal configurado, pós-cirurgia texto livre; recarregar e o registro permanece (número de teste)
+- [x] **F7-04/F7-05 desktop/viewport:** pós-cirurgia envio imediato com número de teste (homologado 2026-09-01)
 - [ ] **F7-04/F7-05 segundo telefone:** paciente sem telefone aproveitável; destino mostra o segundo e a observação
 - [ ] **F7-04/F7-05 anamnese:** enviar questionário pré-consulta; tablet **não** dispara; copiar link permanece
 - [ ] **F7-04/F7-05 canal ausente:** Enviar agora desabilitado; copiar link na anamnese ok; nenhum disparo imediato
 - [ ] **F7-04/F7-05 visualizador:** não vê aba Pós-cirurgia nem botão de enviar WhatsApp
-- [ ] **F7-05b desktop/viewport:** Maria, texto + data/hora futura, Agendar envio; recarregar e permanece Agendado
-- [ ] **F7-05b cron:** com canal no ar, job vira Enviado (curl local ou esperar 5 min)
+- [x] **F7-05b desktop/viewport:** agendar envio pós-cirurgia (homologado 2026-09-01)
+- [x] **F7-05b cron:** job dispara no horário e vira Enviado (homologado 2026-09-01)
 - [ ] **F7-05b cancelar:** Agendado → Cancelar; o cron não dispara
 - [ ] **F7-05b canal ausente:** Agendar grava; Enviar agora desabilitado
 - [ ] **F7-05b horário passado:** recusa na tela
@@ -258,8 +260,8 @@ Itens de código prontos, ainda sem validação em dispositivo real (fica no fec
 Código entregue. A fatia **não homologa** sem o aviso do gateway no ar. **Não** fecha a Fase 7.
 
 - [ ] Configurar no gateway o aviso `session.status` da sessão `default` apontando para o app publicado, HMAC = `WHATSAPP_WEBHOOK_SECRET` (diferente do `CRON_SECRET`)
-- [ ] Homologar o QR com **número de teste** (~7 dias), não o número pessoal do Felipe
-- [ ] Recepção: abrir `/whatsapp` com status `STOPPED`, ver QR em `SCAN_QR`, parear, chip verde
+- [x] Homologar o QR com **número de teste** (pareamento e disparo ok, 2026-09-01). Número pessoal do Felipe continua fora
+- [x] Recepção: parear pela tela `/whatsapp` e disparar com o canal no ar (homologado 2026-09-01)
 - [ ] Admin: desconectar com confirmação; conferir que os disparos param até novo pareamento
 - [ ] Dentista: card na Hoje sem link; `/whatsapp` negado
 - [ ] Auxiliar e visualizador: sem item, chip, card e tela
@@ -275,7 +277,7 @@ Código entregue (ver `docs/implementation/F7-11-gestao-acessos.md`). **Não** f
 - [x] Travas no banco: autorrebaixamento e último admin ativo
 - [x] `handle_new_user` deixa de aceitar papel do metadata do signup
 - [x] Botão de conta no celular com os módulos fora da dock e o Sair que faltava
-- [ ] **db:push:** aplicar `028_team_access_f7.sql` no remoto. Sem ela o admin ainda consegue rebaixar o próprio papel: o remoto aceita `UPDATE` em `profiles` mesmo com a `001` concedendo só `SELECT` (drift), e é a `028` que revoga o grant amplo e instala as travas
+- [x] **db:push:** `028_team_access_f7.sql` aplicada no remoto em 2026-09-01 (aviso Docker da CLI ignorado)
 - [ ] Conferir no painel Supabase se o signup público está desabilitado
 - [ ] Confirmar `RESEND_FROM_EMAIL` antes de usar o modo convite por e-mail
 
@@ -292,13 +294,14 @@ Homologação manual pendente:
 - [ ] Celular: botão de conta mostra só WhatsApp para a recepção e só Scan QR para a auxiliar
 - [ ] Celular: Sair da conta funciona pelo botão de conta em iPhone e Android real
 
-### Pendente com o Felipe (não bloqueia F7-01 a F7-11 em código)
+### Decisões com o Felipe (fechadas em 2026-09-01)
 
-- [ ] E-mail do financeiro (F7-06) · endereço de produção; o código já aceita env vazio
-- [ ] 2º telefone obrigatório vs opcional
-- [ ] Texto-padrão vs 100% livre no pós-cirurgia
-- [ ] Confirmar link de anamnese sempre via WhatsApp
-- [x] Provedor WhatsApp do piloto: gateway Web da clínica (código F7-04/F7-05). Inbox fora deste repo. Ops da VPS não é item desta fatia
+- [x] E-mail do financeiro (F7-06): testes com e-mail de teste; endereço de produção só na entrega à clínica
+- [x] 2º telefone **opcional** (rótulo e validação já permitem vazio)
+- [x] Pós-cirurgia: **texto-padrão editável**. Dentista altera quando o caso pedir
+- [x] Link de anamnese **não** vai sempre por WhatsApp. Tablet da clínica é caminho oficial (F7-03)
+- [x] Sem bot de WhatsApp neste momento. Inbox continua fora deste repo. Só disparo
+- [x] Provedor WhatsApp do piloto: gateway Web da clínica (código F7-04/F7-05)
 
 **Pronto quando:** os oito itens passam no DoD da spec F7; transcrição corrige na UI; cruz bate com a imagem; paciente não vê outras abas na anamnese.
 

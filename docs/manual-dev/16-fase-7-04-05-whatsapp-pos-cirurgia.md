@@ -9,11 +9,11 @@ A Fase 7 inteira **ainda está aberta**. Este capítulo cobre o disparo de Whats
 ## O que esta fatia entrega
 
 - Canal único da **clínica** (nunca o WhatsApp pessoal do dentista). Só envia texto.
-- Aba **Pós-cirurgia**: texto livre (teto 2.000), destino visível, enviar, histórico
-- Aba **Anamnese**: **Enviar questionário por WhatsApp** (pré-consulta). Copiar link e abrir no tablet permanecem. Tablet **não** dispara.
+- Aba **Pós-cirurgia**: texto-padrão editável (teto 2.000), destino visível, enviar, histórico
+- Aba **Anamnese**: **Enviar questionário por WhatsApp** (pré-consulta, opcional). Copiar link e abrir no tablet da clínica permanecem. Tablet **não** dispara.
 - Canal ausente (faltou URL, chave ou sessão): botões desabilitados, aviso na tela, nenhuma chamada ao gateway
 
-**Não entrega:** inbox, QR, tiques de entrega, cron de retentativa, modelo pronto de pós-cirurgia, escolha manual de destino, e-mail ao paciente, tela `/configuracoes`, fechamento da Fase 7 inteira, instalação do gateway na máquina.
+**Não entrega:** inbox, bot, tiques de entrega, cron de retentativa, escolha manual de destino, e-mail ao paciente, tela `/configuracoes`, fechamento da Fase 7 inteira, instalação do gateway na máquina.
 
 ---
 
@@ -46,9 +46,9 @@ supabase/migrations/024_patient_messages_f7.sql
 1. Canal configurado no ambiente. Login como dentista (`dentist@clinroma.dev`)
 2. Abrir **Maria Silva** → aba **Pós-cirurgia**
 3. Destino no telefone dela (`11999990001`, já aproveitável)
-4. Escrever texto livre e **Enviar WhatsApp**
+4. O compositor já vem com o texto-padrão. Edite se o caso pedir e **Enviar agora** (ou agende)
 5. Confirmação `Mensagem enviada.` A lista mostra quando, quem, destino, Enviado e o texto
-6. Recarregar a ficha: o registro permanece
+6. Recarregar a ficha: o registro permanece. O compositor volta ao texto-padrão
 
 ### Segundo telefone
 

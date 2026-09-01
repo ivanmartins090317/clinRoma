@@ -5,6 +5,7 @@ import {
   PATIENT_MESSAGE_BODY_MAX,
   PATIENT_MESSAGE_COPY,
   PATIENT_MESSAGE_STATUS,
+  POST_SURGERY_DEFAULT_BODY,
   buildAnamnesisInviteWhatsAppBody,
   canSendPatientWhatsAppRole,
   extractAnamnesisInviteToken,
@@ -39,6 +40,14 @@ describe("corpo da mensagem pós-cirurgia", () => {
       validatePostSurgeryBody(`  ${"a".repeat(PATIENT_MESSAGE_BODY_MAX)}  `),
     ).toBeNull();
   });
+
+  it("o texto-padrão cabe no teto e pode ser enviado sem edição", () => {
+    expect(validatePostSurgeryBody(POST_SURGERY_DEFAULT_BODY)).toBeNull();
+    expect(POST_SURGERY_DEFAULT_BODY.length).toBeGreaterThan(0);
+    expect(POST_SURGERY_DEFAULT_BODY.length).toBeLessThanOrEqual(
+      PATIENT_MESSAGE_BODY_MAX,
+    );
+  });
 });
 
 describe("convite de anamnese por WhatsApp", () => {
@@ -58,6 +67,7 @@ describe("convite de anamnese por WhatsApp", () => {
   it("não usa travessão na copy nova", () => {
     const copies = [
       ...Object.values(PATIENT_MESSAGE_COPY),
+      POST_SURGERY_DEFAULT_BODY,
       ANAMNESIS_COPY.helpPreConsult,
       ANAMNESIS_COPY.sendWhatsApp,
     ];

@@ -11,6 +11,7 @@ import {
   PATIENT_MESSAGE_BODY_MAX,
   PATIENT_MESSAGE_COPY,
   PATIENT_MESSAGE_STATUS,
+  POST_SURGERY_DEFAULT_BODY,
   validatePostSurgeryBody,
 } from "@/features/records/domain/patient-message";
 import { validateScheduleInput } from "@/features/records/domain/post-surgery-schedule";
@@ -40,7 +41,7 @@ export function PostSurgeryMessage({
   destination,
   messages,
 }: PostSurgeryMessageProps) {
-  const [body, setBody] = useState("");
+  const [body, setBody] = useState(POST_SURGERY_DEFAULT_BODY);
   const [datetimeLocal, setDatetimeLocal] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -82,7 +83,7 @@ export function PostSurgeryMessage({
       }
 
       setSuccess(PATIENT_MESSAGE_COPY.successScheduled);
-      setBody("");
+      setBody(POST_SURGERY_DEFAULT_BODY);
       setDatetimeLocal("");
     });
   }
@@ -108,7 +109,7 @@ export function PostSurgeryMessage({
       }
 
       setSuccess(PATIENT_MESSAGE_COPY.success);
-      setBody("");
+      setBody(POST_SURGERY_DEFAULT_BODY);
     });
   }
 
@@ -146,6 +147,9 @@ export function PostSurgeryMessage({
           }}
           className="min-h-32"
         />
+        <p className="text-sm text-muted-foreground">
+          {PATIENT_MESSAGE_COPY.composerHelp}
+        </p>
         <div className="space-y-2">
           <Label htmlFor="post-surgery-schedule">
             {PATIENT_MESSAGE_COPY.scheduleAt}
