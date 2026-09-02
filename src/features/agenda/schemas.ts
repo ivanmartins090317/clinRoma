@@ -1,5 +1,9 @@
 import { z } from "zod";
 
+import {
+  isClinicDateTimeInThePast,
+  PAST_SLOT_MESSAGE,
+} from "@/features/agenda/domain/appointment-time";
 import type { AppointmentStatus } from "@/types/clinroma";
 
 const appointmentStatusSchema = z.enum([
@@ -38,6 +42,19 @@ function validateEndAfterStart(
   }
 }
 
+function validateNotInThePast(
+  data: { date: string; startTime: string },
+  ctx: z.RefinementCtx,
+) {
+  if (isClinicDateTimeInThePast(data.date, data.startTime)) {
+    ctx.addIssue({
+      code: "custom",
+      message: PAST_SLOT_MESSAGE,
+      path: ["startTime"],
+    });
+  }
+}
+
 export const appointmentFormSchema = z
   .object({
     patientId: z.string().uuid("Selecione um paciente"),
@@ -51,7 +68,9 @@ export const appointmentFormSchema = z
   })
   .superRefine(validateEndAfterStart);
 
-export const createAppointmentSchema = appointmentFormSchema;
+export const createAppointmentSchema = appointmentFormSchema.superRefine(
+  validateNotInThePast,
+);
 
 export const updateAppointmentSchema = appointmentFormSchema.extend({
   id: z.string().uuid("Consulta inválida"),
@@ -65,7 +84,8 @@ export const rescheduleAppointmentSchema = z
     startTime: timeSchema,
     endTime: timeSchema,
   })
-  .superRefine(validateEndAfterStart);
+  .superRefine(validateEndAfterStart)
+  .superRefine(validateNotInThePast);
 
 export const cancelAppointmentSchema = z.object({
   id: z.string().uuid("Consulta inválida"),

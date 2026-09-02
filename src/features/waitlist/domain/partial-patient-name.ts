@@ -15,6 +15,8 @@ export function formatPartialPatientName(fullName: string): string {
   return `${firstName} ${lastInitial}.`;
 }
 
+const DENTIST_TITLE = /^(dr\.?|dra\.?)$/i;
+
 export function formatDentistFirstName(
   fullName: string | null | undefined,
 ): string {
@@ -22,5 +24,18 @@ export function formatDentistFirstName(
     return "Dentista da clínica";
   }
 
-  return fullName.trim().split(/\s+/)[0] ?? "Dentista da clínica";
+  const parts = fullName.trim().split(/\s+/).filter(Boolean);
+  const first = parts[0] ?? "";
+
+  if (DENTIST_TITLE.test(first)) {
+    const givenName = parts[1];
+    if (!givenName) {
+      return "Dentista da clínica";
+    }
+
+    const title = /^dra/i.test(first) ? "Dra." : "Dr.";
+    return `${title} ${givenName}`;
+  }
+
+  return first || "Dentista da clínica";
 }

@@ -396,7 +396,7 @@
           </div>
           <div>
             <span>Status do plano</span>
-            Em execução (15/63 · FL-01 e FL-02 completos, FL-03 em curso)
+            Em execução (22/63 aprovados · FL-04 TC-21 e TC-22 ok)
           </div>
         </div>
         <div class="scoreboard" id="scoreboard"></div>
@@ -808,55 +808,75 @@
                 <td class="hide-sm">Android</td>
                 <td><span class="status pass">Aprovado</span></td>
               </tr>
-              <tr data-flow="records" data-status="pending" data-roles="dentist">
+              <tr data-flow="records" data-status="pass" data-roles="dentist">
                 <td class="code">TC-16</td>
                 <td><span class="pill dentist">Dentista</span></td>
                 <td>
                   F7-01: corrigir o texto da transcrição, recarregar a ficha, o
                   texto corrigido permanece. Áudio original intacto.
+                  <br /><small>Aprovado 02/09/2026 · evidência
+                  <code>tc16-edicao-transcricao.png</code> (celular, evolução
+                  "Teste de evolução" 19:29, áudio 00:10 intacto, texto
+                  corrigido com "Teste TC-16", "Salvar correção").</small>
                 </td>
                 <td class="hide-sm">Celular</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
-              <tr data-flow="records" data-status="pending" data-roles="dentist">
+              <tr data-flow="records" data-status="pass" data-roles="dentist">
                 <td class="code">TC-17</td>
                 <td><span class="pill dentist">Dentista</span></td>
                 <td>
                   F7-02: Maria, aba Evoluções, buscar <code>dente 24</code>. Só
                   a extração. Limpar restaura a lista.
+                  <br /><small>Aprovado 02/09/2026 · evidência
+                  <code>tc17-busca-historico-dente-24.png</code> (desktop,
+                  Dr. Felipe Roma, busca "Dente 24", resultado único: extração
+                  do dente 24 em 18/08/2026).</small>
                 </td>
                 <td class="hide-sm">Desktop</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
-              <tr data-flow="records" data-status="pending" data-roles="reception">
+              <tr data-flow="records" data-status="pass" data-roles="reception">
                 <td class="code">TC-18</td>
                 <td><span class="pill reception">Recepção</span></td>
                 <td>
                   Filtra o histórico. Não vê o formulário de nova evolução nem
                   botão de salvar correção de transcrição.
+                  <br /><small>Aprovado 02/09/2026 · evidência
+                  <code>tc18-recepcao-busca-sem-criar.png</code> (recepção,
+                  busca "Dente 24", só histórico filtrado; sem "Nova evolução"
+                  nem "Criar evolução").</small>
                 </td>
                 <td class="hide-sm">Desktop</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
-              <tr data-flow="records" data-status="pending" data-roles="dentist">
+              <tr data-flow="records" data-status="pass" data-roles="dentist">
                 <td class="code">TC-19</td>
                 <td><span class="pill dentist">Dentista</span></td>
                 <td>
                   F7-08: cruz reconhecível. Marcar face oclusal do 24, recarregar,
                   achado permanece. Dente 36 oclusal do seed visível.
+                  <br /><small>Aprovado 02/09/2026 · evidência
+                  <code>tc19-odontograma-cruz-dente-24.png</code> (desktop,
+                  dente 24 oclusal cárie em vermelho; dente 36 oclusal seed em
+                  azul; painel Confirmar achado).</small>
                 </td>
                 <td class="hide-sm">Desktop</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
-              <tr data-flow="records" data-status="pending" data-roles="viewer">
+              <tr data-flow="records" data-status="pass" data-roles="viewer">
                 <td class="code">TC-20</td>
                 <td><span class="pill viewer">Visualizador</span></td>
                 <td>
                   Vê cadastro (inclui segundo contato no resumo). Não vê
                   Anamnese, Odontograma, Evoluções, Pós-cirurgia nem busca.
+                  <br /><small>Aprovado 02/09/2026 · evidência
+                  <code>tc20-visualizador-somente-leitura.png</code> (ficha Ana
+                  Oliveira; só aba Resumo; aviso "acesso somente leitura"; sem
+                  abas clínicas nem edição).</small>
                 </td>
                 <td class="hide-sm">Desktop</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
             </tbody>
           </table>
@@ -881,35 +901,46 @@
               </tr>
             </thead>
             <tbody>
-              <tr data-flow="waitlist" data-status="pending" data-roles="reception">
+              <tr data-flow="waitlist" data-status="pass" data-roles="reception">
                 <td class="code">TC-21</td>
                 <td><span class="pill reception">Recepção</span></td>
                 <td>
                   Ofertar horário a quem está em Aguardando. Link chega por
                   WhatsApp (número de teste). Copiar link continua visível.
+                  <br /><small>Aprovado 02/09/2026 · evidência
+                  <code>tc21-oferta-whatsapp-paciente.png</code> (WhatsApp do
+                  paciente; prévia ClinRoma; oferta 03/09/2026 às 09:00 com Dr.
+                  Bruno Costa; link <code>/fila/resposta/…</code> com prazo de
+                  40 min; entregue e lido às 19:17).</small>
                 </td>
                 <td class="hide-sm">Desktop</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
-              <tr data-flow="waitlist" data-status="pending" data-roles="public">
+              <tr data-flow="waitlist" data-status="pass" data-roles="public">
                 <td class="code">TC-22</td>
                 <td><span class="pill public">Paciente</span></td>
                 <td>
                   Abrir o link sem login. Consentimento visível. Aceitar cria
                   consulta confirmed na agenda. Sem shell interno.
+                  <br /><small>Aprovado 02/09/2026 · evidência do aceite com confirmação
+                  "Horário confirmado. Aguardamos você na clínica", consentimento LGPD aceito
+                  e consulta confirmada na agenda.</small>
                 </td>
                 <td class="hide-sm">Público</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
-              <tr data-flow="waitlist" data-status="pending" data-roles="public">
+              <tr data-flow="waitlist" data-status="pass" data-roles="public">
                 <td class="code">TC-23</td>
                 <td><span class="pill public">Paciente</span></td>
                 <td>
                   Recusar a oferta. Card da fila volta para Aguardando. Sem
                   consulta nova.
+                  <br /><small>Aprovado 02/09/2026 · recusa enviada pela página pública
+                  <code>/fila/resposta/[token]</code>; oferta marcada como recusada, paciente retornado
+                  à coluna Aguardando na fila e nenhuma consulta criada na agenda.</small>
                 </td>
                 <td class="hide-sm">Público</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
               <tr data-flow="waitlist" data-status="pending" data-roles="public">
                 <td class="code">TC-24</td>
@@ -1540,13 +1571,50 @@
               </td>
               <td>Aberto</td>
             </tr>
+            <tr>
+              <td class="code">BG-03</td>
+              <td><span class="pill reception">Médio</span></td>
+              <td class="code">TC-22</td>
+              <td>
+                Página pública da oferta mostra "Dentista: Dr." sem o nome.
+                O cadastro é "Dr. Bruno Costa" e o card pegava só o título.
+                Segunda correção: exibe "Dr. Bruno" (título + primeiro nome).
+                Aguarda reteste.
+              </td>
+              <td>Aguarda reteste</td>
+            </tr>
+            <tr>
+              <td class="code">BG-04</td>
+              <td><span class="pill reception">Médio</span></td>
+              <td class="code">TC-22</td>
+              <td>
+                Ao aceitar, a tela do paciente e a fila da recepção não
+                atualizavam sem refresh. Reteste 02/09/2026: card foi para
+                Agendado e a consulta apareceu na agenda no dia e hora certos.
+              </td>
+              <td>Fechado</td>
+            </tr>
+            <tr>
+              <td class="code">BG-05</td>
+              <td><span class="pill reception">Alto</span></td>
+              <td class="code">TC-22</td>
+              <td>
+                Dá para criar consulta ou oferta da fila em horário já
+                passado (dia anterior, ou manhã do mesmo dia à tarde). Zod
+                só validava fim depois do início. Correção: recusa no fuso
+                America/Sao_Paulo na criação/oferta/remarcação; formulários
+                sugerem o próximo bloco de 30 min. Editar consulta antiga
+                (concluir) continua permitido. Aguarda reteste.
+              </td>
+              <td>Aguarda reteste</td>
+            </tr>
           </tbody>
         </table>
       </section>
 
       <footer>
         ClinRoma · Clínica Neo Roma · POP-QA adaptado · Marca burgundy/gold ·
-        Evidências em docs/evidencias/ · Atualizado 2026-09-01 (FL-01 e FL-02 completos, TC-13 a TC-15 · BG-01 e BG-02 abertos)
+        Evidências em docs/evidencias/ · Atualizado 2026-09-02 (FL-04 TC-22 aprovado · 22/63 TCs ok)
       </footer>
     </div>
     <script>
@@ -1587,10 +1655,18 @@
         ["tc13-cadastro-paciente.png", "Recepção: cadastro paciente + 2º telefone"],
         ["tc14-evolucao-iphone.png", "Dentista iPhone: evolução + áudio + transcrição"],
         ["tc15-evolucao-android.png", "Dentista Android: evolução (card após reload)"],
+        ["tc16-edicao-transcricao.png", "Dentista: edição de transcrição (F7-01)"],
+        ["tc17-busca-historico-dente-24.png", "Dentista: busca histórico dente 24 (F7-02)"],
+        ["tc18-recepcao-busca-sem-criar.png", "Recepção: busca sem criar evolução (F7-02)"],
+        ["tc19-odontograma-cruz-dente-24.png", "Dentista: odontograma cruz dente 24 (F7-08)"],
+        ["tc20-visualizador-somente-leitura.png", "Visualizador: só cadastro leitura (FL-03)"],
+        ["tc21-oferta-whatsapp-paciente.png", "Recepção: oferta de horário no WhatsApp (FL-04)"],
+        ["tc22-link-publico-sem-dentista.png", "Paciente: link público sem nome do dentista (BG-03)"],
+        ["tc22-ja-respondeu-apos-refresh.png", "Paciente: já respondeu só após refresh (BG-04)"],
+        ["tc22-fila-agendado-preferencia.png", "Fila: card Agendado com preferência Felipe"],
+        ["tc22-agenda-confirmada-bruno.png", "Agenda: consulta confirmed no Dr. Bruno"],
         ["tc04", "Auxiliar: só estoque e scan"],
         ["tc05", "Visualizador sem prontuário"],
-        ["tc21", "Oferta WhatsApp"],
-        ["tc22", "Link público LGPD"],
         ["tc27", "Scan CR-DEV001"],
         ["tc34", "E-mail ao dentista"],
         ["tc37", "PWA iOS"],

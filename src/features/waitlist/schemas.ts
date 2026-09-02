@@ -1,5 +1,11 @@
 import { z } from "zod";
 
+import {
+  isClinicDateTimeInThePast,
+  PAST_SLOT_MESSAGE,
+} from "@/features/agenda/domain/appointment-time";
+import { toClinicIso } from "@/features/agenda/types";
+
 export const waitlistPrioritySchema = z.enum(["red", "yellow", "green"]);
 
 export const waitlistEntryStatusSchema = z.enum([
@@ -42,13 +48,35 @@ export const removeWaitlistEntrySchema = z.object({
   id: z.string().uuid(),
 });
 
-export const createSlotOfferSchema = z.object({
-  entryId: z.string().uuid(),
-  dentistId: z.string().uuid("Dentista inválido"),
-  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Data inválida"),
-  startTime: z.string().regex(/^\d{2}:\d{2}$/, "Hora inválida"),
-  endTime: z.string().regex(/^\d{2}:\d{2}$/, "Hora inválida"),
-});
+export const createSlotOfferSchema = z
+  .object({
+    entryId: z.string().uuid(),
+    dentistId: z.string().uuid("Dentista inválido"),
+    date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Data inválida"),
+    startTime: z.string().regex(/^\d{2}:\d{2}$/, "Hora inválida"),
+    endTime: z.string().regex(/^\d{2}:\d{2}$/, "Hora inválida"),
+  })
+  .superRefine((data, ctx) => {
+    const startsAt = new Date(toClinicIso(data.date, data.startTime));
+    const endsAt = new Date(toClinicIso(data.date, data.endTime));
+
+    if (endsAt <= startsAt) {
+      ctx.addIssue({
+        code: "custom",
+        message: "Horário final deve ser posterior ao início",
+        path: ["endTime"],
+      });
+      return;
+    }
+
+    if (isClinicDateTimeInThePast(data.date, data.startTime)) {
+      ctx.addIssue({
+        code: "custom",
+        message: PAST_SLOT_MESSAGE,
+        path: ["startTime"],
+      });
+    }
+  });
 
 export const cancelSlotOfferSchema = z.object({
   entryId: z.string().uuid(),

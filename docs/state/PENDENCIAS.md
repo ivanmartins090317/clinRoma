@@ -2,7 +2,7 @@
 
 Fonte viva do que **ainda falta implementar ou validar**. Atualizar ao concluir cada fase.
 
-Última revisão: **2026-09-01** (homologação FL-01 e FL-02; FL-03: TC-13 a TC-15; 15/63; BG-01 baixo e BG-02 médio abertos).
+Última revisão: **2026-09-02** (FL-04 TC-23 aprovado: recusa de oferta validada; 23/63 aprovados).
 
 ---
 
@@ -121,10 +121,10 @@ Referência: `specs/2026-08-18-fase-4-fila-kanban.md` · `docs/implementation/F4
 
 ### Fechamento operacional (homologação manual)
 
-- [x] Recepção: ofertar horário e o link chegar por WhatsApp (homologado 2026-09-01, número de teste)
-- [x] Paciente: aceitar o link → consulta confirmada na agenda (homologado 2026-09-01)
+- [x] Recepção: ofertar horário e o link chegar por WhatsApp (TC-21, 2026-09-02; evidência no WhatsApp do paciente, 03/09/2026 09:00 Dr. Bruno Costa)
+- [x] Paciente: aceitar o link → consulta confirmada na agenda (TC-22 aprovado em 2026-09-02; aceite, confirmação na tela e agenda validados)
 - [ ] Copiar link como fallback (sem WhatsApp)
-- [ ] Cenário recusa: card volta a Aguardando
+- [x] Cenário recusa: card volta a Aguardando (TC-23, 2026-09-02)
 - [ ] Expiração: cron ou curl manual + link expirado na UI pública
 - [ ] Dentista: fila somente leitura
 - [ ] Visualizador: `/fila` negado
@@ -183,10 +183,10 @@ Referência: `specs/2026-08-18-fase-6-lembrete-piloto.md` · `docs/implementatio
 
 - [ ] Configurar `RESEND_API_KEY` e `RESEND_FROM_EMAIL` no ambiente de teste
 - [ ] **FL-06:** concluir consulta → e-mail em `dentist@clinroma.dev`
-- [ ] Executar FL-01…FL-11 (63 TCs, 5 perfis + visitante) com evidências desktop e mobile · **15/63** (FL-01 e FL-02 completos; TC-13 a TC-15 aprovados 2026-09-01)
+- [ ] Executar FL-01…FL-11 (63 TCs, 5 perfis + visitante) com evidências desktop e mobile · **22/63 aprovados** (FL-01 a FL-03; FL-04 TC-21 e TC-22 ok)
 - [ ] iPhone e Android nos fluxos áudio, scan, PWA e lembrete
-- [ ] Preencher `docs/relatorio-testes-manuais.html` e `docs/evidencias/` (FL-01, FL-02, TC-13 a TC-15; TC-04 e TC-05 sem screenshot)
-- [ ] Nenhum bug crítico/alto aberto nos fluxos P0 (BG-01 baixo; BG-02 médio: histórico Android só após reload)
+- [ ] Preencher `docs/relatorio-testes-manuais.html` e `docs/evidencias/` (FL-01 a FL-03, TC-21 e TC-22 aprovados; TC-04 e TC-05 sem screenshot)
+- [ ] Nenhum bug crítico/alto aberto nos fluxos P0 (BG-01 baixo; BG-02 médio Android reload; BG-03 médio nome no card público; BG-04 fechado; BG-05 alto horário no passado)
 - [ ] Deploy produção (Supabase prod + Vercel) conforme checklist manual-dev § Deploy
 
 ### Pós-piloto
@@ -224,23 +224,23 @@ Felipe gostou da demo (melhor do que esperava). Código da Fase 7 entra por fati
 
 Itens de código prontos, ainda sem validação em dispositivo real (fica no fechamento da Fase 7):
 
-- [ ] **iPhone real:** corrigir transcrição na ficha (F7-01), recarregar e confirmar que o texto permanece
+- [x] **iPhone real:** corrigir transcrição na ficha (F7-01), recarregar e confirmar que o texto permanece (TC-16, 2026-09-02)
 - [ ] **Android real:** mesmo fluxo F7-01
 - [x] **F7-07 desktop/viewport:** cadastrar com segundo telefone + observação; reabrir a ficha; incluir depois; remover o bloco (TC-13, 2026-09-01)
 - [ ] **F7-07 visualizador:** lê o segundo contato no resumo e não edita
 - [ ] **F7-09 desktop/viewport:** abrir Maria e ver anamnese vigente + Restauração sem entrar nas abas; toque abre Anamnese / Evoluções
-- [ ] **F7-09 visualizador:** vê o cadastro e **não** vê os dois blocos clínicos
-- [ ] **F7-02 desktop/viewport:** Maria → Evoluções; `dente 24` mostra só a extração; limpar restaura as duas
-- [ ] **F7-02 recepção:** filtra o histórico e **não** vê o formulário de nova evolução
-- [ ] **F7-02 visualizador:** não vê aba Evoluções nem o campo de busca
-- [ ] **F7-08 desktop:** cruz reconhecível vs PNG; marcar face oclusal do 24; recarregar e o achado permanece
+- [x] **F7-09 visualizador:** vê o cadastro e **não** vê os dois blocos clínicos (TC-20, 2026-09-02)
+- [x] **F7-02 desktop/viewport:** Maria → Evoluções; `dente 24` mostra só a extração; limpar restaura as duas (TC-17, 2026-09-02)
+- [x] **F7-02 recepção:** filtra o histórico e **não** vê o formulário de nova evolução (TC-18, 2026-09-02)
+- [x] **F7-02 visualizador:** não vê aba Evoluções nem o campo de busca (TC-20, 2026-09-02)
+- [x] **F7-08 desktop:** cruz reconhecível vs PNG; marcar face oclusal do 24; recarregar e o achado permanece (TC-19, 2026-09-02)
 - [ ] **F7-08 viewport estreito:** zoom/rolagem; face tocável no zoom de trabalho (≥ 44 px); painel inferior alcançável
-- [ ] **F7-08 achado antigo:** Maria, dente 36 oclusal na cor de restauração, sem migration
-- [ ] **F7-08 visualizador:** não vê a aba Odontograma
+- [x] **F7-08 achado antigo:** Maria, dente 36 oclusal na cor de restauração, sem migration (TC-19, 2026-09-02)
+- [x] **F7-08 visualizador:** não vê a aba Odontograma (TC-20, 2026-09-02)
 - [ ] **F7-03 desktop/viewport:** preencher questionário papel na ficha da Maria; recarregar; v1 do seed continua no histórico
 - [ ] **F7-03 pré-consulta:** gerar link, abrir sem login, enviar, recarregar o mesmo link (mensagem genérica)
 - [ ] **F7-03 tablet:** convite de consultório; página sem menu; validade só no dia
-- [ ] **F7-03 visualizador:** não vê aba Anamnese nem botões de convite
+- [x] **F7-03 visualizador:** não vê aba Anamnese nem botões de convite (TC-20, 2026-09-02)
 - [x] **F7-03 db:push:** `022_anamnesis_convites_f7.sql` já estava no remoto (conferido no dry-run 2026-09-01)
 - [x] **F7-06:** e-mail de teste (`FINANCE_ALERT_EMAIL`) recebido ao cruzar o mínimo (homologado 2026-09-01)
 - [ ] **F7-06:** segunda retirada sem e-mail extra
@@ -250,7 +250,7 @@ Itens de código prontos, ainda sem validação em dispositivo real (fica no fec
 - [ ] **F7-04/F7-05 segundo telefone:** paciente sem telefone aproveitável; destino mostra o segundo e a observação
 - [ ] **F7-04/F7-05 anamnese:** enviar questionário pré-consulta; tablet **não** dispara; copiar link permanece
 - [ ] **F7-04/F7-05 canal ausente:** Enviar agora desabilitado; copiar link na anamnese ok; nenhum disparo imediato
-- [ ] **F7-04/F7-05 visualizador:** não vê aba Pós-cirurgia nem botão de enviar WhatsApp
+- [x] **F7-04/F7-05 visualizador:** não vê aba Pós-cirurgia nem botão de enviar WhatsApp (TC-20, 2026-09-02)
 - [x] **F7-05b desktop/viewport:** agendar envio pós-cirurgia (homologado 2026-09-01)
 - [x] **F7-05b cron:** job dispara no horário e vira Enviado (homologado 2026-09-01)
 - [ ] **F7-05b cancelar:** Agendado → Cancelar; o cron não dispara

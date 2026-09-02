@@ -4,6 +4,7 @@ import {
 } from "@/features/agenda/domain/appointment-conflict";
 import { isSlotOfferExpired } from "@/features/waitlist/domain/slot-offer-expiry";
 import { hashSlotOfferToken } from "@/features/waitlist/domain/token-hash";
+import { isInstantInThePast } from "@/features/agenda/domain/appointment-time";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { AppointmentStatus } from "@/types/clinroma";
 
@@ -34,6 +35,7 @@ interface OfferRow {
   offered_at: string;
   ends_at: string;
   dentist_id: string;
+  dentist_full_name: string | null;
   expires_at: string;
   status: string;
   appointment_id: string | null;
@@ -59,7 +61,7 @@ async function loadOfferByToken(token: string): Promise<OfferRow | null> {
   const { data, error } = await supabase
     .from("slot_offers")
     .select(
-      "id, waitlist_entry_id, offered_at, ends_at, dentist_id, expires_at, status, appointment_id, waitlist_entries(id, patient_id, status)",
+      "id, waitlist_entry_id, offered_at, ends_at, dentist_id, expires_at, status, appointment_id, waitlist_entries(id, patient_id, status), dentists(full_name)",
     )
     .eq("token_hash", tokenHash)
     .maybeSingle();
@@ -71,9 +73,25 @@ async function loadOfferByToken(token: string): Promise<OfferRow | null> {
   const entry = Array.isArray(data.waitlist_entries)
     ? (data.waitlist_entries[0] ?? null)
     : data.waitlist_entries;
+  const dentistRel = (
+    data as typeof data & {
+      dentists?: { full_name: string } | Array<{ full_name: string }> | null;
+    }
+  ).dentists;
+  const dentist = Array.isArray(dentistRel)
+    ? (dentistRel[0] ?? null)
+    : (dentistRel ?? null);
 
   return {
-    ...data,
+    id: data.id,
+    waitlist_entry_id: data.waitlist_entry_id,
+    offered_at: data.offered_at,
+    ends_at: data.ends_at,
+    dentist_id: data.dentist_id,
+    dentist_full_name: dentist?.full_name ?? null,
+    expires_at: data.expires_at,
+    status: data.status,
+    appointment_id: data.appointment_id,
     waitlist_entries: entry,
   };
 }
@@ -147,6 +165,17 @@ export async function acceptSlotOffer(
     await revertEntryToWaiting(offer.waitlist_entry_id);
 
     return { ok: false, error: "Link inválido ou expirado" };
+  }
+
+  if (isInstantInThePast(offer.offered_at)) {
+    const supabase = createAdminClient();
+    await supabase
+      .from("slot_offers")
+      .update({ status: "expired" })
+      .eq("id", offer.id);
+    await revertEntryToWaiting(offer.waitlist_entry_id);
+
+    return { ok: false, error: "Horário não está mais disponível" };
   }
 
   const appointments = await loadActiveAppointments(offer.dentist_id);

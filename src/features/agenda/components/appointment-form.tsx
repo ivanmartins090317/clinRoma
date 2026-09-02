@@ -10,6 +10,7 @@ import {
   getAppointmentStatusLabel,
   WRITABLE_APPOINTMENT_STATUSES,
 } from "@/features/agenda/domain/appointment-status";
+import { nextAvailableClinicSlot } from "@/features/agenda/domain/appointment-time";
 import { PatientCombobox } from "@/features/agenda/components/patient-combobox";
 import {
   DEFAULT_APPOINTMENT_DURATION_MINUTES,
@@ -57,14 +58,6 @@ interface FormState {
   notes: string;
 }
 
-function addMinutesToTime(time: string, minutes: number): string {
-  const [hours, mins] = time.split(":").map(Number);
-  const total = hours * 60 + mins + minutes;
-  const nextHours = Math.floor(total / 60) % 24;
-  const nextMins = total % 60;
-  return `${String(nextHours).padStart(2, "0")}:${String(nextMins).padStart(2, "0")}`;
-}
-
 function buildInitialState(
   dentists: AgendaDentist[],
   appointment?: AgendaAppointment | null,
@@ -87,17 +80,16 @@ function buildInitialState(
     };
   }
 
-  const startTime = initialValues?.startTime ?? "09:00";
+  const slot = nextAvailableClinicSlot(DEFAULT_APPOINTMENT_DURATION_MINUTES);
+  const startTime = initialValues?.startTime ?? slot.startTime;
 
   return {
     patientId: initialValues?.patientId ?? "",
     patientName: initialValues?.patientName ?? "",
     dentistId: initialValues?.dentistId ?? dentists[0]?.id ?? "",
-    date: initialValues?.date ?? new Date().toISOString().slice(0, 10),
+    date: initialValues?.date ?? slot.date,
     startTime,
-    endTime:
-      initialValues?.endTime ??
-      addMinutesToTime(startTime, DEFAULT_APPOINTMENT_DURATION_MINUTES),
+    endTime: initialValues?.endTime ?? slot.endTime,
     status: initialValues?.status ?? "scheduled",
     procedureName: initialValues?.procedureName ?? "",
     notes: initialValues?.notes ?? "",
@@ -210,6 +202,7 @@ export function AppointmentForm({
               <Input
                 id="date"
                 type="date"
+                min={isEditing ? undefined : nextAvailableClinicSlot().date}
                 value={form.date}
                 onChange={(event) =>
                   setForm((current) => ({

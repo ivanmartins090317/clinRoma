@@ -16,4 +16,10 @@ describe("partial-patient-name", () => {
     expect(formatDentistFirstName("Felipe Roma")).toBe("Felipe");
     expect(formatDentistFirstName(null)).toBe("Dentista da clínica");
   });
+
+  it("mantém Dr./Dra. junto do primeiro nome", () => {
+    expect(formatDentistFirstName("Dr. Bruno Costa")).toBe("Dr. Bruno");
+    expect(formatDentistFirstName("Dra. Ana Silva")).toBe("Dra. Ana");
+    expect(formatDentistFirstName("Dr.")).toBe("Dentista da clínica");
+  });
 });

@@ -8,6 +8,7 @@ import {
 } from "@/features/agenda/domain/appointment-conflict";
 import { getActiveAppointmentsForDentist } from "@/features/agenda/queries";
 import { toClinicIso } from "@/features/agenda/types";
+import { PAST_SLOT_MESSAGE } from "@/features/agenda/domain/appointment-time";
 import { computeSlotOfferExpiresAt } from "@/features/waitlist/domain/slot-offer-expiry";
 import {
   generateSlotOfferToken,
@@ -277,6 +278,10 @@ export async function createSlotOfferAction(
 
     if (new Date(endsAt) <= new Date(startsAt)) {
       return { error: "Horário final deve ser posterior ao início" };
+    }
+
+    if (new Date(startsAt).getTime() <= Date.now()) {
+      return { error: PAST_SLOT_MESSAGE };
     }
 
     const supabase = await createClient();

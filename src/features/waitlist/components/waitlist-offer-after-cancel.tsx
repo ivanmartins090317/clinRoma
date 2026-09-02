@@ -82,6 +82,7 @@ export function WaitlistOfferAfterCancel({
         status: "waiting",
         createdAt: "",
         pendingOffer: null,
+        acceptedOffer: null,
       }
     : null;
 

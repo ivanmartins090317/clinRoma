@@ -14,7 +14,7 @@ import {
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useRouter } from "next/navigation";
-import { useMemo, useState, useTransition } from "react";
+import { useEffect, useMemo, useState, useTransition } from "react";
 
 import { cancelSlotOfferAction } from "@/features/waitlist/actions";
 import { canDragEntryToColumn } from "@/features/waitlist/domain/waitlist-transitions";
@@ -120,6 +120,14 @@ export function WaitlistBoard({
     });
   }
 
+  const hasPendingOffers = entries.some((entry) => entry.status === "offered");
+
+  useEffect(() => {
+    if (!hasPendingOffers) return;
+    const timer = window.setInterval(() => router.refresh(), 15000);
+    return () => window.clearInterval(timer);
+  }, [hasPendingOffers, router]);
+
   function handleOffer(entry: WaitlistBoardEntry) {
     setOfferEntry(entry);
     setOfferFormOpen(true);
@@ -177,13 +185,16 @@ export function WaitlistBoard({
 
   return (
     <div className="space-y-6">
-      {canWrite ? (
-        <div className="flex justify-end">
+      <div className="flex justify-end gap-2">
+        <Button variant="outline" className="min-h-11" onClick={refresh}>
+          Atualizar
+        </Button>
+        {canWrite ? (
           <Button className="min-h-11" onClick={() => setEntryFormOpen(true)}>
             Nova entrada
           </Button>
-        </div>
-      ) : null}
+        ) : null}
+      </div>
 
       <WaitlistTabsMobile
         waiting={grouped.waiting}

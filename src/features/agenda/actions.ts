@@ -17,6 +17,7 @@ import {
   getActiveDentists,
 } from "@/features/agenda/queries";
 import { toClinicIso } from "@/features/agenda/types";
+import { PAST_SLOT_MESSAGE } from "@/features/agenda/domain/appointment-time";
 import { getModuleAccess } from "@/lib/auth/roles";
 import { requireAuthSession } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
@@ -105,6 +106,10 @@ export async function createAppointmentAction(
 
     const startsAt = toClinicIso(parsed.data.date, parsed.data.startTime);
     const endsAt = toClinicIso(parsed.data.date, parsed.data.endTime);
+
+    if (new Date(startsAt).getTime() <= Date.now()) {
+      return { error: PAST_SLOT_MESSAGE };
+    }
 
     const conflictError = await validateConflict({
       dentistId: parsed.data.dentistId,
@@ -243,6 +248,10 @@ export async function rescheduleAppointmentAction(
 
     const startsAt = toClinicIso(parsed.data.date, parsed.data.startTime);
     const endsAt = toClinicIso(parsed.data.date, parsed.data.endTime);
+
+    if (new Date(startsAt).getTime() <= Date.now()) {
+      return { error: PAST_SLOT_MESSAGE };
+    }
 
     const conflictError = await validateConflict({
       dentistId: parsed.data.dentistId,

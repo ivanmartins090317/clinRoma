@@ -1,14 +1,14 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 
 import { createSlotOfferAction } from "@/features/waitlist/actions";
 import type { WaitlistBoardEntry } from "@/features/waitlist/queries";
+import { nextAvailableClinicSlot } from "@/features/agenda/domain/appointment-time";
 import type { AgendaDentist } from "@/features/agenda/types";
 import {
   formatClinicDate,
   formatClinicTime,
-  parseClinicDateParam,
 } from "@/features/agenda/types";
 import { Button } from "@/components/ui/button";
 import {
@@ -57,19 +57,37 @@ export function SlotOfferForm({
   prefill,
   onSuccess,
 }: SlotOfferFormProps) {
-  const today = formatClinicDate(parseClinicDateParam(undefined));
+  const fallbackSlot = nextAvailableClinicSlot(30);
   const [dentistId, setDentistId] = useState(
     prefill?.dentistId ?? entry?.preferredDentistId ?? dentists[0]?.id ?? "",
   );
-  const [date, setDate] = useState(prefill?.date ?? today);
-  const [startTime, setStartTime] = useState(prefill?.startTime ?? "09:00");
-  const [endTime, setEndTime] = useState(prefill?.endTime ?? "09:30");
+  const [date, setDate] = useState(prefill?.date ?? fallbackSlot.date);
+  const [startTime, setStartTime] = useState(
+    prefill?.startTime ?? fallbackSlot.startTime,
+  );
+  const [endTime, setEndTime] = useState(
+    prefill?.endTime ?? fallbackSlot.endTime,
+  );
   const [error, setError] = useState<string | null>(null);
   const [offerUrl, setOfferUrl] = useState<string | null>(null);
   const [expiresAt, setExpiresAt] = useState<string | null>(null);
   const [whatsappStatus, setWhatsappStatus] =
     useState<WhatsappDeliveryStatus | null>(null);
   const [isPending, startTransition] = useTransition();
+
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+
+    const slot = nextAvailableClinicSlot(30);
+    setDentistId(
+      prefill?.dentistId ?? entry?.preferredDentistId ?? dentists[0]?.id ?? "",
+    );
+    setDate(prefill?.date ?? slot.date);
+    setStartTime(prefill?.startTime ?? slot.startTime);
+    setEndTime(prefill?.endTime ?? slot.endTime);
+  }, [open]);
 
   function resetState() {
     setError(null);
@@ -161,6 +179,7 @@ export function SlotOfferForm({
                 id="offer-date"
                 type="date"
                 className="min-h-11 text-base"
+                min={fallbackSlot.date}
                 value={date}
                 onChange={(event) => setDate(event.target.value)}
               />

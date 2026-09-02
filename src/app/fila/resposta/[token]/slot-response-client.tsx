@@ -19,9 +19,32 @@ function formatValidUntil(expiresAt: string): string {
   });
 }
 
+function OfferSummary({ view }: { view: PublicSlotOfferView }) {
+  return (
+    <>
+      {view.partialPatientName ? (
+        <p className="text-center text-neo-cream-100">
+          Olá, {view.partialPatientName}
+        </p>
+      ) : null}
+      {view.offeredAtLabel ? (
+        <p className="text-center text-sm text-neo-cream-100/80">
+          {view.offeredAtLabel} · {view.endsAtLabel}
+        </p>
+      ) : null}
+      <p className="text-center text-base font-medium text-neo-cream-100">
+        Dentista: {view.dentistFirstName ?? "Dentista da clínica"}
+      </p>
+    </>
+  );
+}
+
 export function SlotResponseClient({ token, view }: SlotResponseClientProps) {
   const [lgpdConsent, setLgpdConsent] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [outcome, setOutcome] = useState<"accept" | "decline" | null>(
+    view.state === "already_responded" ? (view.response ?? "accept") : null,
+  );
   const [remainingMs, setRemainingMs] = useState<number | null>(
     view.expiresAt ? getSlotOfferRemainingMs(new Date(view.expiresAt)) : null,
   );
@@ -43,42 +66,44 @@ export function SlotResponseClient({ token, view }: SlotResponseClientProps) {
     view.state !== "valid" ||
     !lgpdConsent ||
     isPending ||
+    outcome !== null ||
     (remainingMs ?? 0) <= 0;
 
   function submit(action: "accept" | "decline") {
     setMessage(null);
 
     startTransition(async () => {
-      const response = await fetch("/api/waitlist/respond", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          token,
-          action,
-          lgpdConsent: true,
-        }),
-      });
+      try {
+        const response = await fetch("/api/waitlist/respond", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            token,
+            action,
+            lgpdConsent: true,
+          }),
+        });
 
-      const payload = (await response.json()) as {
-        ok?: boolean;
-        error?: string;
-        alreadyResponded?: boolean;
-        response?: "accept" | "decline";
-      };
+        const payload = (await response.json()) as {
+          ok?: boolean;
+          error?: string;
+          alreadyResponded?: boolean;
+          response?: "accept" | "decline";
+        };
 
-      if (!response.ok || !payload.ok) {
-        setMessage(payload.error ?? "Link inválido ou expirado");
-        return;
+        if (!response.ok || !payload.ok) {
+          setMessage(payload.error ?? "Link inválido ou expirado");
+          return;
+        }
+
+        const nextOutcome =
+          payload.response === "decline" || action === "decline"
+            ? "decline"
+            : "accept";
+        setOutcome(nextOutcome);
+      } catch {
+        setMessage("Não foi possível enviar a resposta. Tente de novo.");
       }
-
-      if (payload.response === "accept" || action === "accept") {
-        setMessage("Horário confirmado. Aguardamos você na clínica.");
-        return;
-      }
-
-      setMessage(
-        "Obrigado pela resposta. Entraremos em contato se surgir nova vaga.",
-      );
     });
   }
 
@@ -90,25 +115,28 @@ export function SlotResponseClient({ token, view }: SlotResponseClientProps) {
     );
   }
 
-  if (view.state === "already_responded") {
+  if (outcome === "accept") {
+    return (
+      <div className="mt-4 space-y-3">
+        <OfferSummary view={view} />
+        <p className="text-center text-base font-medium text-neo-gold-500">
+          Horário confirmado. Aguardamos você na clínica.
+        </p>
+      </div>
+    );
+  }
+
+  if (outcome === "decline") {
     return (
       <p className="mt-4 text-center text-sm text-neo-cream-100/80">
-        Você já respondeu a esta oferta
+        Obrigado pela resposta. Entraremos em contato se surgir nova vaga.
       </p>
     );
   }
 
   return (
     <div className="mt-4 space-y-4">
-      <p className="text-center text-neo-cream-100">
-        Olá, {view.partialPatientName}
-      </p>
-      <p className="text-center text-sm text-neo-cream-100/80">
-        {view.offeredAtLabel} · {view.endsAtLabel}
-      </p>
-      <p className="text-center text-sm text-neo-cream-100/80">
-        Dentista: {view.dentistFirstName}
-      </p>
+      <OfferSummary view={view} />
 
       {view.state === "valid" && view.expiresAt ? (
         <p className="text-center text-xs text-neo-gray-500">
@@ -136,6 +164,12 @@ export function SlotResponseClient({ token, view }: SlotResponseClientProps) {
         </span>
       </label>
 
+      {view.state === "valid" && !lgpdConsent ? (
+        <p className="text-center text-xs text-neo-gray-500">
+          Marque o consentimento para aceitar ou recusar.
+        </p>
+      ) : null}
+
       <div className="flex flex-col gap-3 sm:flex-row">
         <button
           type="button"
@@ -156,7 +190,7 @@ export function SlotResponseClient({ token, view }: SlotResponseClientProps) {
       </div>
 
       {message ? (
-        <p className="text-center text-sm text-neo-cream-100">{message}</p>
+        <p className="text-center text-sm text-neo-gold-500">{message}</p>
       ) : null}
     </div>
   );

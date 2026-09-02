@@ -26,6 +26,7 @@ export interface WaitlistBoardEntry {
   status: WaitlistEntryStatus;
   createdAt: string;
   pendingOffer: WaitlistPendingOffer | null;
+  acceptedOffer: WaitlistPendingOffer | null;
 }
 
 export interface WaitlistSummary {
@@ -108,6 +109,7 @@ export async function getWaitlistBoardEntries(): Promise<WaitlistBoardEntry[]> {
     const preferredDentist = unwrapRelation(row.preferred_dentist);
     const offers = Array.isArray(row.slot_offers) ? row.slot_offers : [];
     const pendingOfferRow = offers.find((offer) => offer.status === "pending");
+    const acceptedOfferRow = offers.find((offer) => offer.status === "accepted");
 
     return {
       id: row.id,
@@ -122,6 +124,11 @@ export async function getWaitlistBoardEntries(): Promise<WaitlistBoardEntry[]> {
       pendingOffer: pendingOfferRow
         ? mapPendingOffer(
             pendingOfferRow as Parameters<typeof mapPendingOffer>[0],
+          )
+        : null,
+      acceptedOffer: acceptedOfferRow
+        ? mapPendingOffer(
+            acceptedOfferRow as Parameters<typeof mapPendingOffer>[0],
           )
         : null,
     };

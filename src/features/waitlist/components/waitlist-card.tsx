@@ -10,6 +10,7 @@ import {
 import { getWaitlistPriorityLabel } from "@/features/waitlist/domain/waitlist-priority";
 import type { WaitlistBoardEntry } from "@/features/waitlist/queries";
 import { SlotOfferCountdown } from "@/features/waitlist/components/slot-offer-link";
+import { formatClinicDateTime } from "@/features/agenda/types";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -187,6 +188,13 @@ export function WaitlistCard({
           {entry.preferredDentistName ? (
             <p className="text-xs text-muted-foreground">
               Preferência: {entry.preferredDentistName}
+            </p>
+          ) : null}
+
+          {entry.status === "scheduled" && entry.acceptedOffer ? (
+            <p className="text-xs text-muted-foreground">
+              Encaixe: {entry.acceptedOffer.dentistName} ·{" "}
+              {formatClinicDateTime(entry.acceptedOffer.offeredAt)}
             </p>
           ) : null}
 

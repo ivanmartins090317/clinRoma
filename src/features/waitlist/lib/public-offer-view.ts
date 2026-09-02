@@ -47,16 +47,20 @@ export async function getPublicSlotOfferView(
       .eq("id", supabasePatient.patient_id)
       .maybeSingle();
 
-    const { data: dentist } = await supabase
-      .from("dentists")
-      .select("full_name")
-      .eq("id", offer.dentist_id)
-      .maybeSingle();
+    let dentistFullName = offer.dentist_full_name;
+    if (!dentistFullName) {
+      const { data: dentist } = await supabase
+        .from("dentists")
+        .select("full_name")
+        .eq("id", offer.dentist_id)
+        .maybeSingle();
+      dentistFullName = dentist?.full_name ?? null;
+    }
 
     const partialPatientName = formatPartialPatientName(
       patient?.full_name ?? "Paciente",
     );
-    const dentistFirstName = formatDentistFirstName(dentist?.full_name);
+    const dentistFirstName = formatDentistFirstName(dentistFullName);
     const offeredAtLabel = formatClinicDateTime(offer.offered_at);
     const endsAtLabel = formatClinicTime(offer.ends_at);
 
