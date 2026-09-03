@@ -72,12 +72,13 @@ export async function applyStockEntry(input: {
       supply_id: input.supplyId,
       qr_code: qrCode,
       quantity: input.quantity,
+      // Trigger de entrada soma remaining; começa em 0 para não dobrar.
       remaining_quantity: 0,
       lot_number: input.lotNumber ?? null,
       expires_at: input.expiresAt ?? null,
       status: "active",
     })
-    .select("id, qr_code, quantity")
+    .select("id, qr_code, quantity, remaining_quantity")
     .single();
 
   if (packageError || !pkg) {
@@ -96,7 +97,34 @@ export async function applyStockEntry(input: {
     });
 
   if (movementError) {
+    await input.supabase.from("supply_packages").delete().eq("id", pkg.id);
     throw new Error(movementError.message);
+  }
+
+  const { data: refreshed } = await input.supabase
+    .from("supply_packages")
+    .select("remaining_quantity")
+    .eq("id", pkg.id)
+    .maybeSingle();
+
+  const remaining = Number(refreshed?.remaining_quantity ?? 0);
+
+  if (remaining <= 0) {
+    const { error: repairError } = await input.supabase
+      .from("supply_packages")
+      .update({
+        remaining_quantity: input.quantity,
+        status: "active",
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", pkg.id);
+
+    if (repairError) {
+      await input.supabase.from("supply_packages").delete().eq("id", pkg.id);
+      throw new Error(
+        "Pacote criado sem saldo restante. Tente gerar o QR de novo.",
+      );
+    }
   }
 
   await syncFinanceAlertForSupply(input.supplyId, before);

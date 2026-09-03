@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef, useState, useTransition } from "react";
+import { useCallback, useEffect, useRef, useState, useTransition } from "react";
 
 import {
   lookupPackageAction,
@@ -38,6 +38,11 @@ function playSuccessFeedback() {
   }
 }
 
+function defaultWithdrawQuantity(remaining: number): string {
+  if (!Number.isFinite(remaining) || remaining <= 0) return "";
+  return String(remaining);
+}
+
 export function StockScanFlow() {
   const [continuousMode, setContinuousMode] = useState(true);
   const [pendingPackage, setPendingPackage] =
@@ -48,10 +53,23 @@ export function StockScanFlow() {
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const lastScanRef = useRef<{ code: string; at: number } | null>(null);
+  const confirmRef = useRef<HTMLElement | null>(null);
+  const quantityInputRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    if (!pendingPackage) return;
+    confirmRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    window.setTimeout(() => quantityInputRef.current?.focus(), 250);
+  }, [pendingPackage]);
 
   const lookupCode = useCallback((rawCode: string) => {
     const code = normalizeScannedQrCode(rawCode);
     const now = Date.now();
+
+    if (!code) {
+      setError("Código QR inválido");
+      return;
+    }
 
     if (
       shouldIgnoreDuplicateScan(
@@ -74,12 +92,12 @@ export function StockScanFlow() {
 
       if (!pkg) {
         setPendingPackage(null);
-        setError("Pacote não encontrado");
+        setError(`Pacote não encontrado (${code})`);
         return;
       }
 
       setPendingPackage(pkg);
-      setQuantity(String(pkg.remainingQuantity));
+      setQuantity(defaultWithdrawQuantity(pkg.remainingQuantity));
     });
   }, []);
 
@@ -131,6 +149,12 @@ export function StockScanFlow() {
     pendingPackage?.status === "depleted" ||
     pendingPackage?.status === "expired";
 
+  const withdrawAmount = Number(quantity);
+  const confirmLabel =
+    Number.isFinite(withdrawAmount) && withdrawAmount > 0
+      ? `Confirmar saída de ${withdrawAmount}`
+      : "Confirmar retirada";
+
   return (
     <div className="mx-auto flex w-full max-w-lg flex-col gap-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
       <div className="flex items-center justify-between gap-3">
@@ -150,45 +174,15 @@ export function StockScanFlow() {
         </label>
       </div>
 
-      <StockQrScanner onScan={handleScan} paused={Boolean(pendingPackage)} />
-
-      <form
-        onSubmit={handleManualSubmit}
-        className="space-y-2 rounded-xl border border-border bg-card p-3"
-      >
-        <Label htmlFor="manual-qr">Ou digite o código do QR</Label>
-        <div className="flex gap-2">
-          <Input
-            id="manual-qr"
-            value={manualCode}
-            onChange={(event) => setManualCode(event.target.value)}
-            placeholder="CR-..."
-            className="text-base uppercase"
-            autoCapitalize="characters"
-            autoCorrect="off"
-            spellCheck={false}
-          />
-          <Button
-            type="submit"
-            variant="outline"
-            className="min-h-11 shrink-0"
-            disabled={isPending || !manualCode.trim()}
-          >
-            Buscar
-          </Button>
-        </div>
-      </form>
-
-      {message ? <Alert>{message}</Alert> : null}
-      {error ? (
-        <Alert className="border-destructive/30 text-destructive">
-          {error}
-        </Alert>
-      ) : null}
-
       {pendingPackage ? (
-        <section className="space-y-4 rounded-xl border border-border bg-card p-4">
+        <section
+          ref={confirmRef}
+          className="space-y-4 rounded-xl border-2 border-neo-gold-500 bg-card p-4 shadow-sm"
+        >
           <div>
+            <p className="text-xs font-medium uppercase tracking-wide text-neo-gold-500">
+              Confirme a retirada
+            </p>
             <p className="text-lg font-semibold">{pendingPackage.supplyName}</p>
             <p className="text-sm text-muted-foreground">
               {pendingPackage.qrCode}
@@ -210,7 +204,7 @@ export function StockScanFlow() {
             {blocked ? (
               <p className="mt-2 text-sm font-medium text-destructive">
                 Pacote {pendingPackage.statusLabel.toLowerCase()}. Retirada
-                bloqueada.
+                bloqueada. Gere um pacote novo com saldo restante.
               </p>
             ) : null}
           </div>
@@ -218,6 +212,7 @@ export function StockScanFlow() {
           <div className="space-y-2">
             <Label htmlFor="withdraw-quantity">Quantidade a retirar</Label>
             <Input
+              ref={quantityInputRef}
               id="withdraw-quantity"
               type="number"
               min={0}
@@ -227,6 +222,13 @@ export function StockScanFlow() {
               className="text-base"
               disabled={blocked}
             />
+            {!blocked &&
+            pendingPackage.remainingQuantity > 0 &&
+            Number(quantity) === pendingPackage.remainingQuantity ? (
+              <p className="text-xs text-muted-foreground">
+                Vai esvaziar o pacote inteiro. Edite se a saída for parcial.
+              </p>
+            ) : null}
           </div>
 
           <div className="grid grid-cols-2 gap-2">
@@ -237,6 +239,7 @@ export function StockScanFlow() {
               onClick={() => {
                 setPendingPackage(null);
                 setQuantity("");
+                setError(null);
               }}
             >
               Cancelar
@@ -247,10 +250,48 @@ export function StockScanFlow() {
               disabled={blocked || isPending}
               onClick={handleConfirm}
             >
-              {isPending ? "Registrando..." : "Confirmar retirada"}
+              {isPending ? "Registrando..." : confirmLabel}
             </Button>
           </div>
         </section>
+      ) : (
+        <>
+          <StockQrScanner onScan={handleScan} paused={false} />
+
+          <form
+            onSubmit={handleManualSubmit}
+            className="space-y-2 rounded-xl border border-border bg-card p-3"
+          >
+            <Label htmlFor="manual-qr">Ou digite o código do QR</Label>
+            <div className="flex gap-2">
+              <Input
+                id="manual-qr"
+                value={manualCode}
+                onChange={(event) => setManualCode(event.target.value)}
+                placeholder="CR-..."
+                className="text-base uppercase"
+                autoCapitalize="characters"
+                autoCorrect="off"
+                spellCheck={false}
+              />
+              <Button
+                type="submit"
+                variant="outline"
+                className="min-h-11 shrink-0"
+                disabled={isPending || !manualCode.trim()}
+              >
+                Buscar
+              </Button>
+            </div>
+          </form>
+        </>
+      )}
+
+      {message ? <Alert>{message}</Alert> : null}
+      {error ? (
+        <Alert className="border-destructive/30 text-destructive">
+          {error}
+        </Alert>
       ) : null}
     </div>
   );

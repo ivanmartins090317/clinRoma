@@ -22,4 +22,13 @@ describe("qr-code", () => {
   it("normaliza leitura", () => {
     expect(normalizeScannedQrCode(" cr-dev001 ")).toBe("CR-DEV001");
   });
+
+  it("extrai código de payload ruidoso da câmera", () => {
+    expect(
+      normalizeScannedQrCode("https://neo-roma.vercel.app/?c=CR-QZFXE28K2V64"),
+    ).toBe("CR-QZFXE28K2V64");
+    expect(normalizeScannedQrCode("codigo CR-7E8QTGQWLZ7J fim")).toBe(
+      "CR-7E8QTGQWLZ7J",
+    );
+  });
 });

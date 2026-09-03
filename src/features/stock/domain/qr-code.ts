@@ -29,5 +29,7 @@ export function generateSupplyQrCode(randomValues: number[]): string {
 }
 
 export function normalizeScannedQrCode(raw: string): string {
-  return raw.trim().toUpperCase();
+  const trimmed = raw.trim().toUpperCase();
+  const match = trimmed.match(/CR-[A-Z0-9]+/);
+  return match?.[0] ?? trimmed;
 }
