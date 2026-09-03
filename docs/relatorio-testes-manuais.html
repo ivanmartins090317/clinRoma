@@ -396,7 +396,7 @@
           </div>
           <div>
             <span>Status do plano</span>
-            Em execução (22/63 aprovados · FL-04 TC-21 e TC-22 ok)
+            Em execução (26/63 aprovados · FL-04 completo)
           </div>
         </div>
         <div class="scoreboard" id="scoreboard"></div>
@@ -942,34 +942,42 @@
                 <td class="hide-sm">Público</td>
                 <td><span class="status pass">Aprovado</span></td>
               </tr>
-              <tr data-flow="waitlist" data-status="pending" data-roles="public">
+              <tr data-flow="waitlist" data-status="pass" data-roles="public">
                 <td class="code">TC-24</td>
                 <td><span class="pill public">Paciente</span></td>
                 <td>
                   Oferta expirada (cron ou espera de 40 min). Página pública com
                   mensagem genérica. Sem dados extra do paciente.
+                  <br /><small>Aprovado 02/09/2026 · evidência da oferta expirada exibindo
+                  "Este link expirou. Entre em contato com a clínica", botões de resposta desabilitados
+                  e sem dados sensíveis do paciente.</small>
                 </td>
                 <td class="hide-sm">Público</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
-              <tr data-flow="waitlist" data-status="pending" data-roles="dentist">
+              <tr data-flow="waitlist" data-status="pass" data-roles="dentist">
                 <td class="code">TC-25</td>
                 <td><span class="pill dentist">Dentista</span></td>
                 <td>
                   Abre <code>/fila</code>. Vê o Kanban. Sem incluir paciente e
                   sem enviar oferta.
+                  <br /><small>Aprovado 03/09/2026 · dentista acessa o Kanban em
+                  <code>/fila</code> em somente leitura; sem incluir paciente e sem
+                  enviar oferta.</small>
                 </td>
                 <td class="hide-sm">Desktop</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
-              <tr data-flow="waitlist" data-status="pending" data-roles="viewer">
+              <tr data-flow="waitlist" data-status="pass" data-roles="viewer">
                 <td class="code">TC-26</td>
                 <td><span class="pill viewer">Visualizador</span></td>
                 <td>
                   <code>/fila</code> negado. Item Fila ausente do menu.
+                  <br /><small>Aprovado 03/09/2026 · visualizador sem item Fila no
+                  menu; acesso a <code>/fila</code> negado.</small>
                 </td>
                 <td class="hide-sm">Desktop</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
             </tbody>
           </table>
@@ -1614,7 +1622,7 @@
 
       <footer>
         ClinRoma · Clínica Neo Roma · POP-QA adaptado · Marca burgundy/gold ·
-        Evidências em docs/evidencias/ · Atualizado 2026-09-02 (FL-04 TC-22 aprovado · 22/63 TCs ok)
+        Evidências em docs/evidencias/ · Atualizado 2026-09-03 (FL-04 completo · 26/63 TCs ok)
       </footer>
     </div>
     <script>

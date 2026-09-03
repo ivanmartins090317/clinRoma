@@ -43,13 +43,14 @@ export function StockScanFlow() {
   const [pendingPackage, setPendingPackage] =
     useState<PackageLookupResult | null>(null);
   const [quantity, setQuantity] = useState("");
+  const [manualCode, setManualCode] = useState("");
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const lastScanRef = useRef<{ code: string; at: number } | null>(null);
 
-  const handleScan = useCallback((result: { rawCode: string }) => {
-    const code = normalizeScannedQrCode(result.rawCode);
+  const lookupCode = useCallback((rawCode: string) => {
+    const code = normalizeScannedQrCode(rawCode);
     const now = Date.now();
 
     if (
@@ -82,6 +83,20 @@ export function StockScanFlow() {
     });
   }, []);
 
+  const handleScan = useCallback(
+    (result: { rawCode: string }) => {
+      lookupCode(result.rawCode);
+    },
+    [lookupCode],
+  );
+
+  function handleManualSubmit(event: React.FormEvent) {
+    event.preventDefault();
+    if (!manualCode.trim()) return;
+    lookupCode(manualCode);
+    setManualCode("");
+  }
+
   function handleConfirm() {
     if (!pendingPackage) return;
 
@@ -101,7 +116,7 @@ export function StockScanFlow() {
 
       playSuccessFeedback();
       toast(
-        `Retirada registrada · ${result.supplyName} · Saldo: ${result.currentQuantity}`,
+        `Saída ${result.withdrawnQuantity} · ${result.supplyName} · Saldo ${result.previousQuantity} → ${result.currentQuantity}`,
       );
 
       if (continuousMode) {
@@ -137,6 +152,33 @@ export function StockScanFlow() {
 
       <StockQrScanner onScan={handleScan} paused={Boolean(pendingPackage)} />
 
+      <form
+        onSubmit={handleManualSubmit}
+        className="space-y-2 rounded-xl border border-border bg-card p-3"
+      >
+        <Label htmlFor="manual-qr">Ou digite o código do QR</Label>
+        <div className="flex gap-2">
+          <Input
+            id="manual-qr"
+            value={manualCode}
+            onChange={(event) => setManualCode(event.target.value)}
+            placeholder="CR-..."
+            className="text-base uppercase"
+            autoCapitalize="characters"
+            autoCorrect="off"
+            spellCheck={false}
+          />
+          <Button
+            type="submit"
+            variant="outline"
+            className="min-h-11 shrink-0"
+            disabled={isPending || !manualCode.trim()}
+          >
+            Buscar
+          </Button>
+        </div>
+      </form>
+
       {message ? <Alert>{message}</Alert> : null}
       {error ? (
         <Alert className="border-destructive/30 text-destructive">
@@ -158,7 +200,11 @@ export function StockScanFlow() {
                 : ""}
             </p>
             <p className="text-sm">
-              Restante: {pendingPackage.remainingQuantity}{" "}
+              Restante no pacote: {pendingPackage.remainingQuantity}{" "}
+              {SUPPLY_UNIT_LABELS[pendingPackage.unit]}
+            </p>
+            <p className="text-sm text-muted-foreground">
+              Saldo atual do insumo: {pendingPackage.supplyCurrentQuantity}{" "}
               {SUPPLY_UNIT_LABELS[pendingPackage.unit]}
             </p>
             {blocked ? (

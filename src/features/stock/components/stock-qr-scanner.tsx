@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 
 import { ZxingWasmScanner } from "@/features/stock/components/scanner/zxing-wasm-scanner";
 import { NativeBarcodeScanner } from "@/features/stock/components/scanner/native-barcode-scanner";
@@ -24,16 +24,19 @@ export function StockQrScanner({
   const lastCodeRef = useRef<string | null>(null);
   const lastAtRef = useRef<number>(0);
 
-  function handleDecoded(rawCode: string) {
-    const now = Date.now();
-    if (lastCodeRef.current === rawCode && now - lastAtRef.current < 3000) {
-      return;
-    }
+  const handleDecoded = useCallback(
+    (rawCode: string) => {
+      const now = Date.now();
+      if (lastCodeRef.current === rawCode && now - lastAtRef.current < 3000) {
+        return;
+      }
 
-    lastCodeRef.current = rawCode;
-    lastAtRef.current = now;
-    onScan({ rawCode });
-  }
+      lastCodeRef.current = rawCode;
+      lastAtRef.current = now;
+      onScan({ rawCode });
+    },
+    [onScan],
+  );
 
   if (typeof window === "undefined") {
     return (

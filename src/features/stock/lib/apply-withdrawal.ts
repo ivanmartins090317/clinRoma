@@ -12,6 +12,7 @@ export interface WithdrawalResult {
   supplyId: string;
   supplyName: string;
   withdrawnQuantity: number;
+  previousQuantity: number;
   currentQuantity: number;
   unit: Database["public"]["Enums"]["supply_unit"];
 }
@@ -61,6 +62,8 @@ export async function applyWithdrawal(input: {
     throw new Error("Pacote não encontrado");
   }
 
+  const previousQuantity = Number(supply.current_quantity);
+
   const packageStatus = resolvePackageStatus({
     remainingQuantity: Number(pkg.remaining_quantity),
     expiresAt: pkg.expires_at,
@@ -70,7 +73,7 @@ export async function applyWithdrawal(input: {
   const validation = validateWithdrawal({
     requestedQuantity: input.quantity,
     packageRemainingQuantity: Number(pkg.remaining_quantity),
-    supplyCurrentQuantity: Number(supply.current_quantity),
+    supplyCurrentQuantity: previousQuantity,
     packageStatus,
     allowOverride: input.allowOverride,
   });
@@ -104,8 +107,17 @@ export async function applyWithdrawal(input: {
     throw new Error("Falha ao consultar saldo atualizado");
   }
 
+  const currentQuantity = Number(updatedSupply.current_quantity);
+  const expectedQuantity = previousQuantity - input.quantity;
+
+  if (Math.abs(currentQuantity - expectedQuantity) > 0.001) {
+    throw new Error(
+      `Saldo inconsistente após retirada (esperado ${expectedQuantity}, veio ${currentQuantity})`,
+    );
+  }
+
   await syncFinanceAlertForSupply(supply.id, {
-    currentQuantity: Number(supply.current_quantity),
+    currentQuantity: previousQuantity,
     minimumQuantity: Number(supply.minimum_quantity),
   });
 
@@ -113,7 +125,8 @@ export async function applyWithdrawal(input: {
     supplyId: supply.id,
     supplyName: supply.name,
     withdrawnQuantity: input.quantity,
-    currentQuantity: Number(updatedSupply.current_quantity),
+    previousQuantity,
+    currentQuantity,
     unit: supply.unit,
   };
 }

@@ -18,12 +18,17 @@ export function ZxingWasmScanner({
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
+  const onScanRef = useRef(onScan);
+  const pausedRef = useRef(paused);
   const [error, setError] = useState<string | null>(null);
   const [facingMode, setFacingMode] = useState<"environment" | "user">(
     "environment",
   );
   const [torchSupported, setTorchSupported] = useState(false);
   const [torchOn, setTorchOn] = useState(false);
+
+  onScanRef.current = onScan;
+  pausedRef.current = paused;
 
   useEffect(() => {
     let cancelled = false;
@@ -39,6 +44,7 @@ export function ZxingWasmScanner({
 
       try {
         streamRef.current?.getTracks().forEach((track) => track.stop());
+        streamRef.current = null;
 
         const stream = await navigator.mediaDevices.getUserMedia({
           video: { facingMode },
@@ -62,7 +68,9 @@ export function ZxingWasmScanner({
         setTorchSupported(Boolean(capabilities && "torch" in capabilities));
 
         intervalId = window.setInterval(async () => {
-          if (paused || !videoRef.current || !canvasRef.current) return;
+          if (pausedRef.current || !videoRef.current || !canvasRef.current) {
+            return;
+          }
 
           const video = videoRef.current;
           const canvas = canvasRef.current;
@@ -95,12 +103,25 @@ export function ZxingWasmScanner({
 
           const value = results[0]?.text;
           if (value) {
-            onScan(value);
+            onScanRef.current(value);
           }
         }, 450);
-      } catch {
+      } catch (err) {
+        const name = err instanceof DOMException ? err.name : "";
+        if (name === "NotAllowedError" || name === "PermissionDeniedError") {
+          setError(
+            "Não foi possível acessar a câmera. Verifique permissões do navegador.",
+          );
+          return;
+        }
+
+        if (streamRef.current) {
+          setError(null);
+          return;
+        }
+
         setError(
-          "Não foi possível acessar a câmera. Verifique permissões do navegador.",
+          "Não foi possível iniciar a câmera. Toque para tentar de novo ou digite o código.",
         );
       }
     }
@@ -111,8 +132,9 @@ export function ZxingWasmScanner({
       cancelled = true;
       if (intervalId) window.clearInterval(intervalId);
       streamRef.current?.getTracks().forEach((track) => track.stop());
+      streamRef.current = null;
     };
-  }, [facingMode, onScan, paused]);
+  }, [facingMode]);
 
   async function toggleTorch() {
     const track = streamRef.current?.getVideoTracks()[0];
@@ -132,6 +154,7 @@ export function ZxingWasmScanner({
         className="aspect-[3/4] w-full object-cover"
         playsInline
         muted
+        autoPlay
       />
       <canvas ref={canvasRef} className="hidden" />
       <div className="pointer-events-none absolute inset-0 flex items-center justify-center">

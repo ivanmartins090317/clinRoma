@@ -44,6 +44,7 @@ export interface WithdrawActionResult {
   error?: string;
   supplyName?: string;
   withdrawnQuantity?: number;
+  previousQuantity?: number;
   currentQuantity?: number;
   unitLabel?: string;
 }
@@ -408,6 +409,7 @@ export async function withdrawPackageAction(
       success: true,
       supplyName: result.supplyName,
       withdrawnQuantity: result.withdrawnQuantity,
+      previousQuantity: result.previousQuantity,
       currentQuantity: result.currentQuantity,
       unitLabel: SUPPLY_UNIT_LABELS[result.unit],
     };

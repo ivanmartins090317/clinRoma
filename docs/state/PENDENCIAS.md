@@ -2,7 +2,7 @@
 
 Fonte viva do que **ainda falta implementar ou validar**. Atualizar ao concluir cada fase.
 
-Última revisão: **2026-09-02** (FL-04 TC-23 aprovado: recusa de oferta validada; 23/63 aprovados).
+Última revisão: **2026-09-03** (FL-04 completo: TC-25 e TC-26 aprovados; 26/63 aprovados).
 
 ---
 
@@ -125,9 +125,9 @@ Referência: `specs/2026-08-18-fase-4-fila-kanban.md` · `docs/implementation/F4
 - [x] Paciente: aceitar o link → consulta confirmada na agenda (TC-22 aprovado em 2026-09-02; aceite, confirmação na tela e agenda validados)
 - [ ] Copiar link como fallback (sem WhatsApp)
 - [x] Cenário recusa: card volta a Aguardando (TC-23, 2026-09-02)
-- [ ] Expiração: cron ou curl manual + link expirado na UI pública
-- [ ] Dentista: fila somente leitura
-- [ ] Visualizador: `/fila` negado
+- [x] Expiração: cron ou espera de 40 min + link expirado na UI pública (TC-24, 2026-09-02)
+- [x] Dentista: fila somente leitura (TC-25, 2026-09-03)
+- [x] Visualizador: `/fila` negado (TC-26, 2026-09-03)
 
 **Pronto quando:** cancelamento vira consulta confirmada pelo link, sem ligação telefônica.
 
@@ -183,9 +183,9 @@ Referência: `specs/2026-08-18-fase-6-lembrete-piloto.md` · `docs/implementatio
 
 - [ ] Configurar `RESEND_API_KEY` e `RESEND_FROM_EMAIL` no ambiente de teste
 - [ ] **FL-06:** concluir consulta → e-mail em `dentist@clinroma.dev`
-- [ ] Executar FL-01…FL-11 (63 TCs, 5 perfis + visitante) com evidências desktop e mobile · **22/63 aprovados** (FL-01 a FL-03; FL-04 TC-21 e TC-22 ok)
+- [ ] Executar FL-01…FL-11 (63 TCs, 5 perfis + visitante) com evidências desktop e mobile · **26/63 aprovados** (FL-01 a FL-04 completo)
 - [ ] iPhone e Android nos fluxos áudio, scan, PWA e lembrete
-- [ ] Preencher `docs/relatorio-testes-manuais.html` e `docs/evidencias/` (FL-01 a FL-03, TC-21 e TC-22 aprovados; TC-04 e TC-05 sem screenshot)
+- [ ] Preencher `docs/relatorio-testes-manuais.html` e `docs/evidencias/` (FL-01 a FL-04 aprovados; TC-04 e TC-05 sem screenshot)
 - [ ] Nenhum bug crítico/alto aberto nos fluxos P0 (BG-01 baixo; BG-02 médio Android reload; BG-03 médio nome no card público; BG-04 fechado; BG-05 alto horário no passado)
 - [ ] Deploy produção (Supabase prod + Vercel) conforme checklist manual-dev § Deploy
 

@@ -16,12 +16,17 @@ export function NativeBarcodeScanner({
 }: NativeBarcodeScannerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
+  const onScanRef = useRef(onScan);
+  const pausedRef = useRef(paused);
   const [error, setError] = useState<string | null>(null);
   const [facingMode, setFacingMode] = useState<"environment" | "user">(
     "environment",
   );
   const [torchSupported, setTorchSupported] = useState(false);
   const [torchOn, setTorchOn] = useState(false);
+
+  onScanRef.current = onScan;
+  pausedRef.current = paused;
 
   useEffect(() => {
     let cancelled = false;
@@ -37,6 +42,7 @@ export function NativeBarcodeScanner({
 
       try {
         streamRef.current?.getTracks().forEach((track) => track.stop());
+        streamRef.current = null;
 
         const stream = await navigator.mediaDevices.getUserMedia({
           video: {
@@ -66,21 +72,34 @@ export function NativeBarcodeScanner({
         const detector = new BarcodeDetector({ formats: ["qr_code"] });
 
         intervalId = window.setInterval(async () => {
-          if (paused || !videoRef.current) return;
+          if (pausedRef.current || !videoRef.current) return;
 
           try {
             const codes = await detector.detect(videoRef.current);
             const value = codes[0]?.rawValue;
             if (value) {
-              onScan(value);
+              onScanRef.current(value);
             }
           } catch {
             // ignore frame errors
           }
         }, 350);
-      } catch {
+      } catch (err) {
+        const name = err instanceof DOMException ? err.name : "";
+        if (name === "NotAllowedError" || name === "PermissionDeniedError") {
+          setError(
+            "Não foi possível acessar a câmera. Verifique permissões do navegador.",
+          );
+          return;
+        }
+
+        if (streamRef.current) {
+          setError(null);
+          return;
+        }
+
         setError(
-          "Não foi possível acessar a câmera. Verifique permissões do navegador.",
+          "Não foi possível iniciar a câmera. Toque para tentar de novo ou digite o código.",
         );
       }
     }
@@ -91,8 +110,9 @@ export function NativeBarcodeScanner({
       cancelled = true;
       if (intervalId) window.clearInterval(intervalId);
       streamRef.current?.getTracks().forEach((track) => track.stop());
+      streamRef.current = null;
     };
-  }, [facingMode, onScan, paused]);
+  }, [facingMode]);
 
   async function toggleTorch() {
     const track = streamRef.current?.getVideoTracks()[0];
@@ -112,6 +132,7 @@ export function NativeBarcodeScanner({
         className="aspect-[3/4] w-full object-cover"
         playsInline
         muted
+        autoPlay
       />
       <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
         <div className="h-52 w-52 rounded-2xl border-2 border-white/80 shadow-[0_0_0_9999px_rgba(0,0,0,0.35)]" />

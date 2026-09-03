@@ -41,6 +41,11 @@ export function StockList({
   const debounceRef = useRef<number | null>(null);
 
   useEffect(() => {
+    if (query.trim()) return;
+    setSupplies(initialSupplies);
+  }, [initialSupplies, query]);
+
+  useEffect(() => {
     if (debounceRef.current) {
       window.clearTimeout(debounceRef.current);
     }
