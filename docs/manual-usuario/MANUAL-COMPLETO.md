@@ -5,7 +5,7 @@ Guia prático para a equipe da clínica usar o ClinRoma no dia a dia.
 **Público:** recepção, dentistas, auxiliar de sala, administradores e demais colaboradores.  
 **Não é necessário** conhecimento técnico para seguir este manual.
 
-**Piloto:** Clínica Neo Roma · **Atualizado:** agosto/2026
+**Piloto:** Clínica Neo Roma · **Atualizado:** setembro/2026
 
 ---
 
@@ -316,34 +316,70 @@ O link expira em **40 minutos**. Depois disso a oferta perde validade sozinha.
 
 ### Estoque
 
-**Para que serve:** controlar insumos (luvas, alginato, anestésico etc.) com saldo e QR code por pacote.
+**Para que serve:** controlar insumos (luvas, alginato, anestésico etc.) com saldo e QR code por embalagem.
 
 **Quem cadastra insumos:** administrador.  
 **Quem registra compra e pacotes QR:** administrador e auxiliar de sala.  
 **Quem escaneia retirada:** administrador e auxiliar de sala.  
 **Quem só consulta saldo:** recepção e dentista (alertas também aparecem em Hoje).
 
+**Ideia principal:** o ClinRoma controla o estoque em dois níveis.
+
+| O que você vê | Significado |
+| ------------- | ----------- |
+| **Saldo** (número no topo do insumo) | Quantas unidades do produto ainda existem na clínica no total |
+| **Pacote / etiqueta QR** | Uma embalagem física etiquetada. A retirada por câmera só funciona através desse QR |
+
+**Regra de ouro:** gerar QR quando o **material chega**; escanear o **mesmo** QR toda vez que retirar unidades. Não gere pacote novo só para “ver” a etiqueta.
+
+**Fluxo ideal:**
+
+1. Material chega
+2. Abra o insumo → aba **Entrada** (ou **Registrar compra**)
+3. Informe a quantidade desta embalagem (pode ser o total, se for um único monte na prateleira)
+4. Gere **uma** etiqueta, imprima ou baixe, e cole na prateleira / embalagem
+5. Em cada uso: **Scan QR** → informe quanto saiu
+6. O restante da etiqueta e o saldo do produto baixam juntos
+
+**Uma ou várias etiquetas?**
+
+| Situação | Quantas etiquetas |
+| -------- | ----------------- |
+| Chegou um lote e fica junto na prateleira | **1** etiqueta com o total |
+| São caixas / embalagens físicas separadas | **1** etiqueta por embalagem |
+| Nova compra depois | Nova etiqueta (nova entrada) |
+
 **Lista de insumos:** cada item mostra nome, unidade, saldo atual e situação (**OK**, **Abaixo do mínimo** ou **Zerado**).
+
+**Detalhe do insumo (abas):**
+
+1. **Pacotes** – consulta etiquetas; use **Ver / baixar QR** para ver ou baixar a da prateleira. Pacotes esgotados ficam no histórico.
+2. **Entrada** – só quando o material chegou. Cria QR novo e aumenta o saldo.
+3. **Ajuste** (administrador) – corrige o número do saldo. Não gera QR e não substitui o Scan.
 
 **Registrar compra (entrada de material):**
 
-1. Em Estoque, **Registrar compra**
+1. Em Estoque, **Registrar compra** (ou no detalhe, aba **Entrada**)
 2. Opcional: foto da planilha do fornecedor (referência visual; o sistema **não lê** a foto automaticamente)
 3. Digite manualmente os itens, quantidades e lotes
-4. Gere **etiquetas com QR** e imprima para colar nos pacotes
+4. Gere **etiquetas com QR** e imprima (ou use **Ver / baixar QR**) para colar nas embalagens
 
 Cada pacote recebe um código único (ex.: `CR-XXXXXXXXXXXX`).
 
 **Scan QR (retirada):**
 
 1. Abra **Scan QR** (ideal no celular da auxiliar)
-2. Aponte a câmera traseira para o QR do pacote
+2. Aponte a câmera traseira para o QR **já colado** na embalagem
 3. Confirme a quantidade retirada
-4. O saldo do insumo é atualizado na hora
+4. O saldo do insumo e o restante daquela etiqueta atualizam na hora
 
 **Modo contínuo:** após uma retirada, a câmera fica pronta para o próximo scan.
 
 **Dica:** instale o ClinRoma na tela inicial do celular para abrir o scan com um toque.
+
+**Saldo maior que a soma das etiquetas ativas:** exemplo saldo **20** com etiqueta ativa de **10**. Pelo Scan só saem as 10 da etiqueta. Para corrigir: **Ajuste** (saída da diferença sem QR) e depois **Entrada** para gerar a etiqueta que falta. Não faça só nova entrada com o saldo já alto: o número dobra.
+
+**Deletar pacote:** em **Pacotes**, use **Deletar** e confirme. Com restante, baixa do saldo; esgotado some do histórico. Quem pode: administrador e auxiliar de sala.
 
 ### Lembretes pós-consulta (automático)
 
@@ -430,14 +466,17 @@ Por enquanto o lembrete vai **só para o dentista**, não para o paciente.
 
 1. Entrar no ClinRoma no **celular**
 2. **Estoque** → conferir saldos
-3. Se recebeu compra nova: **Registrar compra**, gerar etiquetas QR e colar nos pacotes
+3. Se recebeu material novo: aba **Entrada** (ou **Registrar compra**) → quantidade da embalagem (use o **total** se for um monte só) → gerar **uma** etiqueta → **Ver / baixar QR** ou imprimir → colar na prateleira
+4. Conferir na aba **Pacotes** se a etiqueta ativa está correta
 
 **Durante o procedimento:**
 
 1. Abrir **Scan QR** (ou atalho na tela inicial do celular)
-2. Escanear QR do pacote usado
+2. Escanear o QR **já colado** (o mesmo, enquanto houver restante)
 3. Confirmar quantidade retirada
 4. Repetir para cada material consumido
+
+**Não** use a aba **Entrada** só para ver a etiqueta. Para ver ou baixar de novo: **Pacotes** → **Ver / baixar QR**.
 
 **Quando o saldo está baixo:** avise recepção ou administrador para repor.
 
@@ -482,9 +521,9 @@ Perfil de **somente leitura**: vê **Hoje** e **Agenda**, busca pacientes e vê 
 
 **Dia com muitos procedimentos e consumo de material:**
 
-1. Auxiliar prepara pacotes com QR visíveis
-2. A cada procedimento: **Scan QR** das retiradas
-3. Fim do dia: administrador ou auxiliar confere saldos em **Estoque**
+1. Auxiliar confere se cada material da prateleira tem **uma etiqueta ativa** visível
+2. A cada procedimento: **Scan QR** das retiradas (mesmo QR, quantidades parciais)
+3. Fim do dia: administrador ou auxiliar confere saldos em **Estoque** e se o restante das etiquetas bate com o físico
 
 ---
 
@@ -545,6 +584,30 @@ Sim. O sistema **não envia** automaticamente; a recepção copia e envia manual
 
 ### Estoque
 
+**Como funciona saldo e etiqueta?**  
+**Saldo** = total do produto. **Etiqueta QR** = embalagem física; a retirada por câmera só passa por ela. Material chega → gera etiqueta → cola → cada uso escaneia o **mesmo** QR.
+
+**Preciso gerar QR novo a cada retirada?**  
+**Não.** Gerar QR é só na entrada. Na retirada use **Scan QR**.
+
+**Como vejo a etiqueta da prateleira?**  
+Insumo → aba **Pacotes** → pacote **Ativo** → **Ver / baixar QR**. Não use **Entrada** só para consultar.
+
+**Posso gerar uma única etiqueta com o total?**  
+**Sim.** Na Entrada informe o total; depois retire no mesmo QR.
+
+**Quando ter duas etiquetas no mesmo produto?**  
+Quando há duas embalagens físicas (ou duas entradas). Se está junto na prateleira, uma basta.
+
+**Saldo 20 e etiqueta ativa de 10: como uso as 20?**  
+Pelo Scan só saem as da etiqueta. Corrija com **Ajuste** (saída da diferença) e depois **Entrada** para a etiqueta que falta. Não faça só nova entrada com saldo já alto: o número dobra.
+
+**Como apago pacote criado por engano ou histórico esgotado?**  
+**Pacotes** → **Deletar** → **Sim, deletar**. Com restante, baixa do saldo; esgotado só some do histórico.
+
+**O que é Forçar retirada?**  
+Retirada excepcional do administrador em pacote esgotado/vencido. Não substitui o Scan.
+
 **QR não lê no celular**  
 Permita acesso à **câmera**, use boa iluminação, confirme que está em **Scan QR** e recarregue a página se necessário.
 
@@ -556,6 +619,12 @@ Chame a **auxiliar de sala** ou o **administrador**.
 
 **Foto da planilha na compra preenche os campos?**  
 **Não.** A foto serve só de referência. Digite os itens manualmente.
+
+**Para que serve Ajuste de saldo?**  
+Só para corrigir o número. Não gera QR e não substitui o Scan.
+
+**Para que serve Ajuste de saldo?**  
+Só para corrigir o número. Não gera QR e não substitui o Scan.
 
 ### Lembretes
 
@@ -592,9 +661,11 @@ Safari (iPhone) ou Chrome (Android): **Adicionar à tela inicial**.
 | **Evolução** | Registro do que foi feito na consulta |
 | **LGPD** | Lei de proteção de dados; consentimento do paciente |
 | **Encaixe / Fila** | Lista de quem espera horário que abrir |
-| **QR / Scan** | Código no pacote de material; leitura pela câmera |
+| **QR / Scan** | Código na embalagem de material; leitura pela câmera |
+| **Pacote / etiqueta** | Embalagem com QR; a retirada baixa o restante desse pacote |
+| **Saldo** | Total de unidades do produto na clínica |
 | **Perfil** | Tipo de acesso (recepção, dentista etc.) |
 
 ---
 
-*ClinRoma · Clínica Neo Roma · Manual do usuário · agosto/2026*
+*ClinRoma · Clínica Neo Roma · Manual do usuário · setembro/2026*

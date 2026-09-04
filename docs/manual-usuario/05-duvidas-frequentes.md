@@ -86,6 +86,38 @@ Sim. O sistema **não envia** automaticamente; a recepção copia o link e envia
 
 ## Estoque
 
+### Como funciona saldo e etiqueta?
+
+- **Saldo** = total do produto na clínica
+- **Etiqueta QR** = embalagem física; a retirada por câmera só passa por ela
+- Fluxo certo: material chega → gera etiqueta → cola → em cada uso escaneia o **mesmo** QR
+
+Detalhes: [03-guia-dos-modulos.md](./03-guia-dos-modulos.md#estoque).
+
+### Preciso gerar QR novo a cada retirada?
+
+**Não.** Gerar QR é só na **entrada** de material. Na retirada use **Scan QR** da etiqueta da prateleira.
+
+### Como vejo a etiqueta que está (ou deveria estar) na prateleira?
+
+Abra o insumo → aba **Pacotes** → pacote **Ativo** → **Ver / baixar QR**.  
+Não use a aba **Entrada** só para consultar: isso cria pacote novo e aumenta o saldo.
+
+### Posso gerar uma única etiqueta com o total de unidades?
+
+**Sim.** Na **Entrada**, informe a quantidade total da embalagem (ex.: 10). Depois retire de 1 em 1 (ou a quantidade usada) no **mesmo** QR.
+
+### Quando faz sentido ter duas etiquetas no mesmo produto?
+
+Quando há **duas embalagens físicas** (ou duas entradas de compra). Se o material está junto na prateleira, uma etiqueta basta.
+
+### O saldo mostra 20, mas só tenho etiqueta ativa de 10. Como uso as 20?
+
+Pelo Scan você só retira o restante da etiqueta ativa. As unidades sem QR não saem pela câmera.
+
+Para corrigir: administrador usa **Ajuste** (saída da diferença sem etiqueta) e depois **Entrada** para gerar a etiqueta que falta.  
+**Não** faça só uma nova entrada com o saldo já alto: o número dobra.
+
 ### QR não lê no celular
 
 - Permita acesso à **câmera** no navegador
@@ -104,6 +136,22 @@ Recepção **não** tem Scan QR. Chame a **auxiliar de sala** ou o **administrad
 ### Foto da planilha na compra preenche os campos?
 
 **Não.** A foto serve só de referência. Os itens devem ser **digitados manualmente**.
+
+### Como apago um pacote criado por engano ou o histórico esgotado?
+
+No detalhe do insumo → **Pacotes** → **Deletar** → confirme **Sim, deletar**.
+
+- Se ainda houver restante na etiqueta, esse restante também sai do **saldo**
+- Se já estiver esgotado, só some do histórico (o saldo não muda)
+- A ação não pode ser desfeita
+
+### O que é “Forçar retirada”?
+
+É a retirada excepcional do **administrador** em pacote esgotado ou vencido (casos raros). Não substitui o Scan no dia a dia.
+
+### Para que serve Ajuste de saldo?
+
+Só para **corrigir** o número (contagem, quebra, diferença). Não gera QR e não substitui o Scan.
 
 ---
 
@@ -151,9 +199,11 @@ No Safari (iPhone) ou Chrome (Android): menu do navegador → **Adicionar à tel
 | **Evolução** | Registro do que foi feito na consulta |
 | **LGPD** | Lei de proteção de dados; consentimento do paciente |
 | **Encaixe / Fila** | Lista de quem espera horário que abrir |
-| **QR / Scan** | Código no pacote de material; leitura pela câmera |
+| **QR / Scan** | Código na embalagem de material; leitura pela câmera |
+| **Pacote / etiqueta** | Embalagem com QR; a retirada baixa o restante desse pacote |
+| **Saldo** | Total de unidades do produto na clínica |
 | **Perfil** | Tipo de acesso (recepção, dentista etc.) |
 
 ---
 
-*Manual do usuário · ClinRoma · Clínica Neo Roma · Atualizado em agosto/2026*
+*Manual do usuário · ClinRoma · Clínica Neo Roma · Atualizado em setembro/2026*

@@ -56,10 +56,16 @@ export function StockPackageForm({
       onSubmit={handleSubmit}
       className="space-y-3 rounded-xl border border-border p-4"
     >
-      <p className="font-medium">Adicionar pacote</p>
+      <div className="space-y-1">
+        <p className="font-medium">Registrar chegada de material</p>
+        <p className="text-sm text-muted-foreground">
+          Informe quantas unidades entram nesta embalagem. O sistema gera um QR
+          único para colar nela.
+        </p>
+      </div>
       <div className="grid gap-3 sm:grid-cols-3">
         <div className="space-y-2">
-          <Label htmlFor="pkg-quantity">Quantidade</Label>
+          <Label htmlFor="pkg-quantity">Quantidade nesta embalagem</Label>
           <Input
             id="pkg-quantity"
             type="number"
@@ -93,7 +99,7 @@ export function StockPackageForm({
       </div>
       {error ? <p className="text-sm text-destructive">{error}</p> : null}
       <Button type="submit" disabled={isPending} className="min-h-11">
-        {isPending ? "Gerando..." : "Gerar pacote e QR"}
+        {isPending ? "Gerando etiqueta..." : "Gerar QR desta embalagem"}
       </Button>
     </form>
   );

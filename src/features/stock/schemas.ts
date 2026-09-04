@@ -52,6 +52,10 @@ export const addPackageSchema = z.object({
   expiresAt: z.string().optional(),
 });
 
+export const deletePackageSchema = z.object({
+  packageId: z.string().uuid("Pacote inválido"),
+});
+
 export const withdrawPackageSchema = z.object({
   qrCode: z.string().trim().min(1, "QR inválido"),
   quantity: z.coerce.number().positive("Quantidade inválida"),

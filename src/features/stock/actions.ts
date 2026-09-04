@@ -7,6 +7,7 @@ import {
   applyBulkEntry,
   applyStockEntry,
 } from "@/features/stock/lib/apply-stock-entry";
+import { applyDeletePackage } from "@/features/stock/lib/apply-delete-package";
 import { applyWithdrawal } from "@/features/stock/lib/apply-withdrawal";
 import { syncFinanceAlertForSupply } from "@/features/stock/lib/enqueue-finance-alert";
 import {
@@ -19,6 +20,7 @@ import {
   adjustSupplySchema,
   addPackageSchema,
   createSupplySchema,
+  deletePackageSchema,
   registerPurchaseSchema,
   updateSupplySchema,
   uploadSupplySheetSchema,
@@ -367,6 +369,38 @@ export async function addPackageAction(
       supplyId: parsed.data.supplyId,
       packages: [created],
     };
+  } catch (error) {
+    return {
+      error: error instanceof Error ? error.message : "Erro inesperado",
+    };
+  }
+}
+
+export async function deletePackageAction(
+  input: unknown,
+): Promise<StockActionResult> {
+  try {
+    const session = await requireAuthSession("/estoque");
+
+    if (!canRegisterPackages(session.profile.role)) {
+      return { error: "Sem permissão para deletar pacote" };
+    }
+
+    const parsed = deletePackageSchema.safeParse(input);
+    if (!parsed.success) {
+      return { error: parsed.error.issues[0]?.message ?? "Dados inválidos" };
+    }
+
+    const supabase = await createClient();
+    const result = await applyDeletePackage({
+      supabase,
+      packageId: parsed.data.packageId,
+      performerId: session.profile.id,
+    });
+
+    revalidatePath("/estoque");
+    revalidatePath("/hoje");
+    return { success: true, supplyId: result.supplyId };
   } catch (error) {
     return {
       error: error instanceof Error ? error.message : "Erro inesperado",

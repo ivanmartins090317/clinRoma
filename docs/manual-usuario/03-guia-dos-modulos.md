@@ -168,12 +168,40 @@ O link expira em **40 minutos**. Depois disso a oferta perde validade sozinha.
 
 ## Estoque
 
-**Para que serve:** controlar insumos (luvas, alginato, anestésico etc.) com saldo e QR code por pacote.
+**Para que serve:** controlar insumos (luvas, alginato, anestésico etc.) com saldo e QR code por embalagem.
 
 **Quem cadastra insumos:** administrador.  
 **Quem registra compra e pacotes QR:** administrador e auxiliar de sala.  
 **Quem escaneia retirada:** administrador e auxiliar de sala.  
 **Quem só consulta saldo:** recepção e dentista (alertas também aparecem em Hoje).
+
+### Ideia principal (leia antes de usar)
+
+O ClinRoma controla o estoque em **dois níveis**:
+
+| O que você vê | Significado |
+| ------------- | ----------- |
+| **Saldo** (número no topo do insumo) | Quantas unidades do produto ainda existem na clínica no total |
+| **Pacote / etiqueta QR** | Uma embalagem física etiquetada. A retirada por câmera só funciona através desse QR |
+
+**Regra de ouro:** gerar QR quando o **material chega**; escanear o **mesmo** QR toda vez que retirar unidades. Não gere pacote novo só para “ver” a etiqueta.
+
+### Fluxo ideal no dia a dia
+
+1. Material chega na clínica
+2. Abra o insumo → aba **Entrada** (ou use **Registrar compra**)
+3. Informe a quantidade **desta embalagem** (pode ser o total, se for um único monte na prateleira)
+4. Gere **uma** etiqueta, imprima ou baixe, e cole na prateleira / embalagem
+5. Em cada uso: **Scan QR** dessa etiqueta → informe quanto saiu (ex.: 1)
+6. O restante da etiqueta baixa (10 → 9 → 8…) e o **saldo** do produto baixa junto
+
+**Uma ou várias etiquetas?**
+
+| Situação | Quantas etiquetas |
+| -------- | ----------------- |
+| Chegou um lote e fica junto na prateleira | **1** etiqueta com o total |
+| São caixas / embalagens físicas separadas | **1** etiqueta por embalagem |
+| Nova compra depois | Nova etiqueta (nova entrada) |
 
 ### Lista de insumos
 
@@ -183,25 +211,60 @@ Cada item mostra:
 - Saldo atual
 - Situação: **OK**, **Abaixo do mínimo** ou **Zerado**
 
+### Detalhe do insumo (abas)
+
+Ao abrir um produto:
+
+1. **Pacotes**  
+   Consulta embalagens já etiquetadas. Use **Ver / baixar QR** para ver a etiqueta da prateleira na tela ou baixar o PNG. Use **Imprimir selecionados** para imprimir. Pacotes esgotados ou vencidos ficam no histórico.
+2. **Entrada**  
+   Só quando o material **chegou**. Cria QR novo e **aumenta** o saldo. Não use esta aba só para consultar etiqueta.
+3. **Ajuste** (administrador)  
+   Correção manual do número do saldo (contagem, quebra, diferença). **Não** gera QR e **não** substitui a retirada por scan.
+
 ### Registrar compra (entrada de material)
 
-1. Em Estoque, **Registrar compra**
+1. Em Estoque, **Registrar compra** (ou no detalhe do insumo, aba **Entrada**)
 2. Opcional: foto da planilha do fornecedor (referência visual; o sistema **não lê** a foto automaticamente)
 3. Digite manualmente os itens, quantidades e lotes
-4. Gere **etiquetas com QR** e imprima para colar nos pacotes
+4. Gere **etiquetas com QR** e imprima (ou use **Ver / baixar QR**) para colar nas embalagens
 
 Cada pacote recebe um código único (ex.: `CR-XXXXXXXXXXXX`).
 
 ### Scan QR (retirada)
 
 1. Abra **Scan QR** (ideal no celular da auxiliar)
-2. Aponte a câmera traseira para o QR do pacote
+2. Aponte a câmera traseira para o QR **já colado** na embalagem
 3. Confirme a quantidade retirada
-4. O saldo do insumo é atualizado na hora
+4. O saldo do insumo e o restante daquela etiqueta atualizam na hora
 
 **Modo contínuo:** após uma retirada, a câmera fica pronta para o próximo scan.
 
 **Dica:** instale o ClinRoma na tela inicial do celular para abrir o scan com um toque.
+
+### Saldo maior que a soma das etiquetas ativas
+
+Isso acontece quando o número do saldo foi aumentado (ou ficou “solto”) sem um pacote ativo correspondente. Exemplo: saldo **20**, mas só existe etiqueta ativa de **10**.
+
+Nesse caso:
+
+- Pelo Scan você só consegue retirar o que a etiqueta ativa ainda tem (ex.: até 10)
+- As unidades “sem etiqueta” **não** saem pelo QR
+
+**Como corrigir para voltar a usar tudo pelo Scan:**
+
+1. Aba **Ajuste** → Saída (−) da diferença que está sem etiqueta (com observação, ex.: “corrigir saldo sem QR”)
+2. Aba **Entrada** → gere a etiqueta com a quantidade que falta (ou refaça uma etiqueta única com o total físico)
+
+**Atenção:** não use só **Entrada** de novo se o saldo já inclui essas unidades: o sistema **soma** de novo e o saldo fica maior do que o real.
+
+### Deletar pacote (erro ou limpar histórico)
+
+Na lista de pacotes, **Deletar** pede confirmação.
+
+- Pacote com restante: remove a etiqueta e baixa o restante do saldo
+- Pacote esgotado/vencido: remove do histórico; saldo não muda
+- Quem pode: administrador e auxiliar de sala
 
 ---
 

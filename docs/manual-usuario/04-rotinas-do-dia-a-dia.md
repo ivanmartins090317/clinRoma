@@ -85,14 +85,20 @@ Passo a passo do que cada função costuma fazer no ClinRoma, do início ao fim 
 
 1. Entrar no ClinRoma no **celular**
 2. **Estoque** → conferir saldos
-3. Se recebeu compra nova: **Registrar compra**, gerar etiquetas QR e colar nos pacotes
+3. Se recebeu material novo:
+   - Abra o insumo → aba **Entrada** (ou **Registrar compra**)
+   - Informe a quantidade da embalagem (use o **total** se for um único monte na prateleira)
+   - Gere **uma** etiqueta, use **Ver / baixar QR** ou imprima, e cole na prateleira / embalagem
+4. Confira na aba **Pacotes** se a etiqueta ativa aparece com o restante correto
 
 ### Durante o procedimento
 
 1. Abrir **Scan QR** (ou atalho na tela inicial do celular)
-2. Escanear QR do pacote usado
+2. Escanear o QR **já colado** na embalagem usada (sempre o mesmo, enquanto houver restante)
 3. Confirmar quantidade retirada
 4. Repetir para cada material consumido
+
+**Não** abra a aba **Entrada** / “gerar QR” só para ver a etiqueta. Para ver ou baixar de novo: detalhe do insumo → **Pacotes** → **Ver / baixar QR**.
 
 ### Quando o saldo está baixo
 
@@ -112,7 +118,7 @@ O administrador pode fazer **tudo** que os outros perfis fazem, mais:
 | Tarefa | Onde |
 | ------ | ---- |
 | Cadastrar e editar insumos | Estoque |
-| Corrigir retirada excepcional de estoque | Detalhe do insumo |
+| Corrigir retirada excepcional / ajuste de saldo | Detalhe do insumo (abas) |
 | Reenviar lembretes com falha | Hoje |
 | Gerenciar usuários e perfis | (via suporte técnico / Supabase no piloto) |
 | Consultar auditoria do prontuário | (painel técnico; em evolução) |
@@ -155,9 +161,9 @@ Perfil de **somente leitura** para quem precisa consultar sem alterar:
 
 ### Dia com muitos procedimentos e consumo de material
 
-1. Auxiliar prepara pacotes com QR visíveis
-2. A cada procedimento: **Scan QR** das retiradas
-3. Fim do dia: administrador ou auxiliar confere saldos em **Estoque**
+1. Auxiliar confere se cada material da prateleira tem **uma etiqueta ativa** visível
+2. A cada procedimento: **Scan QR** das retiradas (mesmo QR, quantidades parciais)
+3. Fim do dia: administrador ou auxiliar confere saldos em **Estoque** e se o restante das etiquetas bate com o físico
 
 ---
 

@@ -1,17 +1,17 @@
 "use client";
 
-import { useMemo, useState, useTransition } from "react";
-import QRCode from "qrcode";
+import { useState } from "react";
+import Link from "next/link";
 
-import { adminOverrideWithdrawAction } from "@/features/stock/actions";
-import type { SupplyDetail, SupplyPackageItem } from "@/features/stock/queries";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { StockAdjustmentForm } from "@/features/stock/components/stock-adjustment-form";
 import { StockLabelSheet } from "@/features/stock/components/stock-label-sheet";
 import { StockPackageForm } from "@/features/stock/components/stock-package-form";
 import { StockSupplyNameEditor } from "@/features/stock/components/stock-supply-name-editor";
+import { StockSupplyPackagesPanel } from "@/features/stock/components/stock-supply-packages-panel";
+import type { SupplyDetail, SupplyPackageItem } from "@/features/stock/queries";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 
 interface StockSupplyDetailProps {
@@ -37,28 +37,18 @@ export function StockSupplyDetail({
   onRefresh,
   onClose,
 }: StockSupplyDetailProps) {
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const [showAdjust, setShowAdjust] = useState(false);
+  const [activeTab, setActiveTab] = useState("packages");
   const [labelPackages, setLabelPackages] = useState<
     Array<SupplyPackageItem & { supplyName: string; unitLabel: string }>
   >([]);
-  const [overridePackageId, setOverridePackageId] = useState<string | null>(
-    null,
-  );
-  const [overrideQuantity, setOverrideQuantity] = useState("");
-  const [overrideError, setOverrideError] = useState<string | null>(null);
-  const [isOverridePending, startOverrideTransition] = useTransition();
 
-  const selectedPackages = useMemo(
-    () => supply.packages.filter((pkg) => selectedIds.includes(pkg.id)),
-    [supply.packages, selectedIds],
-  );
-
-  function togglePackage(id: string) {
-    setSelectedIds((current) =>
-      current.includes(id)
-        ? current.filter((item) => item !== id)
-        : [...current, id],
+  function openLabelSheet(packages: SupplyPackageItem[]) {
+    setLabelPackages(
+      packages.map((pkg) => ({
+        ...pkg,
+        supplyName: supply.name,
+        unitLabel: supply.unitLabel,
+      })),
     );
   }
 
@@ -66,69 +56,31 @@ export function StockSupplyDetail({
     packages: Array<{ id: string; qrCode: string; quantity: number }>,
   ) {
     onRefresh();
-    const enriched = packages
-      .map((created) => {
-        const match = supply.packages.find((pkg) => pkg.id === created.id);
-        return match
-          ? { ...match, supplyName: supply.name, unitLabel: supply.unitLabel }
-          : {
-              id: created.id,
-              qrCode: created.qrCode,
-              quantity: created.quantity,
-              remainingQuantity: created.quantity,
-              lotNumber: null,
-              expiresAt: null,
-              status: "active" as const,
-              statusLabel: "Ativo",
-              supplyName: supply.name,
-              unitLabel: supply.unitLabel,
-            };
-      })
-      .filter(Boolean) as Array<
-      SupplyPackageItem & { supplyName: string; unitLabel: string }
-    >;
+    setActiveTab("packages");
+
+    const enriched = packages.map((created) => ({
+      id: created.id,
+      qrCode: created.qrCode,
+      quantity: created.quantity,
+      remainingQuantity: created.quantity,
+      lotNumber: null,
+      expiresAt: null,
+      status: "active" as const,
+      statusLabel: "Ativo",
+      supplyName: supply.name,
+      unitLabel: supply.unitLabel,
+    }));
 
     if (enriched.length > 0) {
       setLabelPackages(enriched);
     }
   }
 
-  async function downloadPackageQr(pkg: SupplyPackageItem) {
-    const dataUrl = await QRCode.toDataURL(pkg.qrCode, {
-      margin: 1,
-      width: 512,
-    });
-    const anchor = document.createElement("a");
-    anchor.href = dataUrl;
-    anchor.download = `${pkg.qrCode}.png`;
-    anchor.click();
-  }
+  const tabCount =
+    1 + (canRegisterPackages ? 1 : 0) + (canManage ? 1 : 0);
 
-  function handleAdminOverride(pkg: SupplyPackageItem) {
-    setOverridePackageId(pkg.id);
-    setOverrideQuantity(String(pkg.remainingQuantity));
-    setOverrideError(null);
-  }
-
-  function confirmAdminOverride(qrCode: string) {
-    setOverrideError(null);
-    startOverrideTransition(async () => {
-      const result = await adminOverrideWithdrawAction({
-        qrCode,
-        quantity: overrideQuantity,
-        notes: "Override admin no detalhe",
-      });
-
-      if (result.error) {
-        setOverrideError(result.error);
-        return;
-      }
-
-      setOverridePackageId(null);
-      setOverrideQuantity("");
-      onRefresh();
-    });
-  }
+  const stockTabTriggerClass =
+    "h-auto min-h-11 w-full flex-col gap-0.5 whitespace-normal px-1.5 py-2 text-center text-xs leading-tight sm:px-3 sm:text-sm";
 
   return (
     <div className="space-y-6">
@@ -159,197 +111,132 @@ export function StockSupplyDetail({
         </div>
       </div>
 
-      {canRegisterPackages ? (
-        <StockPackageForm
-          supplyId={supply.id}
-          onCreated={handlePackageCreated}
-        />
-      ) : null}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="min-w-0">
+        <TabsList
+          className={cn(
+            "grid w-full",
+            tabCount === 1 && "grid-cols-1",
+            tabCount === 2 && "grid-cols-2",
+            tabCount >= 3 && "grid-cols-3",
+          )}
+        >
+          <TabsTrigger value="packages" className={stockTabTriggerClass}>
+            <span className="font-medium">Pacotes</span>
+            <span className="hidden font-normal text-muted-foreground sm:inline">
+              e etiquetas
+            </span>
+          </TabsTrigger>
+          {canRegisterPackages ? (
+            <TabsTrigger value="entry" className={stockTabTriggerClass}>
+              <span className="font-medium">Entrada</span>
+              <span className="hidden font-normal text-muted-foreground sm:inline">
+                de material
+              </span>
+            </TabsTrigger>
+          ) : null}
+          {canManage ? (
+            <TabsTrigger value="adjust" className={stockTabTriggerClass}>
+              <span className="font-medium">Ajuste</span>
+              <span className="hidden font-normal text-muted-foreground sm:inline">
+                de saldo
+              </span>
+            </TabsTrigger>
+          ) : null}
+        </TabsList>
 
-      {canManage ? (
-        <div className="space-y-3">
-          <Button
-            type="button"
-            variant="outline"
-            className="min-h-11"
-            onClick={() => setShowAdjust((value) => !value)}
-          >
-            {showAdjust ? "Ocultar ajuste" : "Ajustar saldo"}
-          </Button>
-          {showAdjust ? (
+        <TabsContent value="packages" className="space-y-6">
+          <StockSupplyPackagesPanel
+            supply={supply}
+            canManage={canManage}
+            canDeletePackages={canRegisterPackages}
+            onPrintLabels={openLabelSheet}
+            onRefresh={onRefresh}
+          />
+
+          <section className="space-y-3">
+            <h4 className="font-medium">Movimentações recentes</h4>
+            {supply.movements.length === 0 ? (
+              <p className="text-sm text-muted-foreground">
+                Sem movimentações.
+              </p>
+            ) : (
+              <ul className="space-y-2 text-sm">
+                {supply.movements.map((movement) => (
+                  <li
+                    key={movement.id}
+                    className="rounded-lg border border-border px-3 py-2"
+                  >
+                    <p className="font-medium">
+                      {movement.movementType === "in"
+                        ? "Entrada"
+                        : movement.movementType === "out"
+                          ? "Saída"
+                          : "Ajuste"}{" "}
+                      · {movement.quantity}
+                    </p>
+                    <p className="text-muted-foreground">
+                      {new Date(movement.createdAt).toLocaleString("pt-BR")}
+                      {movement.performerName
+                        ? ` · ${movement.performerName}`
+                        : ""}
+                      {movement.packageQrCode
+                        ? ` · ${movement.packageQrCode}`
+                        : ""}
+                    </p>
+                    {movement.notes ? (
+                      <p className="text-muted-foreground">{movement.notes}</p>
+                    ) : null}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+        </TabsContent>
+
+        {canRegisterPackages ? (
+          <TabsContent value="entry" className="space-y-4">
+            <div className="rounded-xl border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-sm">
+              <p className="font-medium text-foreground">
+                Use só quando o material chegou na clínica
+              </p>
+              <p className="mt-1 text-muted-foreground">
+                Isso cria um QR novo, aumenta o saldo e representa uma embalagem
+                física. Para ver ou reimprimir uma etiqueta existente, volte à
+                aba Pacotes e etiquetas. Para retirar unidades, use{" "}
+                <Link
+                  href="/estoque/scan"
+                  className="font-medium text-foreground underline"
+                >
+                  Scan QR
+                </Link>
+                .
+              </p>
+            </div>
+            <StockPackageForm
+              supplyId={supply.id}
+              onCreated={handlePackageCreated}
+            />
+          </TabsContent>
+        ) : null}
+
+        {canManage ? (
+          <TabsContent value="adjust" className="space-y-4">
+            <div className="rounded-xl border border-border bg-muted/40 px-4 py-3 text-sm text-muted-foreground">
+              <p>
+                Correção manual do número do saldo (contagem, quebra, diferença).
+                Não gera QR e não substitui a retirada por scan.
+              </p>
+            </div>
             <StockAdjustmentForm
               supply={supply}
               onDone={() => {
-                setShowAdjust(false);
+                setActiveTab("packages");
                 onRefresh();
               }}
             />
-          ) : null}
-        </div>
-      ) : null}
-
-      <section className="space-y-3">
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <h4 className="font-medium">Pacotes</h4>
-          <Button
-            type="button"
-            disabled={selectedPackages.length === 0}
-            onClick={() =>
-              setLabelPackages(
-                selectedPackages.map((pkg) => ({
-                  ...pkg,
-                  supplyName: supply.name,
-                  unitLabel: supply.unitLabel,
-                })),
-              )
-            }
-            className="min-h-11"
-          >
-            Imprimir etiquetas
-          </Button>
-        </div>
-
-        {supply.packages.length === 0 ? (
-          <p className="text-sm text-muted-foreground">
-            Nenhum pacote cadastrado.
-          </p>
-        ) : (
-          <ul className="space-y-2">
-            {supply.packages.map((pkg) => (
-              <li
-                key={pkg.id}
-                className={cn(
-                  "rounded-xl border px-4 py-3",
-                  selectedIds.includes(pkg.id)
-                    ? "border-neo-gold-500 bg-neo-gold-500/5"
-                    : "border-border",
-                )}
-              >
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <label className="flex min-h-11 items-center gap-2.5">
-                    <input
-                      type="checkbox"
-                      checked={selectedIds.includes(pkg.id)}
-                      onChange={() => togglePackage(pkg.id)}
-                    />
-                    <div>
-                      <p className="font-medium">{pkg.qrCode}</p>
-                      <p className="text-sm text-muted-foreground">
-                        Restante {pkg.remainingQuantity} de {pkg.quantity}
-                        {pkg.lotNumber ? ` · Lote ${pkg.lotNumber}` : ""}
-                        {pkg.expiresAt ? ` · Val. ${pkg.expiresAt}` : ""}
-                      </p>
-                    </div>
-                  </label>
-                  <div className="flex flex-wrap items-center gap-2">
-                    <Badge
-                      variant={
-                        pkg.status === "active" ? "success" : "destructive"
-                      }
-                    >
-                      {pkg.statusLabel}
-                    </Badge>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => downloadPackageQr(pkg)}
-                    >
-                      PNG
-                    </Button>
-                    {canManage && pkg.status !== "active" ? (
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        className="border-destructive text-destructive"
-                        onClick={() => handleAdminOverride(pkg)}
-                      >
-                        Override retirada
-                      </Button>
-                    ) : null}
-                  </div>
-                </div>
-
-                {overridePackageId === pkg.id ? (
-                  <div className="mt-3 flex flex-wrap items-end gap-2 border-t border-border pt-3">
-                    <div className="space-y-1">
-                      <label
-                        htmlFor={`override-${pkg.id}`}
-                        className="text-sm font-medium"
-                      >
-                        Quantidade (override admin)
-                      </label>
-                      <Input
-                        id={`override-${pkg.id}`}
-                        type="number"
-                        min={0}
-                        step="any"
-                        value={overrideQuantity}
-                        onChange={(event) =>
-                          setOverrideQuantity(event.target.value)
-                        }
-                        className="text-base"
-                      />
-                    </div>
-                    <Button
-                      type="button"
-                      className="min-h-11"
-                      disabled={isOverridePending}
-                      onClick={() => confirmAdminOverride(pkg.qrCode)}
-                    >
-                      Confirmar
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => setOverridePackageId(null)}
-                    >
-                      Cancelar
-                    </Button>
-                  </div>
-                ) : null}
-              </li>
-            ))}
-          </ul>
-        )}
-        {overrideError ? (
-          <p className="text-sm text-destructive">{overrideError}</p>
+          </TabsContent>
         ) : null}
-      </section>
-
-      <section className="space-y-3">
-        <h4 className="font-medium">Movimentações recentes</h4>
-        {supply.movements.length === 0 ? (
-          <p className="text-sm text-muted-foreground">Sem movimentações.</p>
-        ) : (
-          <ul className="space-y-2 text-sm">
-            {supply.movements.map((movement) => (
-              <li
-                key={movement.id}
-                className="rounded-lg border border-border px-3 py-2"
-              >
-                <p className="font-medium">
-                  {movement.movementType === "in"
-                    ? "Entrada"
-                    : movement.movementType === "out"
-                      ? "Saída"
-                      : "Ajuste"}{" "}
-                  · {movement.quantity}
-                </p>
-                <p className="text-muted-foreground">
-                  {new Date(movement.createdAt).toLocaleString("pt-BR")}
-                  {movement.performerName ? ` · ${movement.performerName}` : ""}
-                  {movement.packageQrCode ? ` · ${movement.packageQrCode}` : ""}
-                </p>
-                {movement.notes ? (
-                  <p className="text-muted-foreground">{movement.notes}</p>
-                ) : null}
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
+      </Tabs>
 
       {labelPackages.length > 0 ? (
         <StockLabelSheet

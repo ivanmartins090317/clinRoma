@@ -51,7 +51,12 @@ export function StockAdjustmentForm({
       onSubmit={handleSubmit}
       className="space-y-3 rounded-xl border border-border p-4"
     >
-      <p className="font-medium">Ajustar saldo</p>
+      <div className="space-y-1">
+        <p className="font-medium">Corrigir saldo do produto</p>
+        <p className="text-sm text-muted-foreground">
+          Altera só o total. Não cria nem esgota pacote com QR.
+        </p>
+      </div>
       <div className="grid gap-3 sm:grid-cols-2">
         <div className="space-y-2">
           <Label htmlFor="adjust-quantity">Quantidade</Label>
