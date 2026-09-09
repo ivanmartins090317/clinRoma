@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 
 import { CollaboratorDialog } from "@/features/team/components/collaborator-dialog";
 import { CollaboratorList } from "@/features/team/components/collaborator-list";
-import { canManageTeam } from "@/features/team/domain/team-guards";
+import { canAccessTeam } from "@/features/team/domain/team-guards";
 import { listCollaborators } from "@/features/team/queries";
 import { requireAuthSession } from "@/lib/auth/session";
 
@@ -11,7 +11,7 @@ export const metadata = { title: "Equipe" };
 export default async function EquipePage() {
   const session = await requireAuthSession("/equipe");
 
-  if (!canManageTeam(session.profile.role)) {
+  if (!canAccessTeam(session.profile.role)) {
     redirect("/acesso-negado");
   }
 
@@ -23,16 +23,17 @@ export default async function EquipePage() {
         <div>
           <h2 className="text-2xl font-semibold tracking-tight">Equipe</h2>
           <p className="mt-2 text-muted-foreground">
-            Colaboradores com acesso ao ClinRoma, papel na clínica e situação do
-            login.
+            Colaboradores com acesso ao ClinRoma, dados de login e, quando
+            houver, ficha de agenda do dentista.
           </p>
         </div>
-        <CollaboratorDialog />
+        <CollaboratorDialog actorRole={session.profile.role} />
       </section>
 
       <CollaboratorList
         collaborators={collaborators}
         currentUserId={session.profile.id}
+        actorRole={session.profile.role}
       />
     </div>
   );

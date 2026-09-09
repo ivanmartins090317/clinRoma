@@ -396,7 +396,7 @@
           </div>
           <div>
             <span>Status do plano</span>
-            Em execução (31/63 aprovados · FL-05 TC-31 recepção Hoje/scan)
+            Em execução (33/63 aprovados · FL-05 completo · TC-33 e-mail financeiro)
           </div>
         </div>
         <div class="scoreboard" id="scoreboard"></div>
@@ -1058,25 +1058,30 @@
                 <td class="hide-sm">Desktop</td>
                 <td><span class="status pass">Aprovado</span></td>
               </tr>
-              <tr data-flow="stock" data-status="pending" data-roles="assistant">
+              <tr data-flow="stock" data-status="pass" data-roles="assistant">
                 <td class="code">TC-32</td>
                 <td><span class="pill assistant">Auxiliar</span></td>
                 <td>
                   Scan e entrada de pacote OK. Cadastro base do insumo recusado.
+                  Aprovado 09/09/2026: auxiliar acessa scan e entrada; cadastro
+                  base de insumo negado.
                 </td>
                 <td class="hide-sm">Desktop</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
-              <tr data-flow="stock" data-status="pending" data-roles="assistant">
+              <tr data-flow="stock" data-status="pass" data-roles="assistant">
                 <td class="code">TC-33</td>
                 <td><span class="pill assistant">Auxiliar</span></td>
                 <td>
                   F7-06: cruzar o mínimo com <code>FINANCE_ALERT_EMAIL</code>
                   preenchido. Um e-mail. Segunda retirada: sem e-mail extra.
-                  Estoque intacto se o destino estiver vazio.
+                  Estoque intacto se o destino estiver vazio. Aprovado
+                  09/09/2026: ao bater no mínimo, e-mail
+                  “ClinRoma · Estoque baixo · Teste de novo insumo” com
+                  “0 de 2 (unitário)” no destino de teste (18:44).
                 </td>
                 <td class="hide-sm">Celular</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
             </tbody>
           </table>
@@ -1647,7 +1652,7 @@
 
       <footer>
         ClinRoma · Clínica Neo Roma · POP-QA adaptado · Marca burgundy/gold ·
-        Evidências em docs/evidencias/ · Atualizado 2026-09-08 (FL-05 TC-31 · 31/63 TCs ok)
+        Evidências em docs/evidencias/ · Atualizado 2026-09-09 (FL-05 completo · TC-33 · 33/63 TCs ok)
       </footer>
     </div>
     <script>
@@ -1705,6 +1710,7 @@
         ["tc30-hoje-anestesico-abaixo-minimo.png", "TC-30: Hoje com Anestésico 2 de 5 (abaixo do mínimo)"],
         ["tc30-hoje-sem-alerta-apos-entrada.png", "TC-30: após entrada, nenhum insumo abaixo do mínimo"],
         ["tc31-recepcao-hoje-estoque.png", "TC-31: Recepção vê estoque crítico / abaixo do mínimo na Hoje"],
+        ["tc33-email-estoque-baixo-financeiro.png", "TC-33: e-mail estoque baixo · Teste de novo insumo 0 de 2"],
         ["tc34", "E-mail ao dentista"],
         ["tc37", "PWA iOS"],
         ["tc49", "QR WhatsApp"],

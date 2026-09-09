@@ -25,31 +25,40 @@ import {
 } from "@/components/ui/select";
 import { inviteCollaboratorAction } from "@/features/team/actions";
 import { TempPasswordPanel } from "@/features/team/components/temp-password-panel";
-import { MANAGEABLE_ROLES } from "@/features/team/domain/team-guards";
+import { invitableRolesFor } from "@/features/team/domain/team-guards";
 import type { ProvisionMode } from "@/features/team/schemas";
 import { getRoleLabel } from "@/lib/auth/role-labels";
 import type { UserRole } from "@/types/clinroma";
 
-const MODE_OPTIONS: Array<{ value: ProvisionMode; label: string; hint: string }> =
-  [
-    {
-      value: "invite_email",
-      label: "Convite por e-mail",
-      hint: "O colaborador recebe um link e define a própria senha.",
-    },
-    {
-      value: "temp_password",
-      label: "Senha temporária",
-      hint: "A senha aparece na tela uma única vez para você entregar.",
-    },
-  ];
+const MODE_OPTIONS: Array<{
+  value: ProvisionMode;
+  label: string;
+  hint: string;
+}> = [
+  {
+    value: "invite_email",
+    label: "Convite por e-mail",
+    hint: "O colaborador recebe um link e define a própria senha.",
+  },
+  {
+    value: "temp_password",
+    label: "Senha temporária",
+    hint: "A senha aparece na tela uma única vez para você entregar.",
+  },
+];
 
-export function CollaboratorDialog() {
+interface CollaboratorDialogProps {
+  actorRole: UserRole;
+}
+
+export function CollaboratorDialog({ actorRole }: CollaboratorDialogProps) {
   const router = useRouter();
+  const roleOptions = invitableRolesFor(actorRole);
+  const defaultRole = (roleOptions[0] ?? "reception") as UserRole;
   const [open, setOpen] = useState(false);
   const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
-  const [role, setRole] = useState<UserRole>("reception");
+  const [role, setRole] = useState<UserRole>(defaultRole);
   const [mode, setMode] = useState<ProvisionMode>("invite_email");
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<{
@@ -61,7 +70,7 @@ export function CollaboratorDialog() {
   function resetForm() {
     setDisplayName("");
     setEmail("");
-    setRole("reception");
+    setRole(defaultRole);
     setMode("invite_email");
     setError(null);
     setResult(null);
@@ -160,7 +169,7 @@ export function CollaboratorDialog() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {MANAGEABLE_ROLES.map((item) => (
+                  {roleOptions.map((item) => (
                     <SelectItem key={item} value={item}>
                       {getRoleLabel(item)}
                     </SelectItem>
@@ -223,7 +232,7 @@ export function CollaboratorDialog() {
                 type="button"
                 className="min-h-11"
                 onClick={handleSubmit}
-                disabled={isPending}
+                disabled={isPending || roleOptions.length === 0}
               >
                 {isPending ? "Criando..." : "Criar acesso"}
               </Button>

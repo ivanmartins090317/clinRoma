@@ -67,6 +67,13 @@
 - Aviso de sessão **não** carrega paciente: sem PHI em log (só sessão e status).
 - Admin e recepção: escrita (iniciar, QR, desconectar). Dentista, auxiliar e visualizador: recusa na interface e no servidor (fail secure).
 
+## Equipe · e-mail e perfil (F7-11b)
+
+- Troca de e-mail de login e nome de exibição só no servidor, via Admin API / `service_role` nas actions de Equipe (nunca no client).
+- Guarda de domínio espelha a matriz B: recepção edita dados de alvos não-admin; só admin altera papel e ativo.
+- Ficha de agenda (`dentists`) grava com a sessão autenticada (RLS já libera admin e recepção).
+- Auditoria operacional sem PHI de paciente (`collaborator_email_updated`, `collaborator_profile_updated`, `dentist_card_updated`).
+
 ## PHI / prontuário
 
 - Buckets Storage **privados** (fotos etiqueta, áudio, planilhas).

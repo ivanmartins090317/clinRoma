@@ -9,6 +9,14 @@ export const MANAGEABLE_ROLES: readonly UserRole[] = [
   "viewer",
 ];
 
+/** Papéis que a recepção pode convidar ou reenviar (modelo B). */
+export const RECEPTION_INVITABLE_ROLES: readonly UserRole[] = [
+  "dentist",
+  "reception",
+  "room_assistant",
+  "viewer",
+];
+
 export interface CollaboratorState {
   id: string;
   role: UserRole;
@@ -24,11 +32,16 @@ export interface RoleChangeIntent {
 
 export const TEAM_COPY = {
   noPermission: "Sem permissão para gerenciar a equipe.",
+  dataEditDenied: "Sem permissão para editar este colaborador.",
   selfMutation: "Você não pode alterar seu próprio papel ou acesso.",
   lastAdmin: "A clínica precisa de pelo menos um administrador ativo.",
   targetNotFound: "Colaborador não encontrado.",
   invalidRole: "Papel inválido.",
   emailInUse: "Este e-mail já tem acesso ao sistema.",
+  emailUpdated: "E-mail atualizado.",
+  profileUpdated: "Dados do colaborador salvos.",
+  dentistCardSaved: "Ficha de agenda salva.",
+  invalidColor: "Informe a cor no formato #RRGGBB.",
   emailServiceOff:
     "Serviço de e-mail não configurado. Gere uma senha temporária.",
   inviteFailed: "Não foi possível criar o acesso. Tente de novo.",
@@ -57,6 +70,10 @@ export function describeWriteFailure(message?: string | null): string {
     return TEAM_COPY.selfMutation;
   }
 
+  if (normalized.includes("sem permissão para alterar papel")) {
+    return TEAM_COPY.noPermission;
+  }
+
   if (
     normalized.includes("permission denied") ||
     normalized.includes("row-level security")
@@ -67,12 +84,84 @@ export function describeWriteFailure(message?: string | null): string {
   return TEAM_COPY.writeFailed;
 }
 
+/** Ver Equipe (admin e recepção no modelo B). */
+export function canAccessTeam(role: UserRole): boolean {
+  return getModuleAccess(role, "team") !== "none";
+}
+
+/**
+ * Controle de acesso: trocar papel e ativar/desativar.
+ * Exclusivo do admin, mesmo com o módulo Equipe liberado à recepção.
+ */
+export function canManageAccess(role: UserRole): boolean {
+  return role === "admin" && getModuleAccess(role, "team") === "write";
+}
+
+/** Alias de canAccessTeam (módulo Equipe liberado). */
 export function canManageTeam(role: UserRole): boolean {
-  return getModuleAccess(role, "team") === "write";
+  return canAccessTeam(role);
 }
 
 export function isManageableRole(value: string): value is UserRole {
   return MANAGEABLE_ROLES.includes(value as UserRole);
+}
+
+export function isReceptionInvitableRole(value: string): value is UserRole {
+  return RECEPTION_INVITABLE_ROLES.includes(value as UserRole);
+}
+
+export function invitableRolesFor(actorRole: UserRole): readonly UserRole[] {
+  if (actorRole === "admin") {
+    return MANAGEABLE_ROLES;
+  }
+
+  if (actorRole === "reception") {
+    return RECEPTION_INVITABLE_ROLES;
+  }
+
+  return [];
+}
+
+export function canInviteRole(
+  actorRole: UserRole,
+  targetRole: UserRole,
+): boolean {
+  if (!canAccessTeam(actorRole)) {
+    return false;
+  }
+
+  if (actorRole === "admin") {
+    return isManageableRole(targetRole);
+  }
+
+  if (actorRole === "reception") {
+    return isReceptionInvitableRole(targetRole);
+  }
+
+  return false;
+}
+
+/**
+ * Editar e-mail, nome de exibição e ficha de agenda.
+ * Admin: qualquer alvo. Recepção: só alvos não-admin (inclui a si).
+ */
+export function canEditCollaboratorData(
+  actorRole: UserRole,
+  target: Pick<CollaboratorState, "role">,
+): boolean {
+  if (!canAccessTeam(actorRole)) {
+    return false;
+  }
+
+  if (actorRole === "admin") {
+    return true;
+  }
+
+  if (actorRole === "reception") {
+    return target.role !== "admin";
+  }
+
+  return false;
 }
 
 export function isSelfMutation(actorId: string, targetId: string): boolean {
@@ -113,7 +202,7 @@ export function refuseTeamMutation(
   collaborators: readonly CollaboratorState[],
   intent: RoleChangeIntent,
 ): string | null {
-  if (!canManageTeam(role)) {
+  if (!canManageAccess(role)) {
     return TEAM_COPY.noPermission;
   }
 
@@ -127,6 +216,21 @@ export function refuseTeamMutation(
 
   if (wouldRemoveLastAdmin(collaborators, intent)) {
     return TEAM_COPY.lastAdmin;
+  }
+
+  return null;
+}
+
+export function refuseCollaboratorDataEdit(
+  actorRole: UserRole,
+  target: CollaboratorState | undefined,
+): string | null {
+  if (!target) {
+    return TEAM_COPY.targetNotFound;
+  }
+
+  if (!canEditCollaboratorData(actorRole, target)) {
+    return TEAM_COPY.dataEditDenied;
   }
 
   return null;

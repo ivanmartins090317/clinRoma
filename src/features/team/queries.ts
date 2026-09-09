@@ -3,11 +3,20 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import type { UserRole } from "@/types/clinroma";
 
+export interface DentistCardSummary {
+  id: string;
+  fullName: string;
+  cro: string | null;
+  calendarColor: string;
+  active: boolean;
+}
+
 export interface CollaboratorListItem extends CollaboratorState {
   displayName: string;
   email: string | null;
   lastSignInAt: string | null;
   createdAt: string;
+  dentistCard: DentistCardSummary | null;
 }
 
 interface AuthUserSummary {
@@ -45,6 +54,37 @@ async function loadAuthUserSummaries(): Promise<Map<string, AuthUserSummary>> {
   return summaries;
 }
 
+async function loadDentistCardsByProfile(): Promise<
+  Map<string, DentistCardSummary>
+> {
+  const cards = new Map<string, DentistCardSummary>();
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("dentists")
+    .select("id, profile_id, full_name, cro, calendar_color, active")
+    .not("profile_id", "is", null);
+
+  if (error || !data) {
+    return cards;
+  }
+
+  for (const row of data) {
+    if (!row.profile_id) {
+      continue;
+    }
+
+    cards.set(row.profile_id, {
+      id: row.id,
+      fullName: row.full_name,
+      cro: row.cro,
+      calendarColor: row.calendar_color,
+      active: row.active,
+    });
+  }
+
+  return cards;
+}
+
 export async function listCollaborators(): Promise<CollaboratorListItem[]> {
   const supabase = await createClient();
   const { data, error } = await supabase
@@ -58,6 +98,7 @@ export async function listCollaborators(): Promise<CollaboratorListItem[]> {
   }
 
   const summaries = await loadAuthUserSummaries();
+  const dentistCards = await loadDentistCardsByProfile();
 
   return data.map((row) => {
     const summary = summaries.get(row.id);
@@ -70,6 +111,7 @@ export async function listCollaborators(): Promise<CollaboratorListItem[]> {
       email: summary?.email ?? null,
       lastSignInAt: summary?.lastSignInAt ?? null,
       createdAt: row.created_at,
+      dentistCard: dentistCards.get(row.id) ?? null,
     };
   });
 }

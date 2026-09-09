@@ -2,7 +2,7 @@
 
 Fonte viva do que **ainda falta implementar ou validar**. Atualizar ao concluir cada fase.
 
-Última revisão: **2026-09-03** (FL-04 completo: TC-25 e TC-26 aprovados; 26/63 aprovados).
+Última revisão: **2026-09-09** (F7-11b edição da equipe em código; FL-05: TC-33 e-mail financeiro; 33/63 aprovados).
 
 ---
 
@@ -157,7 +157,8 @@ Referência: `specs/2026-08-18-fase-5-insumos-estoque.md` · `docs/implementatio
 - [x] Modo contínuo: 3 pacotes distintos sem voltar à lista — TC-29 aprovado 04/09/2026 (`docs/evidencias/tc28-tc29-android-modo-continuo.png`)
 - [x] Desktop admin: entrada de compra + alerta Anestésico na Hoje some após reposição — TC-30 aprovado 08/09/2026 (`docs/evidencias/tc30-hoje-anestesico-abaixo-minimo.png`, `tc30-hoje-sem-alerta-apos-entrada.png`); foto da planilha pulada (BG-06 + plano Vision)
 - [x] Recepção: `/estoque/scan` negado; alertas visíveis na Hoje — TC-31 aprovado 08/09/2026 (`docs/evidencias/tc31-recepcao-hoje-estoque.png`)
-- [ ] Auxiliar: scan OK; cadastro base de insumo negado
+- [x] Auxiliar: scan OK; cadastro base de insumo negado — TC-32 aprovado 09/09/2026
+- [x] F7-06 / TC-33: e-mail ao cruzar o mínimo com `FINANCE_ALERT_EMAIL` — aprovado 09/09/2026 (`docs/evidencias/tc33-email-estoque-baixo-financeiro.png`)
 
 **Pronto quando:** auxiliar retira pacote pelo celular e saldo cai automaticamente; recepção vê alertas na Hoje.
 
@@ -242,7 +243,7 @@ Itens de código prontos, ainda sem validação em dispositivo real (fica no fec
 - [ ] **F7-03 tablet:** convite de consultório; página sem menu; validade só no dia
 - [x] **F7-03 visualizador:** não vê aba Anamnese nem botões de convite (TC-20, 2026-09-02)
 - [x] **F7-03 db:push:** `022_anamnesis_convites_f7.sql` já estava no remoto (conferido no dry-run 2026-09-01)
-- [x] **F7-06:** e-mail de teste (`FINANCE_ALERT_EMAIL`) recebido ao cruzar o mínimo (homologado 2026-09-01)
+- [x] **F7-06:** e-mail de teste (`FINANCE_ALERT_EMAIL`) recebido ao cruzar o mínimo — TC-33 aprovado 09/09/2026 (`docs/evidencias/tc33-email-estoque-baixo-financeiro.png`)
 - [ ] **F7-06:** segunda retirada sem e-mail extra
 - [ ] **F7-06 destino vazio:** sem `FINANCE_ALERT_EMAIL`; cruzar o mínimo; nenhum envio; estoque intacto
 - [ ] **F7-06 varredura:** cron com Anestésico do seed; um e-mail; ciclo seguinte não reenvia
@@ -269,17 +270,22 @@ Código entregue. A fatia **não homologa** sem o aviso do gateway no ar. **Não
 - [ ] Auxiliar e visualizador: sem item, chip, card e tela
 - [ ] Chip e card leem o persistido (sem o menu perguntar ao gateway)
 
-### Gestão de acessos · Equipe (F7-11)
+### Gestão de acessos · Equipe (F7-11 + F7-11b)
 
-Código entregue (ver `docs/implementation/F7-11-gestao-acessos.md`). **Não** fecha a Fase 7.
+Código F7-11 entregue (ver `docs/implementation/F7-11-gestao-acessos.md`).
+Código F7-11b entregue (ver `docs/implementation/F7-11b-edicao-equipe.md` · manual `docs/manual-dev/21-fase-7-11b-edicao-equipe.md`). **Não** fecha a Fase 7.
 
-- [x] Módulo `team` e rota `/equipe` restritos ao admin
+- [x] Módulo `team` e rota `/equipe` (F7-11: admin; F7-11b: admin + recepção com poderes B)
 - [x] Criar colaborador com convite por e-mail ou senha temporária
-- [x] Trocar papel, desativar e reativar acesso; reenviar convite
+- [x] Trocar papel, desativar e reativar acesso; reenviar convite (só admin no controle de acesso)
 - [x] Travas no banco: autorrebaixamento e último admin ativo
 - [x] `handle_new_user` deixa de aceitar papel do metadata do signup
 - [x] Botão de conta no celular com os módulos fora da dock e o Sair que faltava
 - [x] **db:push:** `028_team_access_f7.sql` aplicada no remoto em 2026-09-01 (aviso Docker da CLI ignorado)
+- [x] **F7-11b:** editar e-mail, nome de exibição e ficha de agenda (quando existir)
+- [x] **F7-11b:** recepção vê Equipe com poderes B (dados + convite/reenvio não-admin; sem papel/ativo)
+- [x] **F7-11b:** migration `029_team_edit_f7.sql` (SELECT team + trigger só admin muda role/active)
+- [x] **db:push:** `029_team_edit_f7.sql` aplicada no remoto em 2026-09-09 (aviso Docker da CLI ignorado)
 - [ ] Conferir no painel Supabase se o signup público está desabilitado
 - [ ] Confirmar `RESEND_FROM_EMAIL` antes de usar o modo convite por e-mail
 
@@ -291,9 +297,11 @@ Homologação manual pendente:
 - [ ] Admin desativa colaborador e o login recusa com "Conta desativada"
 - [ ] Admin tenta alterar o próprio papel e recebe recusa
 - [ ] Admin tenta rebaixar o único admin ativo e recebe recusa
-- [ ] Dentista, recepção, auxiliar e visualizador não veem o item Equipe e têm `/equipe` negado
+- [ ] Dentista, auxiliar e visualizador não veem o item Equipe e têm `/equipe` negado
+- [ ] Recepção vê Equipe; edita e-mail/nome/CRO de dentista não-admin; agenda reflete
+- [ ] Recepção não convida admin, não troca papel, não desativa, não edita conta admin
 - [x] Celular: botão de conta abre Equipe, WhatsApp e Scan QR para o admin (conferido em 390x844)
-- [ ] Celular: botão de conta mostra só WhatsApp para a recepção e só Scan QR para a auxiliar
+- [ ] Celular: botão de conta mostra WhatsApp **e Equipe** para a recepção; só Scan QR para a auxiliar
 - [ ] Celular: Sair da conta funciona pelo botão de conta em iPhone e Android real
 
 ### Decisões com o Felipe (fechadas em 2026-09-01)

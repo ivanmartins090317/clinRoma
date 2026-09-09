@@ -4,10 +4,12 @@ import { useState } from "react";
 
 import { CollaboratorRow } from "@/features/team/components/collaborator-row";
 import type { CollaboratorListItem } from "@/features/team/queries";
+import type { UserRole } from "@/types/clinroma";
 
 interface CollaboratorListProps {
   collaborators: CollaboratorListItem[];
   currentUserId: string;
+  actorRole: UserRole;
 }
 
 interface Feedback {
@@ -18,6 +20,7 @@ interface Feedback {
 export function CollaboratorList({
   collaborators,
   currentUserId,
+  actorRole,
 }: CollaboratorListProps) {
   const [feedback, setFeedback] = useState<Feedback | null>(null);
 
@@ -47,6 +50,7 @@ export function CollaboratorList({
           <CollaboratorRow
             key={collaborator.id}
             collaborator={collaborator}
+            actorRole={actorRole}
             isCurrentUser={collaborator.id === currentUserId}
             onFeedback={setFeedback}
           />

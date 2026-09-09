@@ -1,5 +1,8 @@
 import { buildInviteEmailContent } from "@/features/team/domain/invite-email-content";
-import { getReminderFromEmail, getResendClient } from "@/lib/email/resend-client";
+import {
+  getReminderFromEmail,
+  getResendClient,
+} from "@/lib/email/resend-client";
 import type { UserRole } from "@/types/clinroma";
 
 export interface SendCollaboratorInviteInput {
@@ -10,8 +13,7 @@ export interface SendCollaboratorInviteInput {
 }
 
 export type SendInviteResult =
-  | { ok: true }
-  | { ok: false; reason: "not_configured" | "provider_error" };
+  { ok: true } | { ok: false; reason: "not_configured" | "provider_error" };
 
 export async function sendCollaboratorInvite(
   input: SendCollaboratorInviteInput,

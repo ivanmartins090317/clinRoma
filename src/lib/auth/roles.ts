@@ -49,7 +49,7 @@ const ROLE_MODULE_MATRIX: Record<UserRole, Record<ModuleId, ModuleAccess>> = {
     stock: "read",
     "stock-scan": "none",
     whatsapp: "write",
-    team: "none",
+    team: "write",
   },
   room_assistant: {
     today: "none",
@@ -174,9 +174,9 @@ export function sanitizeReturnTo(returnTo: string | null | undefined): string {
 export function getDefaultAppPath(role: UserRole): string {
   const allowed = new Set(getAllowedModuleIds(role));
 
-  for (const module of CLINROMA_MODULES) {
-    if (allowed.has(module.id as ModuleId)) {
-      return module.href;
+  for (const entry of CLINROMA_MODULES) {
+    if (allowed.has(entry.id as ModuleId)) {
+      return entry.href;
     }
   }
 

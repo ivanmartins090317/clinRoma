@@ -1,5 +1,6 @@
 /** Sem 0/O/1/l/I: a senha é lida em voz alta ou copiada da tela pelo admin. */
-const PASSWORD_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789";
+const PASSWORD_ALPHABET =
+  "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789";
 const SYMBOLS = "!@#$%&*";
 const DEFAULT_LENGTH = 14;
 

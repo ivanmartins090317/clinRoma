@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { canManageTeam } from "@/features/team/domain/team-guards";
+import {
+  canAccessTeam,
+  canManageAccess,
+  canManageTeam,
+} from "@/features/team/domain/team-guards";
 import {
   canWriteWhatsAppSession,
   refuseWhatsAppWrite,
@@ -35,13 +39,22 @@ describe("roles matrix", () => {
     expect(getModuleAccess("admin", "team")).toBe("write");
   });
 
-  it("gestão de equipe é exclusiva do admin", () => {
+  it("Equipe: admin e recepção; controle de acesso só admin", () => {
+    expect(canAccessTeam("admin")).toBe(true);
+    expect(canAccessTeam("reception")).toBe(true);
     expect(canManageTeam("admin")).toBe(true);
+    expect(canManageTeam("reception")).toBe(true);
+    expect(canManageAccess("admin")).toBe(true);
+    expect(canManageAccess("reception")).toBe(false);
+    expect(getModuleAccess("reception", "team")).toBe("write");
     expect(canAccessPath("admin", "/equipe")).toBe(true);
+    expect(canAccessPath("reception", "/equipe")).toBe(true);
 
-    for (const role of ROLES.filter((item) => item !== "admin")) {
+    for (const role of ROLES.filter(
+      (item) => item !== "admin" && item !== "reception",
+    )) {
       expect(getModuleAccess(role, "team")).toBe("none");
-      expect(canManageTeam(role)).toBe(false);
+      expect(canAccessTeam(role)).toBe(false);
       expect(canAccessPath(role, "/equipe")).toBe(false);
     }
   });

@@ -18,13 +18,20 @@ import {
   resendInviteAction,
   setActiveAction,
 } from "@/features/team/actions";
-import { MANAGEABLE_ROLES } from "@/features/team/domain/team-guards";
+import { EditCollaboratorDialog } from "@/features/team/components/edit-collaborator-dialog";
+import {
+  canEditCollaboratorData,
+  canInviteRole,
+  canManageAccess,
+  MANAGEABLE_ROLES,
+} from "@/features/team/domain/team-guards";
 import type { CollaboratorListItem } from "@/features/team/queries";
 import { getRoleLabel } from "@/lib/auth/role-labels";
 import type { UserRole } from "@/types/clinroma";
 
 interface CollaboratorRowProps {
   collaborator: CollaboratorListItem;
+  actorRole: UserRole;
   isCurrentUser: boolean;
   onFeedback: (feedback: { message?: string; error?: string }) => void;
 }
@@ -43,12 +50,20 @@ function formatLastAccess(value: string | null): string {
 
 export function CollaboratorRow({
   collaborator,
+  actorRole,
   isCurrentUser,
   onFeedback,
 }: CollaboratorRowProps) {
   const router = useRouter();
   const [role, setRole] = useState<UserRole>(collaborator.role);
   const [isPending, startTransition] = useTransition();
+
+  const showEdit = canEditCollaboratorData(actorRole, collaborator);
+  const showAccessControls = canManageAccess(actorRole) && !isCurrentUser;
+  const showResend =
+    canInviteRole(actorRole, collaborator.role) &&
+    !isCurrentUser &&
+    Boolean(collaborator.email);
 
   function runAction(
     action: () => Promise<{ message?: string; error?: string }>,
@@ -118,63 +133,71 @@ export function CollaboratorRow({
           {collaborator.email ?? "E-mail não encontrado"}
         </p>
         <p className="text-[12.5px] text-muted-foreground">
+          {getRoleLabel(collaborator.role)} ·{" "}
           {formatLastAccess(collaborator.lastSignInAt)}
         </p>
+        {isCurrentUser && canManageAccess(actorRole) ? (
+          <p className="text-[12.5px] text-muted-foreground">
+            Seu próprio papel e acesso não são editáveis aqui.
+          </p>
+        ) : null}
       </div>
 
       <div className="flex flex-wrap items-center gap-2 md:justify-end">
-        {isCurrentUser ? (
-          <p className="text-[13px] text-muted-foreground">
-            {getRoleLabel(collaborator.role)} · seu próprio acesso não é
-            editável
-          </p>
-        ) : (
-          <>
-            <Select
-              value={role}
-              onValueChange={handleRoleChange}
-              disabled={isPending}
-            >
-              <SelectTrigger
-                aria-label={`Papel de ${collaborator.displayName}`}
-                className="w-full md:w-46"
-              >
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {MANAGEABLE_ROLES.map((item) => (
-                  <SelectItem key={item} value={item}>
-                    {getRoleLabel(item)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+        {showEdit ? (
+          <EditCollaboratorDialog
+            collaborator={collaborator}
+            onFeedback={onFeedback}
+          />
+        ) : null}
 
-            {collaborator.email ? (
-              <Button
-                type="button"
-                variant="outline"
-                className="min-h-11"
-                onClick={handleResendInvite}
-                disabled={isPending}
-                title="Reenviar link de definição de senha"
-              >
-                <MailCheck className="size-4" aria-hidden />
-                Reenviar convite
-              </Button>
-            ) : null}
-
-            <Button
-              type="button"
-              variant={collaborator.active ? "dangerGhost" : "outline"}
-              className="min-h-11"
-              onClick={handleToggleActive}
-              disabled={isPending}
+        {showAccessControls ? (
+          <Select
+            value={role}
+            onValueChange={handleRoleChange}
+            disabled={isPending}
+          >
+            <SelectTrigger
+              aria-label={`Papel de ${collaborator.displayName}`}
+              className="w-full md:w-46"
             >
-              {collaborator.active ? "Desativar" : "Reativar"}
-            </Button>
-          </>
-        )}
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {MANAGEABLE_ROLES.map((item) => (
+                <SelectItem key={item} value={item}>
+                  {getRoleLabel(item)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        ) : null}
+
+        {showResend ? (
+          <Button
+            type="button"
+            variant="outline"
+            className="min-h-11"
+            onClick={handleResendInvite}
+            disabled={isPending}
+            title="Reenviar link de definição de senha"
+          >
+            <MailCheck className="size-4" aria-hidden />
+            Reenviar convite
+          </Button>
+        ) : null}
+
+        {showAccessControls ? (
+          <Button
+            type="button"
+            variant={collaborator.active ? "dangerGhost" : "outline"}
+            className="min-h-11"
+            onClick={handleToggleActive}
+            disabled={isPending}
+          >
+            {collaborator.active ? "Desativar" : "Reativar"}
+          </Button>
+        ) : null}
       </div>
     </li>
   );

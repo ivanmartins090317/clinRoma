@@ -4,11 +4,10 @@ import { sendCollaboratorInvite } from "@/features/team/lib/send-collaborator-in
 import type { UserRole } from "@/types/clinroma";
 
 export type DeliveryFailure =
-  | "link_failed"
-  | "not_configured"
-  | "provider_error";
+  "link_failed" | "not_configured" | "provider_error";
 
-export type DeliveryResult = { ok: true } | { ok: false; reason: DeliveryFailure };
+export type DeliveryResult =
+  { ok: true } | { ok: false; reason: DeliveryFailure };
 
 export interface DeliverInviteInput {
   email: string;
