@@ -37,6 +37,7 @@ interface PurchaseLine {
 
 interface StockPurchaseWizardProps {
   existingSupplies: Array<{ id: string; name: string; unit: SupplyType }>;
+  canCreateSupply: boolean;
   onClose: () => void;
 }
 
@@ -58,6 +59,7 @@ function createEmptyLine(): PurchaseLine {
 
 export function StockPurchaseWizard({
   existingSupplies,
+  canCreateSupply,
   onClose,
 }: StockPurchaseWizardProps) {
   const router = useRouter();
@@ -124,22 +126,25 @@ export function StockPurchaseWizard({
         sheetStoragePath: sheetPath,
         sheetMimeType: sheetMeta?.mimeType,
         sheetFileSizeBytes: sheetMeta?.fileSizeBytes,
-        items: lines.map((line) => ({
-          supplyId: line.mode === "existing" ? line.supplyId : undefined,
-          newSupply:
-            line.mode === "new"
-              ? {
-                  name: line.newName,
-                  unit: line.newUnit,
-                  minimumQuantity: line.newMinimum,
-                }
-              : undefined,
-          quantityPerPackage: line.quantityPerPackage,
-          packageCount: line.packageCount,
-          lotNumber: line.lotNumber || undefined,
-          expiresAt: line.expiresAt || undefined,
-          bulkQuantity: line.bulkQuantity ? line.bulkQuantity : undefined,
-        })),
+        items: lines.map((line) => {
+          const mode = canCreateSupply ? line.mode : "existing";
+          return {
+            supplyId: mode === "existing" ? line.supplyId : undefined,
+            newSupply:
+              canCreateSupply && mode === "new"
+                ? {
+                    name: line.newName,
+                    unit: line.newUnit,
+                    minimumQuantity: line.newMinimum,
+                  }
+                : undefined,
+            quantityPerPackage: line.quantityPerPackage,
+            packageCount: line.packageCount,
+            lotNumber: line.lotNumber || undefined,
+            expiresAt: line.expiresAt || undefined,
+            bulkQuantity: line.bulkQuantity ? line.bulkQuantity : undefined,
+          };
+        }),
       });
 
       if (result.error) {
@@ -151,10 +156,9 @@ export function StockPurchaseWizard({
         setLabelPackages(
           result.packages.map((pkg) => {
             const line = lines[0];
-            const supply =
-              line.mode === "existing"
-                ? existingSupplies.find((item) => item.id === line.supplyId)
-                : null;
+            const supply = existingSupplies.find(
+              (item) => item.id === line.supplyId,
+            );
 
             return {
               id: pkg.id,
@@ -179,7 +183,9 @@ export function StockPurchaseWizard({
       <div>
         <h3 className="text-xl font-semibold">Registrar compra / planilha</h3>
         <p className="mt-1 text-sm text-muted-foreground">
-          Digite os itens manualmente a partir da foto. Sem OCR.
+          {canCreateSupply
+            ? "Digite os itens manualmente a partir da foto. Sem OCR."
+            : "Selecione insumos já cadastrados e registre os pacotes."}
         </p>
       </div>
 
@@ -209,32 +215,39 @@ export function StockPurchaseWizard({
               className="space-y-3 rounded-xl border border-border p-4"
             >
               <div className="grid gap-3 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <Label>Tipo</Label>
-                  <Select
-                    value={line.mode}
-                    onValueChange={(value) =>
-                      updateLine(line.key, {
-                        mode: value as "existing" | "new",
-                      })
-                    }
-                  >
-                    <SelectTrigger className="text-base">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="existing">Insumo existente</SelectItem>
-                      <SelectItem value="new">Novo insumo</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                {line.mode === "existing" ? (
+                {canCreateSupply ? (
+                  <div className="space-y-2">
+                    <Label>Tipo</Label>
+                    <Select
+                      value={line.mode}
+                      onValueChange={(value) =>
+                        updateLine(line.key, {
+                          mode: value as "existing" | "new",
+                        })
+                      }
+                    >
+                      <SelectTrigger className="text-base">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="existing">
+                          Insumo existente
+                        </SelectItem>
+                        <SelectItem value="new">Novo insumo</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                ) : null}
+                {!canCreateSupply || line.mode === "existing" ? (
                   <div className="space-y-2">
                     <Label>Insumo</Label>
                     <Select
                       value={line.supplyId}
                       onValueChange={(value) =>
-                        updateLine(line.key, { supplyId: value })
+                        updateLine(line.key, {
+                          mode: "existing",
+                          supplyId: value,
+                        })
                       }
                     >
                       <SelectTrigger className="text-base">

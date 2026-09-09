@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 
 import { LoginForm } from "@/features/auth/components/login-form";
 import { getAuthSession } from "@/lib/auth/session";
-import { sanitizeReturnTo } from "@/lib/auth/roles";
+import { resolvePostLoginPath, sanitizeReturnTo } from "@/lib/auth/roles";
 import { hasSupabaseConfig } from "@/lib/env";
 
 export const metadata = { title: "Entrar" };
@@ -19,7 +19,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
     const session = await getAuthSession();
 
     if (session) {
-      redirect(returnTo);
+      redirect(resolvePostLoginPath(session.profile.role, params.returnTo));
     }
   }
 

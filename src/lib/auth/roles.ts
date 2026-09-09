@@ -1,4 +1,5 @@
 import type { UserRole } from "@/types/clinroma";
+import { CLINROMA_MODULES } from "@/types/clinroma";
 
 export type ModuleAccess = "read" | "write" | "none";
 
@@ -167,4 +168,32 @@ export function sanitizeReturnTo(returnTo: string | null | undefined): string {
   }
 
   return returnTo;
+}
+
+/** Primeira rota autenticada permitida para o papel (ex.: auxiliar → /estoque). */
+export function getDefaultAppPath(role: UserRole): string {
+  const allowed = new Set(getAllowedModuleIds(role));
+
+  for (const module of CLINROMA_MODULES) {
+    if (allowed.has(module.id as ModuleId)) {
+      return module.href;
+    }
+  }
+
+  return "/acesso-negado";
+}
+
+/** Pós-login / home: honra returnTo se o papel puder acessar; senão o home do papel. */
+export function resolvePostLoginPath(
+  role: UserRole,
+  returnTo: string | null | undefined,
+): string {
+  const candidate = sanitizeReturnTo(returnTo);
+  const pathOnly = candidate.split("?")[0] ?? candidate;
+
+  if (canAccessPath(role, pathOnly)) {
+    return candidate;
+  }
+
+  return getDefaultAppPath(role);
 }

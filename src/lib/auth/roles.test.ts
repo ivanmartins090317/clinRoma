@@ -9,10 +9,12 @@ import {
   canAccessModule,
   canAccessPath,
   getAllowedModuleIds,
+  getDefaultAppPath,
   getModuleAccess,
   isAuthenticatedRoute,
   isPublicRoute,
   resolveModuleForPath,
+  resolvePostLoginPath,
   sanitizeReturnTo,
 } from "@/lib/auth/roles";
 import type { UserRole } from "@/types/clinroma";
@@ -76,6 +78,8 @@ describe("roles matrix", () => {
     ]);
     expect(canAccessPath("room_assistant", "/agenda")).toBe(false);
     expect(canAccessPath("room_assistant", "/estoque/scan")).toBe(true);
+    expect(canAccessPath("room_assistant", "/hoje")).toBe(false);
+    expect(getDefaultAppPath("room_assistant")).toBe("/estoque");
   });
 
   it("recepção não acessa scan QR", () => {
@@ -116,5 +120,14 @@ describe("route helpers", () => {
     expect(sanitizeReturnTo("//evil.com")).toBe("/hoje");
     expect(sanitizeReturnTo("/login")).toBe("/hoje");
     expect(sanitizeReturnTo("/agenda?tab=week")).toBe("/agenda?tab=week");
+  });
+
+  it("resolvePostLoginPath manda auxiliar para estoque em vez de Hoje", () => {
+    expect(resolvePostLoginPath("room_assistant", "/hoje")).toBe("/estoque");
+    expect(resolvePostLoginPath("room_assistant", undefined)).toBe("/estoque");
+    expect(resolvePostLoginPath("room_assistant", "/estoque/scan")).toBe(
+      "/estoque/scan",
+    );
+    expect(resolvePostLoginPath("admin", "/hoje")).toBe("/hoje");
   });
 });

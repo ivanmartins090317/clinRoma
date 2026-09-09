@@ -152,11 +152,11 @@ Referência: `specs/2026-08-18-fase-5-insumos-estoque.md` · `docs/implementatio
 
 ### Fechamento operacional (homologação manual)
 
-- [ ] **iPhone real:** scan `CR-DEV001` → retirada → saldo atualizado (§8.3 spec)
-- [ ] **Android real:** mesmo fluxo completo
-- [ ] Modo contínuo: 3 pacotes distintos sem voltar à lista
-- [ ] Desktop admin: cadastro, etiquetas, alerta Anestésico na Hoje
-- [ ] Recepção: `/estoque/scan` negado; alertas visíveis na Hoje
+- [x] **iPhone real:** scan `CR-DEV001` → retirada → saldo atualizado (§8.3 spec) — TC-27 aprovado 04/09/2026 (`docs/evidencias/tc27-scan-iphone-retirada.png`)
+- [x] **Android real:** mesmo fluxo completo — TC-28 aprovado 04/09/2026
+- [x] Modo contínuo: 3 pacotes distintos sem voltar à lista — TC-29 aprovado 04/09/2026 (`docs/evidencias/tc28-tc29-android-modo-continuo.png`)
+- [x] Desktop admin: entrada de compra + alerta Anestésico na Hoje some após reposição — TC-30 aprovado 08/09/2026 (`docs/evidencias/tc30-hoje-anestesico-abaixo-minimo.png`, `tc30-hoje-sem-alerta-apos-entrada.png`); foto da planilha pulada (BG-06 + plano Vision)
+- [x] Recepção: `/estoque/scan` negado; alertas visíveis na Hoje — TC-31 aprovado 08/09/2026 (`docs/evidencias/tc31-recepcao-hoje-estoque.png`)
 - [ ] Auxiliar: scan OK; cadastro base de insumo negado
 
 **Pronto quando:** auxiliar retira pacote pelo celular e saldo cai automaticamente; recepção vê alertas na Hoje.

@@ -3,10 +3,11 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
-import { sanitizeReturnTo } from "@/lib/auth/roles";
+import { resolvePostLoginPath } from "@/lib/auth/roles";
 import { createClient } from "@/lib/supabase/server";
 import { hasSupabaseConfig } from "@/lib/env";
 import { loginSchema } from "@/features/auth/schemas";
+import type { UserRole } from "@/types/clinroma";
 
 const MAX_LOGIN_ATTEMPTS = 5;
 const LOGIN_WINDOW_MS = 15 * 60 * 1000;
@@ -129,7 +130,10 @@ export async function loginAction(
 
   clearAttempts(attemptKey);
 
-  const returnTo = sanitizeReturnTo(formData.get("returnTo")?.toString());
+  const returnTo = resolvePostLoginPath(
+    profile.role as UserRole,
+    formData.get("returnTo")?.toString(),
+  );
   redirect(returnTo);
 }
 

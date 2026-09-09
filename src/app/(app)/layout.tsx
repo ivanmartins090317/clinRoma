@@ -18,9 +18,13 @@ interface AppLayoutProps {
 
 export default async function AppLayout({ children }: AppLayoutProps) {
   const headerStore = await headers();
-  const pathname = headerStore.get("x-pathname") ?? "/hoje";
-  const session = await requireAuthSession(pathname);
-  assertRouteAccess(session, pathname);
+  const pathname = headerStore.get("x-pathname");
+  const session = await requireAuthSession(pathname ?? "/acesso-negado");
+
+  // Sem x-pathname não assume /hoje: auxiliar sem Hoje entrava em loop 307.
+  if (pathname) {
+    assertRouteAccess(session, pathname);
+  }
 
   const canReadWhatsApp = canReadWhatsAppSessionStatus(session.profile.role);
   const [allowedModuleIds, dentists, whatsappSessionStatus] = await Promise.all(

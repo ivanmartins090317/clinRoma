@@ -278,6 +278,10 @@ export async function registerPurchaseAction(
         : NEW_SUPPLY_SNAPSHOT;
 
       if (!supplyId && item.newSupply) {
+        if (!canManageSupplies(session.profile.role)) {
+          return { error: "Sem permissão para cadastrar insumo" };
+        }
+
         const { data: created, error: createError } = await supabase
           .from("supplies")
           .insert({
@@ -297,7 +301,11 @@ export async function registerPurchaseAction(
       }
 
       if (!supplyId) {
-        return { error: "Selecione ou crie um insumo" };
+        return {
+          error: canManageSupplies(session.profile.role)
+            ? "Selecione ou crie um insumo"
+            : "Selecione um insumo existente",
+        };
       }
 
       for (let index = 0; index < item.packageCount; index += 1) {

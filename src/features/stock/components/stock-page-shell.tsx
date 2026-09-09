@@ -79,6 +79,7 @@ export function StockPageShell({
         <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-3xl">
           <StockPurchaseWizard
             existingSupplies={supplyOptions}
+            canCreateSupply={canManage}
             onClose={goToList}
           />
         </DialogContent>
