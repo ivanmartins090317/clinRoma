@@ -2,7 +2,7 @@
 
 Fonte viva do que **ainda falta implementar ou validar**. Atualizar ao concluir cada fase.
 
-Última revisão: **2026-09-09** (F7-11b edição da equipe em código; FL-05: TC-33 e-mail financeiro; 33/63 aprovados).
+Última revisão: **2026-09-09** (FL-06 e FL-08 completos; 40/63 aprovados).
 
 ---
 
@@ -182,11 +182,13 @@ Referência: `specs/2026-08-18-fase-6-lembrete-piloto.md` · `docs/implementatio
 
 ### Fechamento operacional (homologação manual · antes do cliente)
 
-- [ ] Configurar `RESEND_API_KEY` e `RESEND_FROM_EMAIL` no ambiente de teste
-- [ ] **FL-06:** concluir consulta → e-mail em `dentist@clinroma.dev`
-- [ ] Executar FL-01…FL-11 (63 TCs, 5 perfis + visitante) com evidências desktop e mobile · **26/63 aprovados** (FL-01 a FL-04 completo)
+- [x] Configurar `RESEND_API_KEY` e `RESEND_FROM_EMAIL` no ambiente de teste
+- [x] **FL-06 TC-34:** concluir consulta → e-mail em `dentist@clinroma.dev` (aprovado 09/09/2026)
+- [x] **FL-06 TC-35:** painel falhas na Hoje + Reenviar (aprovado 09/09/2026)
+- [x] **FL-06 TC-36:** dentista/recepção veem badge; sem botão de reenvio (aprovado 09/09/2026)
+- [ ] Executar FL-01…FL-11 (63 TCs, 5 perfis + visitante) com evidências desktop e mobile · **40/63 aprovados** (FL-01 a FL-06 e FL-08 completos)
 - [ ] iPhone e Android nos fluxos áudio, scan, PWA e lembrete
-- [ ] Preencher `docs/relatorio-testes-manuais.html` e `docs/evidencias/` (FL-01 a FL-04 aprovados; TC-04 e TC-05 sem screenshot)
+- [ ] Preencher `docs/relatorio-testes-manuais.html` e `docs/evidencias/` (FL-01 a FL-06 + FL-08; TC-04 e TC-05 sem screenshot; TC-40 sem screenshot dedicado)
 - [ ] Nenhum bug crítico/alto aberto nos fluxos P0 (BG-01 baixo; BG-02 médio Android reload; BG-03 médio nome no card público; BG-04 fechado; BG-05 alto horário no passado)
 - [ ] Deploy produção (Supabase prod + Vercel) conforme checklist manual-dev § Deploy
 
@@ -228,9 +230,9 @@ Itens de código prontos, ainda sem validação em dispositivo real (fica no fec
 - [x] **iPhone real:** corrigir transcrição na ficha (F7-01), recarregar e confirmar que o texto permanece (TC-16, 2026-09-02)
 - [ ] **Android real:** mesmo fluxo F7-01
 - [x] **F7-07 desktop/viewport:** cadastrar com segundo telefone + observação; reabrir a ficha; incluir depois; remover o bloco (TC-13, 2026-09-01)
-- [ ] **F7-07 visualizador:** lê o segundo contato no resumo e não edita
-- [ ] **F7-09 desktop/viewport:** abrir Maria e ver anamnese vigente + Restauração sem entrar nas abas; toque abre Anamnese / Evoluções
-- [x] **F7-09 visualizador:** vê o cadastro e **não** vê os dois blocos clínicos (TC-20, 2026-09-02)
+- [x] **F7-07 visualizador:** lê o segundo contato no resumo e não edita (TC-45, 2026-09-10)
+- [x] **F7-09 desktop/viewport:** abrir Maria e ver anamnese vigente + Restauração sem entrar nas abas; toque abre Anamnese / Evoluções (TC-43, 2026-09-10)
+- [x] **F7-09 visualizador:** vê o cadastro e **não** vê os dois blocos clínicos (TC-20, 2026-09-02; revalidado TC-44, 2026-09-10)
 - [x] **F7-02 desktop/viewport:** Maria → Evoluções; `dente 24` mostra só a extração; limpar restaura as duas (TC-17, 2026-09-02)
 - [x] **F7-02 recepção:** filtra o histórico e **não** vê o formulário de nova evolução (TC-18, 2026-09-02)
 - [x] **F7-02 visualizador:** não vê aba Evoluções nem o campo de busca (TC-20, 2026-09-02)
@@ -238,8 +240,8 @@ Itens de código prontos, ainda sem validação em dispositivo real (fica no fec
 - [ ] **F7-08 viewport estreito:** zoom/rolagem; face tocável no zoom de trabalho (≥ 44 px); painel inferior alcançável
 - [x] **F7-08 achado antigo:** Maria, dente 36 oclusal na cor de restauração, sem migration (TC-19, 2026-09-02)
 - [x] **F7-08 visualizador:** não vê a aba Odontograma (TC-20, 2026-09-02)
-- [ ] **F7-03 desktop/viewport:** preencher questionário papel na ficha da Maria; recarregar; v1 do seed continua no histórico
-- [ ] **F7-03 pré-consulta:** gerar link, abrir sem login, enviar, recarregar o mesmo link (mensagem genérica)
+- [x] **F7-03 desktop/viewport:** preencher questionário papel na ficha da Maria; recarregar; v1 do seed continua no histórico (TC-46, 2026-09-10)
+- [ ] **F7-03 pré-consulta:** gerar link, abrir sem login, enviar, recarregar o mesmo link (mensagem genérica) — bloqueado por BG-07 (corrigido em código 2026-09-10; aguarda reteste)
 - [ ] **F7-03 tablet:** convite de consultório; página sem menu; validade só no dia
 - [x] **F7-03 visualizador:** não vê aba Anamnese nem botões de convite (TC-20, 2026-09-02)
 - [x] **F7-03 db:push:** `022_anamnesis_convites_f7.sql` já estava no remoto (conferido no dry-run 2026-09-01)

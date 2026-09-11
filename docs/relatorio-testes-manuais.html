@@ -396,7 +396,7 @@
           </div>
           <div>
             <span>Status do plano</span>
-            Em execução (33/63 aprovados · FL-05 completo · TC-33 e-mail financeiro)
+            Em execução (40/63 aprovados · FL-08 completo · segurança smoke)
           </div>
         </div>
         <div class="scoreboard" id="scoreboard"></div>
@@ -1106,27 +1106,33 @@
               </tr>
             </thead>
             <tbody>
-              <tr data-flow="reminders" data-status="pending" data-roles="reception">
+              <tr data-flow="reminders" data-status="pass" data-roles="reception">
                 <td class="code">TC-34</td>
                 <td><span class="pill reception">Recepção</span></td>
                 <td>
                   Marcar consulta seed como Concluída. Badge de lembrete. E-mail
                   chega em <code>dentist@clinroma.dev</code> (Resend configurado).
+                  <br /><small>Aprovado 09/09/2026 · evidência do e-mail
+                  “ClinRoma · Pós-consulta · IVAN X. · 09/09” para Dr. Felipe Roma
+                  após a recepção marcar a consulta como Concluída.</small>
                 </td>
                 <td class="hide-sm">Desktop</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
-              <tr data-flow="reminders" data-status="pending" data-roles="admin">
+              <tr data-flow="reminders" data-status="pass" data-roles="admin">
                 <td class="code">TC-35</td>
                 <td><span class="pill admin">Admin</span></td>
                 <td>
                   Hoje: painel Lembretes com falha. Reenvio zera tentativas e
                   volta a pendente.
+                  <br /><small>Aprovado 09/09/2026 · evidência do painel
+                  “Lembretes com falha” com Maria Silva / Dr. Bruno Costa,
+                  erro “Dentista sem e-mail cadastrado” e botão Reenviar.</small>
                 </td>
                 <td class="hide-sm">Desktop</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
-              <tr data-flow="reminders" data-status="pending" data-roles="dentist,reception">
+              <tr data-flow="reminders" data-status="pass" data-roles="dentist,reception">
                 <td class="code">TC-36</td>
                 <td>
                   <span class="pill dentist">Dentista</span>
@@ -1134,9 +1140,13 @@
                 </td>
                 <td>
                   Veem o badge no detalhe. Sem botão de reenvio.
+                  <br /><small>Aprovado 09/09/2026 · evidência dentista (Dr. Felipe Roma):
+                  badge “Lembrete falhou” / “Lembrete enviado” na Hoje, só
+                  “Abrir prontuário”, sem Reenviar e sem painel de falhas.
+                  Recepção confirmada pelo executor no mesmo critério.</small>
                 </td>
                 <td class="hide-sm">Desktop</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
             </tbody>
           </table>
@@ -1198,46 +1208,56 @@
               </tr>
             </thead>
             <tbody>
-              <tr data-flow="security" data-status="pending" data-roles="public">
+              <tr data-flow="security" data-status="pass" data-roles="public">
                 <td class="code">TC-39</td>
                 <td><span class="pill public">Visitante</span></td>
                 <td>
                   <code>/fila/resposta/exemplo-token</code> sem login e sem shell
                   interno. Mensagem genérica. Sem redirect para <code>/login</code>.
+                  <br /><small>Aprovado 09/09/2026 · evidência pública
+                  “Link inválido ou expirado” em Horário disponível, sem menu
+                  interno e sem redirect para login.</small>
                 </td>
                 <td class="hide-sm">Público</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
-              <tr data-flow="security" data-status="pending" data-roles="public">
+              <tr data-flow="security" data-status="pass" data-roles="public">
                 <td class="code">TC-40</td>
                 <td><span class="pill public">Visitante</span></td>
                 <td>
                   Link de anamnese inválido, expirado ou já usado: a mesma
                   mensagem genérica. Sem menu da clínica e sem PHI.
+                  <br /><small>Aprovado 09/09/2026 · confirmação do executor:
+                  mensagem genérica sem shell interno e sem PHI.</small>
                 </td>
                 <td class="hide-sm">Público</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
-              <tr data-flow="security" data-status="pending" data-roles="dentist">
+              <tr data-flow="security" data-status="pass" data-roles="dentist">
                 <td class="code">TC-41</td>
                 <td><span class="pill dentist">Dentista</span></td>
                 <td>
                   Colar na barra: <code>/estoque/scan</code>,
                   <code>/whatsapp</code> e <code>/equipe</code>. Os três caem em
                   acesso negado.
+                  <br /><small>Aprovado 09/09/2026 · evidência dentista em
+                  /acesso-negado (Erro 403) ao colar URLs restritas; sem acesso
+                  a scan, WhatsApp e Equipe.</small>
                 </td>
                 <td class="hide-sm">Desktop</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
-              <tr data-flow="security" data-status="pending" data-roles="assistant">
+              <tr data-flow="security" data-status="pass" data-roles="assistant">
                 <td class="code">TC-42</td>
                 <td><span class="pill assistant">Auxiliar</span></td>
                 <td>
                   Colar <code>/agenda</code>, <code>/pacientes</code> e
                   <code>/fila</code>. Os três negados.
+                  <br /><small>Aprovado 09/09/2026 · evidência auxiliar em
+                  /acesso-negado (Erro 403); menu só Estoque e Scan QR.</small>
                 </td>
                 <td class="hide-sm">Celular</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
             </tbody>
           </table>
@@ -1262,45 +1282,55 @@
               </tr>
             </thead>
             <tbody>
-              <tr data-flow="f7-records" data-status="pending" data-roles="dentist">
+              <tr data-flow="f7-records" data-status="pass" data-roles="dentist">
                 <td class="code">TC-43</td>
                 <td><span class="pill dentist">Dentista</span></td>
                 <td>
                   Abrir Maria: card com anamnese vigente e último procedimento
                   (Restauração) sem entrar nas abas. Toque abre Anamnese / Evoluções.
+                  <br /><small>Aprovado 10/09/2026 · cards Anamnese (19/07/2026) e
+                  Último procedimento (09/09/2026) visíveis no topo; botões Abrir
+                  anamnese e Abrir evoluções presentes.</small>
                 </td>
                 <td class="hide-sm">Desktop</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
-              <tr data-flow="f7-records" data-status="pending" data-roles="viewer">
+              <tr data-flow="f7-records" data-status="pass" data-roles="viewer">
                 <td class="code">TC-44</td>
                 <td><span class="pill viewer">Visualizador</span></td>
                 <td>
                   Vê o cadastro. Não vê os dois blocos clínicos do card.
+                  <br /><small>Aprovado 10/09/2026 · ficha Ivan com dados cadastrais e
+                  aviso de somente leitura; sem cards Anamnese nem Último
+                  procedimento.</small>
                 </td>
                 <td class="hide-sm">Desktop</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
-              <tr data-flow="f7-records" data-status="pending" data-roles="viewer">
+              <tr data-flow="f7-records" data-status="pass" data-roles="viewer">
                 <td class="code">TC-45</td>
                 <td><span class="pill viewer">Visualizador</span></td>
                 <td>
                   Lê o segundo contato no resumo. Sem formulário de edição.
+                  <br /><small>Aprovado 10/09/2026 · ficha Ivan exibe Segundo telefone
+                  13981400138 no cadastro; sem campos editáveis.</small>
                 </td>
                 <td class="hide-sm">Desktop</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
-              <tr data-flow="f7-records" data-status="pending" data-roles="dentist">
+              <tr data-flow="f7-records" data-status="pass" data-roles="dentist">
                 <td class="code">TC-46</td>
                 <td><span class="pill dentist">Dentista</span></td>
                 <td>
                   Preencher questionário papel (Sim/Não) na ficha da Maria.
                   Recarregar: v2 vigente. Versão v1 do seed continua no histórico.
+                  <br /><small>Aprovado 10/09/2026 · histórico com v2 questionário papel
+                  (10/09/2026) e v1 texto livre do seed (19/07/2026).</small>
                 </td>
                 <td class="hide-sm">Desktop</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
-              <tr data-flow="f7-records" data-status="pending" data-roles="reception,public">
+              <tr data-flow="f7-records" data-status="block" data-roles="reception,public">
                 <td class="code">TC-47</td>
                 <td>
                   <span class="pill reception">Recepção</span>
@@ -1310,9 +1340,12 @@
                   Gerar link pré-consulta, abrir sem login, enviar com
                   consentimento. Recarregar o mesmo link: mensagem genérica.
                   Tablet não dispara WhatsApp.
+                  <br /><small>Bloqueado por BG-07 (10/09/2026): após enviar,
+                  a UI caía em &quot;Link inválido ou expirado&quot; em vez de
+                  sucesso. Correção em código; retestar.</small>
                 </td>
                 <td class="hide-sm">Público</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status block">Bloqueado</span></td>
               </tr>
               <tr data-flow="f7-records" data-status="pending" data-roles="reception">
                 <td class="code">TC-48</td>
@@ -1644,7 +1677,19 @@
                 upload client→Storage (padrão da foto de evolução) ou
                 junto do plano Vision.
               </td>
-              <td>Aberto</td>
+            <tr>
+              <td class="code">BG-07</td>
+              <td><span class="pill reception">Alto</span></td>
+              <td class="code">TC-47</td>
+              <td>
+                Após enviar o questionário pré-consulta, a página pública
+                atualizava e mostrava &quot;Link inválido ou expirado&quot;
+                em vez de sucesso (token já marcado como usado no refresh do
+                RSC). Correção: redireciona para
+                <code>/anamnese/enviado</code>; falha de gravação devolve o
+                convite a aberto e mensagem de falha. Aguarda reteste.
+              </td>
+              <td>Aguarda reteste</td>
             </tr>
           </tbody>
         </table>
@@ -1652,7 +1697,7 @@
 
       <footer>
         ClinRoma · Clínica Neo Roma · POP-QA adaptado · Marca burgundy/gold ·
-        Evidências em docs/evidencias/ · Atualizado 2026-09-09 (FL-05 completo · TC-33 · 33/63 TCs ok)
+        Evidências em docs/evidencias/ · Atualizado 2026-09-09 (FL-08 completo · 40/63 TCs ok)
       </footer>
     </div>
     <script>
@@ -1711,7 +1756,16 @@
         ["tc30-hoje-sem-alerta-apos-entrada.png", "TC-30: após entrada, nenhum insumo abaixo do mínimo"],
         ["tc31-recepcao-hoje-estoque.png", "TC-31: Recepção vê estoque crítico / abaixo do mínimo na Hoje"],
         ["tc33-email-estoque-baixo-financeiro.png", "TC-33: e-mail estoque baixo · Teste de novo insumo 0 de 2"],
-        ["tc34", "E-mail ao dentista"],
+        ["tc34-email-pos-consulta-dentista.png", "TC-34: e-mail pós-consulta · IVAN X. · Dr. Felipe Roma"],
+        ["tc35-painel-lembretes-falha-reenviar.png", "TC-35: painel falhas · Reenviar · Dentista sem e-mail"],
+        ["tc36-dentista-badge-sem-reenviar.png", "TC-36: dentista vê badge falha/enviado sem Reenviar"],
+        ["tc39-link-fila-invalido.png", "TC-39: link fila inválido · mensagem genérica sem shell"],
+        ["tc41-dentista-acesso-negado.png", "TC-41: dentista · Erro 403 acesso negado em rotas restritas"],
+        ["tc42-auxiliar-acesso-negado.png", "TC-42: auxiliar · Erro 403 ao colar rotas restritas"],
+        ["tc43-card-anamnese-ultimo-procedimento.png", "TC-43: dentista · cards Anamnese e Último procedimento no topo da ficha"],
+        ["tc44-visualizador-sem-blocos-clinicos.png", "TC-44: visualizador · cadastro leitura sem blocos clínicos"],
+        ["tc45-visualizador-segundo-telefone-leitura.png", "TC-45: visualizador · segundo telefone visível sem edição"],
+        ["tc46-anamnese-papel-v2-historico-v1.png", "TC-46: dentista · v2 papel vigente e v1 seed no histórico"],
         ["tc37", "PWA iOS"],
         ["tc49", "QR WhatsApp"],
         ["tc57", "Convite Equipe"],

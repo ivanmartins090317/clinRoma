@@ -448,6 +448,11 @@ export async function submitAnamnesisInviteAction(
     });
 
     if (!content) {
+      await supabase
+        .from("anamnesis_invites")
+        .update({ status: "open", used_at: null, updated_at: now })
+        .eq("id", invite.id)
+        .eq("status", "used");
       return { error: ANAMNESIS_COPY.missingYesNo };
     }
 
@@ -463,7 +468,12 @@ export async function submitAnamnesisInviteAction(
       .single();
 
     if (error || !data) {
-      return { error: "Não foi possível enviar o questionário." };
+      await supabase
+        .from("anamnesis_invites")
+        .update({ status: "open", used_at: null, updated_at: now })
+        .eq("id", invite.id)
+        .eq("status", "used");
+      return { error: ANAMNESIS_COPY.failInvite };
     }
 
     await logPublicInviteAudit("create", "medical_records", data.id, {
@@ -478,7 +488,7 @@ export async function submitAnamnesisInviteAction(
 
     return { success: true, recordId: data.id };
   } catch {
-    return { error: ANAMNESIS_COPY.genericInvite };
+    return { error: ANAMNESIS_COPY.failInvite };
   }
 }
 

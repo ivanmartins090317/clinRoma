@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useMemo, useState, useTransition } from "react";
 
 import {
@@ -50,8 +51,8 @@ export function AnamnesisForm({
   const [signatureName, setSignatureName] = useState("");
   const [consentConfirmed, setConsentConfirmed] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [submitted, setSubmitted] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
   const isInvite = surface === "invite";
 
   const payload = useMemo(
@@ -87,7 +88,7 @@ export function AnamnesisForm({
       }
 
       if (isInvite) {
-        setSubmitted(true);
+        router.replace("/anamnese/enviado");
         return;
       }
 
@@ -98,14 +99,6 @@ export function AnamnesisForm({
       setSignatureConfirmed(false);
       setSignatureName("");
     });
-  }
-
-  if (isInvite && submitted) {
-    return (
-      <p className="text-center text-base font-medium">
-        {ANAMNESIS_COPY.successInvite}
-      </p>
-    );
   }
 
   return (

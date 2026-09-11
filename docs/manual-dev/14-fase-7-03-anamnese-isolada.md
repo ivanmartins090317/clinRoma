@@ -61,8 +61,8 @@ supabase/migrations/022_anamnesis_convites_f7.sql
 1. Recepção (`reception@clinroma.dev`) aciona **Gerar link pré-consulta** e copia o link
 2. Paciente abre o link **sem login**
 3. Vê o cabeçalho, o próprio nome, marca consentimento, preenche e envia
-4. Tela `Questionário enviado. Obrigado.`
-5. Recarregar o mesmo link: `Link inválido ou expirado.`
+4. Tela `/anamnese/enviado` com `Questionário enviado. Obrigado.`
+5. Recarregar o link original do convite: `Link inválido ou expirado.`
 
 ### Tablet do consultório
 

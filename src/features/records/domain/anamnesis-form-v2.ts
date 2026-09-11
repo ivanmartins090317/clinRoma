@@ -63,7 +63,9 @@ export const ANAMNESIS_COPY = {
   submit: "Enviar questionário",
   successChart: "Nova versão de anamnese salva.",
   successInvite: "Questionário enviado. Obrigado.",
+  failInvite: "Não foi possível enviar o questionário. Tente de novo.",
   genericInvite: "Link inválido ou expirado.",
+
   missingYesNo: "Responda Sim ou Não em todas as perguntas.",
   missingComplement: "Informe o complemento desta resposta.",
   missingDeclaration: "Confirme a declaração e informe o nome.",
