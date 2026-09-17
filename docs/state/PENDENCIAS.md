@@ -104,7 +104,7 @@ Referência: `specs/2026-08-18-fase-3-pacientes-prontuario.md` · `docs/implemen
 ### Fechamento operacional (homologação manual)
 
 - [x] **iPhone real:** fluxo evolução + foto + áudio + transcrição sem reload (§8.5 spec) (TC-14, 2026-09-01)
-- [x] **Android real:** mesmo fluxo com WebM/Opus (TC-15, 2026-09-01; BG-02: card só após reload)
+- [x] **Android real:** mesmo fluxo com WebM/Opus (TC-15, 2026-09-01; BG-02 fechado 17/09/2026: card no histórico)
 - [x] Desktop: recepção cadastra paciente (TC-13, 2026-09-01); dentista anamnese + odontograma ainda pendente
 - [ ] Configurar `OPENAI_API_KEY` no ambiente de dev para transcrição real
 - [x] Visualizador: só cadastro, sem abas clínicas (TC-05, 2026-09-01)
@@ -171,7 +171,8 @@ Referência: `specs/2026-08-18-fase-5-insumos-estoque.md` · `docs/implementatio
 - [x] **iPhone real:** scan `CR-DEV001` → retirada → saldo atualizado (§8.3 spec) — TC-27 aprovado 04/09/2026 (`docs/evidencias/tc27-scan-iphone-retirada.png`)
 - [x] **Android real:** mesmo fluxo completo — TC-28 aprovado 04/09/2026
 - [x] Modo contínuo: 3 pacotes distintos sem voltar à lista — TC-29 aprovado 04/09/2026 (`docs/evidencias/tc28-tc29-android-modo-continuo.png`)
-- [x] Desktop admin: entrada de compra + alerta Anestésico na Hoje some após reposição — TC-30 aprovado 08/09/2026 (`docs/evidencias/tc30-hoje-anestesico-abaixo-minimo.png`, `tc30-hoje-sem-alerta-apos-entrada.png`); foto da planilha pulada (BG-06 + plano Vision)
+- [x] Desktop admin: entrada de compra + alerta Anestésico na Hoje some após reposição — TC-30 aprovado 08/09/2026 (`docs/evidencias/tc30-hoje-anestesico-abaixo-minimo.png`, `tc30-hoje-sem-alerta-apos-entrada.png`); BG-06 fechado 17/09/2026 (upload resolvido; OCR/Vision em plano a aprovar)
+- [ ] Aprovar plano Vision/OCR da foto da planilha (`docs/plans/plano-sugestao-itens-planilha-vision.md`); OCR só com revisão humana
 - [x] Recepção: `/estoque/scan` negado; alertas visíveis na Hoje — TC-31 aprovado 08/09/2026 (`docs/evidencias/tc31-recepcao-hoje-estoque.png`)
 - [x] Auxiliar: scan OK; cadastro base de insumo negado — TC-32 aprovado 09/09/2026
 - [x] F7-06 / TC-33: e-mail ao cruzar o mínimo com `FINANCE_ALERT_EMAIL` — aprovado 09/09/2026 (`docs/evidencias/tc33-email-estoque-baixo-financeiro.png`)
@@ -205,7 +206,7 @@ Referência: `specs/2026-08-18-fase-6-lembrete-piloto.md` · `docs/implementatio
 - [ ] Executar FL-01…FL-11 (63 TCs, 5 perfis + visitante) com evidências desktop e mobile · **40/63 aprovados** (FL-01 a FL-06 e FL-08 completos)
 - [ ] iPhone e Android nos fluxos áudio, scan, PWA e lembrete
 - [ ] Preencher `docs/relatorio-testes-manuais.html` e `docs/evidencias/` (FL-01 a FL-06 + FL-08; TC-04 e TC-05 sem screenshot; TC-40 sem screenshot dedicado)
-- [ ] Nenhum bug crítico/alto aberto nos fluxos P0 (BG-01 fechado; BG-02 médio Android reload; BG-03 médio nome no card público; BG-04 fechado; BG-05 alto horário no passado)
+- [x] Nenhum bug crítico/alto aberto nos fluxos P0 (BG-01 a BG-07 fechados; OCR da planilha é plano futuro, não bug)
 - [ ] Deploy produção (Supabase prod + Vercel) conforme checklist manual-dev § Deploy
 
 ### Pós-piloto
@@ -257,7 +258,7 @@ Itens de código prontos, ainda sem validação em dispositivo real (fica no fec
 - [x] **F7-08 achado antigo:** Maria, dente 36 oclusal na cor de restauração, sem migration (TC-19, 2026-09-02)
 - [x] **F7-08 visualizador:** não vê a aba Odontograma (TC-20, 2026-09-02)
 - [x] **F7-03 desktop/viewport:** preencher questionário papel na ficha da Maria; recarregar; v1 do seed continua no histórico (TC-46, 2026-09-10)
-- [x] **F7-03 pré-consulta:** gerar link, abrir sem login, enviar, recarregar o mesmo link (mensagem genérica) (TC-47, 2026-09-16 · BG-07 fechado)
+- [x] **F7-03 pré-consulta:** gerar link, abrir sem login, enviar, recarregar o mesmo link (mensagem genérica) (TC-47, 2026-09-16 · BG-07 fechado; confirmado 17/09/2026)
 - [x] **F7-03 tablet:** convite de consultório; página sem menu; validade só no dia (TC-48, 2026-09-16)
 - [x] **F7-03 visualizador:** não vê aba Anamnese nem botões de convite (TC-20, 2026-09-02)
 - [x] **F7-03 db:push:** `022_anamnesis_convites_f7.sql` já estava no remoto (conferido no dry-run 2026-09-01)
