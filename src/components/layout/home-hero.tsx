@@ -7,12 +7,18 @@ import { formatHeroDate, getTimeGreeting } from "@/lib/format/greeting";
 
 interface HomeHeroProps {
   displayName: string;
+  showCreateAppointment?: boolean;
   showScanShortcut?: boolean;
 }
 
-export function HomeHero({ displayName, showScanShortcut }: HomeHeroProps) {
+export function HomeHero({
+  displayName,
+  showCreateAppointment,
+  showScanShortcut,
+}: HomeHeroProps) {
   const greeting = getTimeGreeting();
   const heroDate = formatHeroDate();
+  const showActions = Boolean(showCreateAppointment || showScanShortcut);
 
   return (
     <section className="relative mb-4.5 overflow-hidden rounded-[18px] bg-linear-to-br from-neo-burgundy-950 via-neo-burgundy-700 to-neo-burgundy-600 p-5 text-neo-white shadow-neo sm:p-7">
@@ -39,24 +45,33 @@ export function HomeHero({ displayName, showScanShortcut }: HomeHeroProps) {
           priority
         />
       </div>
-      <div className="relative z-1 mt-4 flex flex-wrap gap-2.5 sm:mt-4.5">
-        <Button asChild variant="gold" size="sm" className="min-h-11 flex-1 sm:flex-none">
-          <Link href="/agenda">Nova consulta</Link>
-        </Button>
-        {showScanShortcut ? (
-          <Button
-            asChild
-            variant="hero"
-            size="sm"
-            className="min-h-11 flex-1 sm:flex-none"
-          >
-            <Link href="/estoque/scan">
-              <QrCode aria-hidden />
-              Scan QR
-            </Link>
-          </Button>
-        ) : null}
-      </div>
+      {showActions ? (
+        <div className="relative z-1 mt-4 flex flex-wrap gap-2.5 sm:mt-4.5">
+          {showCreateAppointment ? (
+            <Button
+              asChild
+              variant="gold"
+              size="sm"
+              className="min-h-11 flex-1 sm:flex-none"
+            >
+              <Link href="/agenda">Nova consulta</Link>
+            </Button>
+          ) : null}
+          {showScanShortcut ? (
+            <Button
+              asChild
+              variant="hero"
+              size="sm"
+              className="min-h-11 flex-1 sm:flex-none"
+            >
+              <Link href="/estoque/scan">
+                <QrCode aria-hidden />
+                Scan QR
+              </Link>
+            </Button>
+          ) : null}
+        </div>
+      ) : null}
     </section>
   );
 }

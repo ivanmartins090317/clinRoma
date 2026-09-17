@@ -31,7 +31,7 @@ import { getWaitlistSummary } from "@/features/waitlist/queries";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { WAITLIST_COLORS } from "@/types/clinroma";
-import { canAccessModule } from "@/lib/auth/roles";
+import { canAccessModule, getModuleAccess } from "@/lib/auth/roles";
 import { requireAuthSession } from "@/lib/auth/session";
 
 export const metadata = {
@@ -41,6 +41,8 @@ export const metadata = {
 export default async function HojePage() {
   const session = await requireAuthSession("/hoje");
   const isAdmin = session.profile.role === "admin";
+  const showCreateAppointment =
+    getModuleAccess(session.profile.role, "agenda") === "write";
   const showScanShortcut = canAccessModule(session.profile.role, "stock-scan");
   const showWhatsAppCard = canSeeWhatsAppStatusCard(session.profile.role);
 
@@ -74,6 +76,7 @@ export default async function HojePage() {
     <div className="space-y-5 md:space-y-6">
       <HomeHero
         displayName={session.profile.displayName}
+        showCreateAppointment={showCreateAppointment}
         showScanShortcut={showScanShortcut}
       />
 

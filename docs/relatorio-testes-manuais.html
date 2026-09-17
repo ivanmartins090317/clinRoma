@@ -591,8 +591,8 @@
                   <br /><small>Aprovado 01/09/2026 · evidência
                   <code>tc03-login-dentista.png</code> (Dr. Felipe Roma; menu
                   Hoje, Agenda, Pacientes, Fila, Estoque; sem Scan, WhatsApp e
-                  Equipe). Observação: o hero ainda mostra "Nova consulta"
-                  (BG-01, baixo); a agenda e a action bloqueiam a escrita.</small>
+                  Equipe). Hero sem "Nova consulta" (BG-01 fechado 17/09/2026);
+                  atalho de leitura no card Consultas de hoje.</small>
                 </td>
                 <td class="hide-sm">Desktop</td>
                 <td><span class="status pass">Aprovado</span></td>
@@ -1658,13 +1658,13 @@
               <td><span class="pill viewer">Baixo</span></td>
               <td class="code">TC-03</td>
               <td>
-                Na tela Hoje o dentista vê o botão dourado "Nova consulta". O
-                atalho do hero não consulta o papel: dentista (e visualizador)
-                não podem marcar consulta. Na agenda o botão some
-                (<code>canWrite</code>) e a server action recusa.                 Cosmético /
-                ruído de UX, sem furo de autorização.
+                Na tela Hoje o hero mostrava "Nova consulta" para quem não
+                agenda (dentista e visualizador). Correção 17/09/2026: o CTA
+                só aparece com escrita na agenda (admin/recepção). Dentista
+                usa o card Consultas de hoje / Abrir agenda completa. Sem
+                furo de autorização.
               </td>
-              <td>Aberto</td>
+              <td>Fechado</td>
             </tr>
             <tr>
               <td class="code">BG-02</td>
@@ -1751,7 +1751,7 @@
 
       <footer>
         ClinRoma · Clínica Neo Roma · POP-QA adaptado · Marca burgundy/gold ·
-        Evidências em docs/evidencias/ · Atualizado 2026-09-16 (TC-37/38 PWA · FL-07 · 49/63 TCs ok)
+        Evidências em docs/evidencias/ · Atualizado 2026-09-17 (BG-01 fechado · hero sem Nova consulta para dentista)
       </footer>
     </div>
     <script>

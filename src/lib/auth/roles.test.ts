@@ -84,6 +84,14 @@ describe("roles matrix", () => {
     expect(refuseWhatsAppWrite("reception")).toBeNull();
   });
 
+  it("só admin e recepção escrevem na agenda (atalho Nova consulta da Hoje)", () => {
+    expect(getModuleAccess("admin", "agenda")).toBe("write");
+    expect(getModuleAccess("reception", "agenda")).toBe("write");
+    expect(getModuleAccess("dentist", "agenda")).toBe("read");
+    expect(getModuleAccess("viewer", "agenda")).toBe("read");
+    expect(getModuleAccess("room_assistant", "agenda")).toBe("none");
+  });
+
   it("auxiliar de sala só acessa estoque e scan", () => {
     expect(getAllowedModuleIds("room_assistant")).toEqual([
       "stock",
