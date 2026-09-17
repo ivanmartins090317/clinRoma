@@ -1330,7 +1330,7 @@
                 <td class="hide-sm">Desktop</td>
                 <td><span class="status pass">Aprovado</span></td>
               </tr>
-              <tr data-flow="f7-records" data-status="block" data-roles="reception,public">
+              <tr data-flow="f7-records" data-status="pass" data-roles="reception,public">
                 <td class="code">TC-47</td>
                 <td>
                   <span class="pill reception">Recepção</span>
@@ -1340,22 +1340,24 @@
                   Gerar link pré-consulta, abrir sem login, enviar com
                   consentimento. Recarregar o mesmo link: mensagem genérica.
                   Tablet não dispara WhatsApp.
-                  <br /><small>Bloqueado por BG-07 (10/09/2026): após enviar,
-                  a UI caía em &quot;Link inválido ou expirado&quot; em vez de
-                  sucesso. Correção em código; retestar.</small>
+                  <br /><small>Aprovado 16/09/2026 · após envio: /anamnese/enviado
+                  com &quot;Questionário enviado. Obrigado.&quot; BG-07 fechado.</small>
                 </td>
                 <td class="hide-sm">Público</td>
-                <td><span class="status block">Bloqueado</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
-              <tr data-flow="f7-records" data-status="pending" data-roles="reception">
+              <tr data-flow="f7-records" data-status="pass" data-roles="reception">
                 <td class="code">TC-48</td>
                 <td><span class="pill reception">Recepção</span></td>
                 <td>
                   Convite de consultório no tablet: página sem menu da clínica.
                   Validade só no dia (fuso SP).
+                  <br /><small>Aprovado 16/09/2026 · confirmação do executor:
+                  Abrir no tablet; página pública sem menu; validade só no dia
+                  (fuso SP).</small>
                 </td>
                 <td class="hide-sm">Tablet</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
             </tbody>
           </table>
@@ -1381,37 +1383,46 @@
               </tr>
             </thead>
             <tbody>
-              <tr data-flow="whatsapp" data-status="pending" data-roles="reception">
+              <tr data-flow="whatsapp" data-status="pass" data-roles="reception">
                 <td class="code">TC-49</td>
                 <td><span class="pill reception">Recepção</span></td>
                 <td>
                   Tela <code>/whatsapp</code>: iniciar sessão, QR em SCAN_QR,
                   chip verde quando WORKING. Disparo de teste ok.
+                  <br /><small>Aprovado 16/09/2026 · recepção em /whatsapp com
+                  &quot;WhatsApp da clínica conectado&quot;; chip WhatsApp ligado
+                  no topo.</small>
                 </td>
                 <td class="hide-sm">Desktop</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
-              <tr data-flow="whatsapp" data-status="pending" data-roles="admin">
+              <tr data-flow="whatsapp" data-status="pass" data-roles="admin">
                 <td class="code">TC-50</td>
                 <td><span class="pill admin">Admin</span></td>
                 <td>
                   Desconectar com confirmação. Chip/card refletem sessão caída.
                   Disparos param até novo pareamento.
+                  <br /><small>Aprovado 16/09/2026 · diálogo Desconectar com aviso
+                  de parada dos disparos; confirmação Desconectar agora; sessão
+                  desconectada pelo executor.</small>
                 </td>
                 <td class="hide-sm">Desktop</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
-              <tr data-flow="whatsapp" data-status="pending" data-roles="dentist">
+              <tr data-flow="whatsapp" data-status="pass" data-roles="dentist">
                 <td class="code">TC-51</td>
                 <td><span class="pill dentist">Dentista</span></td>
                 <td>
                   Card na Hoje sem link Abrir pareamento.
                   <code>/whatsapp</code> negado. Texto pede recepção ou admin.
+                  <br /><small>Aprovado 16/09/2026 · card na Hoje: desconectado +
+                  &quot;Peça à recepção ou ao admin para reconectar&quot;; sem
+                  Abrir pareamento; menu sem WhatsApp.</small>
                 </td>
                 <td class="hide-sm">Desktop</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
-              <tr data-flow="whatsapp" data-status="pending" data-roles="assistant,viewer">
+              <tr data-flow="whatsapp" data-status="pass" data-roles="assistant,viewer">
                 <td class="code">TC-52</td>
                 <td>
                   <span class="pill assistant">Auxiliar</span>
@@ -1419,49 +1430,62 @@
                 </td>
                 <td>
                   Sem item de menu, sem chip, sem card e sem tela. Rota negada.
+                  <br /><small>Aprovado 16/09/2026 · auxiliar: menu só Estoque e
+                  Scan QR; sem WhatsApp no menu nem chip no topo.</small>
                 </td>
                 <td class="hide-sm">Desktop</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
-              <tr data-flow="whatsapp" data-status="pending" data-roles="dentist">
+              <tr data-flow="whatsapp" data-status="pass" data-roles="dentist">
                 <td class="code">TC-53</td>
                 <td><span class="pill dentist">Dentista</span></td>
                 <td>
                   Aba Pós-cirurgia: Enviar agora com número de teste. Mensagem
                   chega. Destino mascarado em qualquer log visível.
+                  <br /><small>Aprovado 16/09/2026 · Enviar agora; UI &quot;Mensagem
+                  enviada&quot;; WhatsApp recebido 20:08 com texto de teste TC53;
+                  destino +55 13 98140-0137.</small>
                 </td>
                 <td class="hide-sm">Desktop</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
-              <tr data-flow="whatsapp" data-status="pending" data-roles="dentist">
+              <tr data-flow="whatsapp" data-status="pass" data-roles="dentist">
                 <td class="code">TC-54</td>
                 <td><span class="pill dentist">Dentista</span></td>
                 <td>
                   Paciente sem telefone aproveitável: destino mostra o segundo
                   telefone e a observação.
+                  <br /><small>Aprovado 16/09/2026 · Pós-cirurgia: &quot;Será
+                  enviado para +55 13 98140-0137 (filho)&quot;.</small>
                 </td>
                 <td class="hide-sm">Desktop</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
-              <tr data-flow="whatsapp" data-status="pending" data-roles="dentist">
+              <tr data-flow="whatsapp" data-status="pass" data-roles="dentist">
                 <td class="code">TC-55</td>
                 <td><span class="pill dentist">Dentista</span></td>
                 <td>
                   Agendar envio. Cron (VPS, 5 min) dispara e vira Enviado.
                   Horário passado recusa na tela.
+                  <br /><small>Aprovado 16/09/2026 · agendado para 20:26, WhatsApp
+                  às 20:30 (janela de 5 min); horário passado: &quot;Escolha uma
+                  data e hora futuras.&quot;</small>
                 </td>
                 <td class="hide-sm">Desktop</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
-              <tr data-flow="whatsapp" data-status="pending" data-roles="dentist">
+              <tr data-flow="whatsapp" data-status="pass" data-roles="dentist">
                 <td class="code">TC-56</td>
                 <td><span class="pill dentist">Dentista</span></td>
                 <td>
                   Agendado: Cancelar. O cron não dispara. Sem canal: Agendar
                   grava e Enviar agora fica desabilitado.
+                  <br /><small>Aprovado 16/09/2026 · cancelamento: status Cancelado
+                  e &quot;Envio cancelado.&quot; (parte Sem canal ainda em
+                  pendência F7-05b).</small>
                 </td>
                 <td class="hide-sm">Desktop</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
             </tbody>
           </table>
@@ -1492,6 +1516,8 @@
                 <td>
                   Criar colaborador por convite. O e-mail chega. O link define
                   senha e o login entra no papel escolhido.
+                  <br /><small>Fluxo atual: /definir-senha (não o login). Depois
+                  entrar com o e-mail cadastrado. Aguarda reteste.</small>
                 </td>
                 <td class="hide-sm">Desktop</td>
                 <td><span class="status pending">Pendente</span></td>
@@ -1677,6 +1703,8 @@
                 upload client→Storage (padrão da foto de evolução) ou
                 junto do plano Vision.
               </td>
+              <td>Aberto</td>
+            </tr>
             <tr>
               <td class="code">BG-07</td>
               <td><span class="pill reception">Alto</span></td>
@@ -1687,9 +1715,10 @@
                 em vez de sucesso (token já marcado como usado no refresh do
                 RSC). Correção: redireciona para
                 <code>/anamnese/enviado</code>; falha de gravação devolve o
-                convite a aberto e mensagem de falha. Aguarda reteste.
+                convite a aberto e mensagem de falha. Reteste 16/09/2026:
+                sucesso em /anamnese/enviado.
               </td>
-              <td>Aguarda reteste</td>
+              <td>Fechado</td>
             </tr>
           </tbody>
         </table>
@@ -1766,8 +1795,18 @@
         ["tc44-visualizador-sem-blocos-clinicos.png", "TC-44: visualizador · cadastro leitura sem blocos clínicos"],
         ["tc45-visualizador-segundo-telefone-leitura.png", "TC-45: visualizador · segundo telefone visível sem edição"],
         ["tc46-anamnese-papel-v2-historico-v1.png", "TC-46: dentista · v2 papel vigente e v1 seed no histórico"],
+        ["tc47-anamnese-preconsulta-enviado.png", "TC-47: pré-consulta · Questionário enviado. Obrigado."],
+        ["tc49-whatsapp-clinica-conectado.png", "TC-49: recepção · WhatsApp da clínica conectado · chip ligado"],
+        ["tc50-admin-desconectar-confirmacao.png", "TC-50: admin · diálogo Desconectar agora com aviso de disparos"],
+        ["tc51-dentista-whatsapp-somente-leitura.png", "TC-51: dentista · card Hoje sem Abrir pareamento"],
+        ["tc52-auxiliar-sem-whatsapp.png", "TC-52: auxiliar · sem menu/chip WhatsApp (só Estoque e Scan)"],
+        ["tc53-pos-cirurgia-enviar-agora-whatsapp.png", "TC-53: pós-cirurgia · Enviar agora · mensagem no WhatsApp"],
+        ["tc54-destino-segundo-telefone-observacao.png", "TC-54: destino segundo telefone + observação (filho)"],
+        ["tc55-pos-cirurgia-agendado.png", "TC-55: pós-cirurgia · mensagem Agendado para 20:26"],
+        ["tc55-whatsapp-recebido-20h30.png", "TC-55: WhatsApp recebido 20:30 (janela 5 min)"],
+        ["tc55-horario-passado-recusado.png", "TC-55: horário passado · Escolha data e hora futuras"],
+        ["tc56-pos-cirurgia-cancelado.png", "TC-56: pós-cirurgia · Agendado cancelado"],
         ["tc37", "PWA iOS"],
-        ["tc49", "QR WhatsApp"],
         ["tc57", "Convite Equipe"],
       ];
 
