@@ -149,6 +149,7 @@ const PUBLIC_AUTH_PATHS = [
   "/definir-senha",
   "/redefinir-senha",
   "/esqueci-senha",
+  "/auth/confirm",
 ] as const;
 
 export function isPublicRoute(pathname: string): boolean {
@@ -175,6 +176,7 @@ export function sanitizeReturnTo(returnTo: string | null | undefined): string {
     path === "/definir-senha" ||
     path === "/redefinir-senha" ||
     path === "/esqueci-senha" ||
+    path === "/auth/confirm" ||
     path.startsWith("/fila/resposta")
   ) {
     return "/hoje";

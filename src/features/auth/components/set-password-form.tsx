@@ -18,6 +18,38 @@ interface SetPasswordFormProps {
 
 type RecoveryState = "loading" | "ready" | "invalid";
 
+async function establishRecoverySession(
+  supabase: ReturnType<typeof createClient>,
+): Promise<"ready" | "invalid" | "missing"> {
+  const search = new URLSearchParams(window.location.search);
+  const hash = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+
+  if (search.get("erro") || search.get("error") || hash.get("error")) {
+    return "invalid";
+  }
+
+  const code = search.get("code");
+  if (code) {
+    const { error } = await supabase.auth.exchangeCodeForSession(code);
+    if (!error) return "ready";
+  }
+
+  const accessToken = hash.get("access_token");
+  const refreshToken = hash.get("refresh_token");
+  if (accessToken && refreshToken) {
+    const { error } = await supabase.auth.setSession({
+      access_token: accessToken,
+      refresh_token: refreshToken,
+    });
+    if (!error) return "ready";
+  }
+
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+  return session ? "ready" : "missing";
+}
+
 export function SetPasswordForm({ variant }: SetPasswordFormProps) {
   const router = useRouter();
   const [recoveryState, setRecoveryState] = useState<RecoveryState>("loading");
@@ -29,13 +61,8 @@ export function SetPasswordForm({ variant }: SetPasswordFormProps) {
   useEffect(() => {
     const supabase = createClient();
     let settled = false;
-
-    async function consumeCode() {
-      const code = new URLSearchParams(window.location.search).get("code");
-      if (!code) return;
-
-      await supabase.auth.exchangeCodeForSession(code);
-    }
+    let cancelled = false;
+    let timeout: number | undefined;
 
     function markReady() {
       if (settled) return;
@@ -57,24 +84,33 @@ export function SetPasswordForm({ variant }: SetPasswordFormProps) {
       }
     });
 
-    void consumeCode().then(async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      if (session) markReady();
+    void establishRecoverySession(supabase).then((status) => {
+      if (cancelled) return;
+
+      if (status === "ready") {
+        markReady();
+        return;
+      }
+
+      if (status === "invalid") {
+        markInvalid();
+        return;
+      }
+
+      timeout = window.setTimeout(async () => {
+        if (cancelled) return;
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+        if (session) markReady();
+        else markInvalid();
+      }, 800);
     });
 
-    const timeout = window.setTimeout(async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      if (session) markReady();
-      else markInvalid();
-    }, 2500);
-
     return () => {
+      cancelled = true;
       subscription.unsubscribe();
-      window.clearTimeout(timeout);
+      if (timeout !== undefined) window.clearTimeout(timeout);
     };
   }, []);
 

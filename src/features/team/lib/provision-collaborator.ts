@@ -1,7 +1,13 @@
+import {
+  buildRecoveryConfirmUrl,
+  type SetPasswordRedirectPath,
+} from "@/features/auth/domain/recovery-link";
 import { generateTempPassword } from "@/features/team/domain/temp-password";
 import { getAppBaseUrl } from "@/lib/email/resend-client";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { UserRole } from "@/types/clinroma";
+
+export type { SetPasswordRedirectPath };
 
 export interface ProvisionCollaboratorInput {
   email: string;
@@ -56,8 +62,6 @@ export async function provisionCollaborator(
   return { ok: true, value: { userId: data.user.id, tempPassword } };
 }
 
-export type SetPasswordRedirectPath = "/definir-senha" | "/redefinir-senha";
-
 export interface RecoveryLink {
   actionLink: string;
   displayName: string;
@@ -68,14 +72,16 @@ export async function createRecoveryLink(
   redirectPath: SetPasswordRedirectPath,
 ): Promise<RecoveryLink | null> {
   const admin = createAdminClient();
+  const appBaseUrl = getAppBaseUrl();
 
   const { data, error } = await admin.auth.admin.generateLink({
     type: "recovery",
     email,
-    options: { redirectTo: `${getAppBaseUrl()}${redirectPath}` },
+    options: { redirectTo: `${appBaseUrl}${redirectPath}` },
   });
 
-  if (error || !data.properties?.action_link) {
+  const hashedToken = data?.properties?.hashed_token;
+  if (error || !hashedToken) {
     return null;
   }
 
@@ -86,7 +92,11 @@ export async function createRecoveryLink(
       : "colaborador";
 
   return {
-    actionLink: data.properties.action_link,
+    actionLink: buildRecoveryConfirmUrl({
+      baseUrl: appBaseUrl,
+      hashedToken,
+      nextPath: redirectPath,
+    }),
     displayName,
   };
 }

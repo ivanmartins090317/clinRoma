@@ -97,8 +97,8 @@ Os links usam `onNavigate` (não `onClick`) para fechar o menu. Fechar no `onCli
 2. Preencher nome, e-mail e papel; deixar a entrega em **Convite por e-mail**
 3. A action cria o usuário no Auth com `service_role`. O trigger insere o perfil como `viewer`
 4. Ainda com `service_role`, a action aplica o papel escolhido
-5. A action gera um link de recovery e envia pelo Resend (`redirectTo` = `/definir-senha`)
-6. O colaborador abre **Definir minha senha**, cai em `/definir-senha`, informa a senha duas vezes e salva
+5. A action gera um `token_hash` de recovery e envia pelo Resend o link `/auth/confirm?token_hash=...&type=recovery&next=/definir-senha`
+6. O colaborador abre **Definir minha senha**, o confirm troca o hash por sessão e cai em `/definir-senha`, informa a senha duas vezes e salva
 7. A sessão de recovery é encerrada. Em `/login` aparece *Senha definida. Entre com o e-mail e a senha nova.*
 8. Login com o e-mail cadastrado e a senha escolhida, no papel definido na Equipe
 
@@ -158,10 +158,10 @@ npm test           # domínio de guardas, senha temporária e convite
 
 Variáveis usadas: `SUPABASE_SERVICE_ROLE_KEY` (criação do usuário e leitura de e-mails), `RESEND_API_KEY` e `RESEND_FROM_EMAIL` (modo convite), `NEXT_PUBLIC_APP_URL` (destino do link de senha).
 
-No painel do Supabase, **Authentication → URL Configuration → Redirect URLs**, incluir:
+No painel do Supabase, **Authentication → URL Configuration**:
 
-- `https://neo-roma.vercel.app/definir-senha`
-- `https://neo-roma.vercel.app/redefinir-senha`
-- equivalentes de localhost, se o teste for local
+- **Site URL** de produção: `https://neo-roma.vercel.app`
+- Redirect URLs: `/definir-senha` e `/redefinir-senha` (o `generateLink` ainda manda `redirectTo` para elas)
+- O e-mail aponta para `/auth/confirm` no próprio app; essa rota não precisa da allowlist
 
 Recomendação de ops: manter o signup público desabilitado no projeto Supabase. A migration já impede autopromoção a admin, mas cadastro aberto continua indesejado num sistema clínico de um único inquilino.

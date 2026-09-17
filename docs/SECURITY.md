@@ -17,6 +17,7 @@
 | ------------------------ | ------------------- | --------------------------------------------------------------------- |
 | `/`, marketing           | Público             | Sem PHI                                                               |
 | `/login`                 | Auth Supabase       | Rate limit login                                                      |
+| `/auth/confirm`          | Token de recovery   | Só `type=recovery`; `next` limitado a `/definir-senha` e `/redefinir-senha` |
 | `/(app)/*`               | Sessão + role       | RLS por sessão e papel                                                |
 | `/fila/resposta/[token]` | Token opaco         | Expira 40 min; mínimo de dados; consentimento LGPD                    |
 | `/anamnese/[token]`      | Token opaco         | Pré-consulta 7 dias ou fim do dia (SP); nome + questionário em branco |

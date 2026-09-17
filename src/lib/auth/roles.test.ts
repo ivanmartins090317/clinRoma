@@ -125,6 +125,7 @@ describe("route helpers", () => {
     expect(isPublicRoute("/definir-senha")).toBe(true);
     expect(isPublicRoute("/redefinir-senha")).toBe(true);
     expect(isPublicRoute("/esqueci-senha")).toBe(true);
+    expect(isPublicRoute("/auth/confirm")).toBe(true);
     expect(isPublicRoute("/fila/resposta/abc")).toBe(true);
     expect(isAuthenticatedRoute("/fila/resposta/abc")).toBe(false);
     expect(isAuthenticatedRoute("/agenda")).toBe(true);

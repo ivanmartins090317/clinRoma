@@ -41,6 +41,7 @@ O papel real do colaborador é aplicado depois da criação, com `service_role`,
 | `src/features/team/domain/team-guards.ts`            | `canManageTeam`, `isSelfMutation`, `wouldRemoveLastAdmin`, `refuseTeamMutation`, `TEAM_COPY` |
 | `src/features/team/domain/temp-password.ts`          | Senha temporária sem caracteres ambíguos (`0`, `O`, `1`, `l`, `I`)        |
 | `src/features/team/domain/invite-email-content.ts`   | `subject`, `html`, `text` do convite, com escape de HTML                   |
+| `src/features/auth/domain/recovery-link.ts`          | URL de `/auth/confirm` com `token_hash` (sem `action_link` do GoTrue) |
 
 ### Borda
 
@@ -48,7 +49,7 @@ O papel real do colaborador é aplicado depois da criação, com `service_role`,
 | ---------------------------------------------------- | --------------------------------------------------------------------- |
 | `src/features/team/schemas.ts`                       | Zod de convite, troca de papel, ativação e reenvio                    |
 | `src/features/team/queries.ts`                       | `listCollaborators` (profiles via RLS + e-mails via `listUsers`), `getCollaboratorStates`, `getCollaboratorEmail` |
-| `src/features/team/lib/provision-collaborator.ts`    | `createUser` com `service_role`, aplica papel, `generateLink` de recovery para `/definir-senha` |
+| `src/features/team/lib/provision-collaborator.ts`    | `createUser` com `service_role`, aplica papel, `generateLink` + `token_hash` em `/auth/confirm` |
 | `src/features/team/lib/deliver-invite.ts`            | Link de senha + envio, com falhas nomeadas                            |
 | `src/features/team/lib/send-collaborator-invite.ts`  | Envio via Resend já integrado no repo                                 |
 | `src/features/team/lib/team-action-context.ts`       | `requireTeamManager`, `logTeamAudit`, `toActionError`                  |
@@ -70,6 +71,7 @@ Os dois updates terminam em `.select("id").maybeSingle()`: um update barrado por
 | `src/app/(auth)/definir-senha/page.tsx`                     | Convite: grava a senha a partir do recovery                    |
 | `src/app/(auth)/redefinir-senha/page.tsx`                   | Esqueci: mesma tela, copy de redefinição                       |
 | `src/app/(auth)/esqueci-senha/page.tsx`                     | Pedido de e-mail; resposta genérica                            |
+| `src/app/auth/confirm/route.ts`                             | Troca `token_hash` de recovery por sessão e redireciona        |
 
 ### Papéis e superfícies
 
