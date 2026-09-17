@@ -48,7 +48,7 @@ O papel real do colaborador é aplicado depois da criação, com `service_role`,
 | ---------------------------------------------------- | --------------------------------------------------------------------- |
 | `src/features/team/schemas.ts`                       | Zod de convite, troca de papel, ativação e reenvio                    |
 | `src/features/team/queries.ts`                       | `listCollaborators` (profiles via RLS + e-mails via `listUsers`), `getCollaboratorStates`, `getCollaboratorEmail` |
-| `src/features/team/lib/provision-collaborator.ts`    | `createUser` com `service_role`, aplica papel, `generateLink` de recovery |
+| `src/features/team/lib/provision-collaborator.ts`    | `createUser` com `service_role`, aplica papel, `generateLink` de recovery para `/definir-senha` |
 | `src/features/team/lib/deliver-invite.ts`            | Link de senha + envio, com falhas nomeadas                            |
 | `src/features/team/lib/send-collaborator-invite.ts`  | Envio via Resend já integrado no repo                                 |
 | `src/features/team/lib/team-action-context.ts`       | `requireTeamManager`, `logTeamAudit`, `toActionError`                  |
@@ -67,6 +67,9 @@ Os dois updates terminam em `.select("id").maybeSingle()`: um update barrado por
 | `src/features/team/components/collaborator-row.tsx`         | Papel, reenvio de convite, desativar/reativar; linha do próprio usuário sem controles |
 | `src/features/team/components/collaborator-dialog.tsx`      | Convite nos dois modos de entrega                             |
 | `src/features/team/components/temp-password-panel.tsx`      | Senha exibida uma única vez, com botão copiar                  |
+| `src/app/(auth)/definir-senha/page.tsx`                     | Convite: grava a senha a partir do recovery                    |
+| `src/app/(auth)/redefinir-senha/page.tsx`                   | Esqueci: mesma tela, copy de redefinição                       |
+| `src/app/(auth)/esqueci-senha/page.tsx`                     | Pedido de e-mail; resposta genérica                            |
 
 ### Papéis e superfícies
 

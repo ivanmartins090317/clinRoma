@@ -144,8 +144,19 @@ export function isAuthenticatedRoute(pathname: string): boolean {
   );
 }
 
+const PUBLIC_AUTH_PATHS = [
+  "/login",
+  "/definir-senha",
+  "/redefinir-senha",
+  "/esqueci-senha",
+] as const;
+
 export function isPublicRoute(pathname: string): boolean {
-  if (pathname === "/login") {
+  if (
+    PUBLIC_AUTH_PATHS.some(
+      (path) => pathname === path || pathname.startsWith(`${path}/`),
+    )
+  ) {
     return true;
   }
 
@@ -159,7 +170,13 @@ export function sanitizeReturnTo(returnTo: string | null | undefined): string {
 
   const path = returnTo.split("?")[0] ?? "/hoje";
 
-  if (path === "/login" || path.startsWith("/fila/resposta")) {
+  if (
+    path === "/login" ||
+    path === "/definir-senha" ||
+    path === "/redefinir-senha" ||
+    path === "/esqueci-senha" ||
+    path.startsWith("/fila/resposta")
+  ) {
     return "/hoje";
   }
 

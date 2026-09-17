@@ -8,7 +8,7 @@ import { hasSupabaseConfig } from "@/lib/env";
 export const metadata = { title: "Entrar" };
 
 interface LoginPageProps {
-  searchParams: Promise<{ returnTo?: string }>;
+  searchParams: Promise<{ returnTo?: string; senha?: string }>;
 }
 
 export default async function LoginPage({ searchParams }: LoginPageProps) {
@@ -23,5 +23,10 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
     }
   }
 
-  return <LoginForm returnTo={returnTo} />;
+  return (
+    <LoginForm
+      returnTo={returnTo}
+      passwordJustSet={params.senha === "definida"}
+    />
+  );
 }

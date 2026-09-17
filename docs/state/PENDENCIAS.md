@@ -2,7 +2,23 @@
 
 Fonte viva do que **ainda falta implementar ou validar**. Atualizar ao concluir cada fase.
 
-Última revisão: **2026-09-09** (FL-06 e FL-08 completos; 40/63 aprovados).
+Última revisão: **2026-09-11** (nota de backup 3-2-1; FL-06 e FL-08 já estavam completos).
+
+---
+
+## Backup próprio (operacional — obrigatório)
+
+Dados de saúde no Supabase. Backup do vendor **não basta**. E-mail **não** é destino.
+
+Nota (segundo-cérebro): `10 Dev/Clientes/clinica-neo-roma-dev/Projetos/operacional/2026-09-11-backup-supabase-321.md`  
+Plano no repo: `docs/plans/plano-backup-supabase.md`
+
+- [ ] Dump diário criptografado do Postgres → object storage fora do Supabase (R2)
+- [ ] Sync incremental do Storage (fotos/áudios de prontuário)
+- [ ] Retenção (7 diários + 4 semanais + 3 mensais) + alerta só de falha
+- [ ] Restore testado 1× (paciente + evolução + 1 arquivo)
+
+Relógio do job: **VPS Campinas** (mesmo contrato do cron atual). Autonomia **tight**.
 
 ---
 
@@ -241,24 +257,24 @@ Itens de código prontos, ainda sem validação em dispositivo real (fica no fec
 - [x] **F7-08 achado antigo:** Maria, dente 36 oclusal na cor de restauração, sem migration (TC-19, 2026-09-02)
 - [x] **F7-08 visualizador:** não vê a aba Odontograma (TC-20, 2026-09-02)
 - [x] **F7-03 desktop/viewport:** preencher questionário papel na ficha da Maria; recarregar; v1 do seed continua no histórico (TC-46, 2026-09-10)
-- [ ] **F7-03 pré-consulta:** gerar link, abrir sem login, enviar, recarregar o mesmo link (mensagem genérica) — bloqueado por BG-07 (corrigido em código 2026-09-10; aguarda reteste)
-- [ ] **F7-03 tablet:** convite de consultório; página sem menu; validade só no dia
+- [x] **F7-03 pré-consulta:** gerar link, abrir sem login, enviar, recarregar o mesmo link (mensagem genérica) (TC-47, 2026-09-16 · BG-07 fechado)
+- [x] **F7-03 tablet:** convite de consultório; página sem menu; validade só no dia (TC-48, 2026-09-16)
 - [x] **F7-03 visualizador:** não vê aba Anamnese nem botões de convite (TC-20, 2026-09-02)
 - [x] **F7-03 db:push:** `022_anamnesis_convites_f7.sql` já estava no remoto (conferido no dry-run 2026-09-01)
 - [x] **F7-06:** e-mail de teste (`FINANCE_ALERT_EMAIL`) recebido ao cruzar o mínimo — TC-33 aprovado 09/09/2026 (`docs/evidencias/tc33-email-estoque-baixo-financeiro.png`)
 - [ ] **F7-06:** segunda retirada sem e-mail extra
 - [ ] **F7-06 destino vazio:** sem `FINANCE_ALERT_EMAIL`; cruzar o mínimo; nenhum envio; estoque intacto
 - [ ] **F7-06 varredura:** cron com Anestésico do seed; um e-mail; ciclo seguinte não reenvia
-- [x] **F7-04/F7-05 desktop/viewport:** pós-cirurgia envio imediato com número de teste (homologado 2026-09-01)
-- [ ] **F7-04/F7-05 segundo telefone:** paciente sem telefone aproveitável; destino mostra o segundo e a observação
+- [x] **F7-04/F7-05 desktop/viewport:** pós-cirurgia envio imediato com número de teste (homologado 2026-09-01; revalidado TC-53, 2026-09-16)
+- [x] **F7-04/F7-05 segundo telefone:** paciente sem telefone aproveitável; destino mostra o segundo e a observação (TC-54, 2026-09-16)
 - [ ] **F7-04/F7-05 anamnese:** enviar questionário pré-consulta; tablet **não** dispara; copiar link permanece
 - [ ] **F7-04/F7-05 canal ausente:** Enviar agora desabilitado; copiar link na anamnese ok; nenhum disparo imediato
 - [x] **F7-04/F7-05 visualizador:** não vê aba Pós-cirurgia nem botão de enviar WhatsApp (TC-20, 2026-09-02)
-- [x] **F7-05b desktop/viewport:** agendar envio pós-cirurgia (homologado 2026-09-01)
-- [x] **F7-05b cron:** job dispara no horário e vira Enviado (homologado 2026-09-01)
-- [ ] **F7-05b cancelar:** Agendado → Cancelar; o cron não dispara
+- [x] **F7-05b desktop/viewport:** agendar envio pós-cirurgia (homologado 2026-09-01; revalidado TC-55, 2026-09-16)
+- [x] **F7-05b cron:** job dispara no horário e vira Enviado (homologado 2026-09-01; revalidado TC-55, 2026-09-16 · 20:26→20:30)
+- [x] **F7-05b cancelar:** Agendado → Cancelar; o cron não dispara (TC-56, 2026-09-16)
 - [ ] **F7-05b canal ausente:** Agendar grava; Enviar agora desabilitado
-- [ ] **F7-05b horário passado:** recusa na tela
+- [x] **F7-05b horário passado:** recusa na tela (TC-55, 2026-09-16)
 
 ### Homologação operacional · Tela QR WhatsApp (F7-10)
 
@@ -266,10 +282,10 @@ Código entregue. A fatia **não homologa** sem o aviso do gateway no ar. **Não
 
 - [ ] Configurar no gateway o aviso `session.status` da sessão `default` apontando para o app publicado, HMAC = `WHATSAPP_WEBHOOK_SECRET` (diferente do `CRON_SECRET`)
 - [x] Homologar o QR com **número de teste** (pareamento e disparo ok, 2026-09-01). Número pessoal do Felipe continua fora
-- [x] Recepção: parear pela tela `/whatsapp` e disparar com o canal no ar (homologado 2026-09-01)
-- [ ] Admin: desconectar com confirmação; conferir que os disparos param até novo pareamento
-- [ ] Dentista: card na Hoje sem link; `/whatsapp` negado
-- [ ] Auxiliar e visualizador: sem item, chip, card e tela
+- [x] Recepção: parear pela tela `/whatsapp` e disparar com o canal no ar (homologado 2026-09-01; revalidado TC-49, 2026-09-16)
+- [x] Admin: desconectar com confirmação; conferir que os disparos param até novo pareamento (TC-50, 2026-09-16)
+- [x] Dentista: card na Hoje sem link; `/whatsapp` negado (TC-51, 2026-09-16)
+- [x] Auxiliar e visualizador: sem item, chip, card e tela (TC-52, 2026-09-16 · evidência auxiliar)
 - [ ] Chip e card leem o persistido (sem o menu perguntar ao gateway)
 
 ### Gestão de acessos · Equipe (F7-11 + F7-11b)
@@ -290,10 +306,11 @@ Código F7-11b entregue (ver `docs/implementation/F7-11b-edicao-equipe.md` · ma
 - [x] **db:push:** `029_team_edit_f7.sql` aplicada no remoto em 2026-09-09 (aviso Docker da CLI ignorado)
 - [ ] Conferir no painel Supabase se o signup público está desabilitado
 - [ ] Confirmar `RESEND_FROM_EMAIL` antes de usar o modo convite por e-mail
+- [x] Redirect URLs no Supabase: `/definir-senha` e `/redefinir-senha` (prod, 2026-09-16 · ver `docs/fixtures/ROTEIRO-definir-senha.md`)
 
 Homologação manual pendente:
 
-- [ ] Admin cria colaborador por convite; o link define senha e o login entra
+- [ ] Admin cria colaborador por convite; o link abre `/definir-senha`; login com e-mail cadastrado (TC-57)
 - [ ] Admin cria colaborador com senha temporária; a senha aparece uma vez e o login entra
 - [ ] Admin troca papel de um colaborador e o menu dele muda na sessão seguinte
 - [ ] Admin desativa colaborador e o login recusa com "Conta desativada"

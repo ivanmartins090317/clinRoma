@@ -56,20 +56,45 @@ export async function provisionCollaborator(
   return { ok: true, value: { userId: data.user.id, tempPassword } };
 }
 
-export async function createSetPasswordLink(
+export type SetPasswordRedirectPath = "/definir-senha" | "/redefinir-senha";
+
+export interface RecoveryLink {
+  actionLink: string;
+  displayName: string;
+}
+
+export async function createRecoveryLink(
   email: string,
-): Promise<string | null> {
+  redirectPath: SetPasswordRedirectPath,
+): Promise<RecoveryLink | null> {
   const admin = createAdminClient();
 
   const { data, error } = await admin.auth.admin.generateLink({
     type: "recovery",
     email,
-    options: { redirectTo: `${getAppBaseUrl()}/login` },
+    options: { redirectTo: `${getAppBaseUrl()}${redirectPath}` },
   });
 
   if (error || !data.properties?.action_link) {
     return null;
   }
 
-  return data.properties.action_link;
+  const metadataName = data.user?.user_metadata?.display_name;
+  const displayName =
+    typeof metadataName === "string" && metadataName.trim()
+      ? metadataName.trim()
+      : "colaborador";
+
+  return {
+    actionLink: data.properties.action_link,
+    displayName,
+  };
+}
+
+export async function createSetPasswordLink(
+  email: string,
+  redirectPath: SetPasswordRedirectPath = "/definir-senha",
+): Promise<string | null> {
+  const link = await createRecoveryLink(email, redirectPath);
+  return link?.actionLink ?? null;
 }

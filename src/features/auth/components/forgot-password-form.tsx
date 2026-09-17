@@ -4,22 +4,19 @@ import Link from "next/link";
 import { useActionState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { PasswordInput } from "@/components/ui/password-input";
 import { ClinicLogo } from "@/components/clinic-logo";
-import { loginAction, type LoginActionState } from "@/features/auth/actions";
+import { Input } from "@/components/ui/input";
+import {
+  requestPasswordResetAction,
+  type ForgotPasswordActionState,
+} from "@/features/auth/actions";
 import { AUTH_COPY } from "@/features/auth/domain/auth-copy";
 
-interface LoginFormProps {
-  returnTo?: string;
-  passwordJustSet?: boolean;
-}
+const initialState: ForgotPasswordActionState = {};
 
-const initialState: LoginActionState = {};
-
-export function LoginForm({ returnTo, passwordJustSet }: LoginFormProps) {
+export function ForgotPasswordForm() {
   const [state, formAction, isPending] = useActionState(
-    loginAction,
+    requestPasswordResetAction,
     initialState,
   );
 
@@ -29,23 +26,13 @@ export function LoginForm({ returnTo, passwordJustSet }: LoginFormProps) {
         <ClinicLogo variant="on-dark" priority className="h-12 w-auto" />
       </div>
       <h1 className="mt-6 text-center text-xl font-semibold text-neo-cream-100">
-        Entrar no ClinRoma
+        {AUTH_COPY.forgotTitle}
       </h1>
       <p className="mt-2 text-center text-sm text-neo-cream-100/75">
-        Acesso para colaboradores da clínica
+        {AUTH_COPY.forgotHelp}
       </p>
 
-      {passwordJustSet ? (
-        <p className="mt-4 rounded-lg bg-neo-burgundy-900 px-3 py-2 text-center text-sm text-neo-cream-100">
-          {AUTH_COPY.passwordSaved}
-        </p>
-      ) : null}
-
       <form action={formAction} className="mt-8 space-y-4">
-        {returnTo ? (
-          <input type="hidden" name="returnTo" value={returnTo} />
-        ) : null}
-
         <div className="space-y-2">
           <label
             htmlFor="email"
@@ -62,24 +49,6 @@ export function LoginForm({ returnTo, passwordJustSet }: LoginFormProps) {
             required
             disabled={isPending}
             className="min-h-11 text-base"
-            placeholder="voce@clinroma.dev"
-          />
-        </div>
-
-        <div className="space-y-2">
-          <label
-            htmlFor="password"
-            className="block text-sm font-medium text-neo-cream-100"
-          >
-            Senha
-          </label>
-          <PasswordInput
-            id="password"
-            name="password"
-            autoComplete="current-password"
-            required
-            disabled={isPending}
-            className="min-h-11 text-base"
           />
         </div>
 
@@ -92,21 +61,27 @@ export function LoginForm({ returnTo, passwordJustSet }: LoginFormProps) {
           </p>
         ) : null}
 
+        {state.message ? (
+          <p className="rounded-lg bg-neo-burgundy-900 px-3 py-2 text-sm text-neo-cream-100">
+            {state.message}
+          </p>
+        ) : null}
+
         <Button
           type="submit"
           disabled={isPending}
           className="min-h-11 w-full text-base"
         >
-          {isPending ? "Entrando..." : "Entrar"}
+          {isPending ? AUTH_COPY.forgotSending : AUTH_COPY.forgotSubmit}
         </Button>
       </form>
 
       <p className="mt-6 text-center">
         <Link
-          href="/esqueci-senha"
+          href="/login"
           className="inline-flex min-h-11 items-center text-sm text-neo-cream-100/80 underline-offset-4 hover:text-neo-cream-100 hover:underline"
         >
-          {AUTH_COPY.forgotLink}
+          {AUTH_COPY.backToLogin}
         </Link>
       </p>
     </div>

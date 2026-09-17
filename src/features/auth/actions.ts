@@ -3,10 +3,13 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
+import { AUTH_COPY } from "@/features/auth/domain/auth-copy";
+import { sendPasswordResetEmail } from "@/features/auth/lib/send-password-reset";
+import { forgotPasswordSchema, loginSchema } from "@/features/auth/schemas";
+import { createRecoveryLink } from "@/features/team/lib/provision-collaborator";
+import { hasSupabaseConfig } from "@/lib/env";
 import { resolvePostLoginPath } from "@/lib/auth/roles";
 import { createClient } from "@/lib/supabase/server";
-import { hasSupabaseConfig } from "@/lib/env";
-import { loginSchema } from "@/features/auth/schemas";
 import type { UserRole } from "@/types/clinroma";
 
 const MAX_LOGIN_ATTEMPTS = 5;
@@ -144,4 +147,41 @@ export async function logoutAction(): Promise<void> {
   }
 
   redirect("/login");
+}
+
+export interface ForgotPasswordActionState {
+  error?: string;
+  message?: string;
+}
+
+export async function requestPasswordResetAction(
+  _prevState: ForgotPasswordActionState,
+  formData: FormData,
+): Promise<ForgotPasswordActionState> {
+  const parsed = forgotPasswordSchema.safeParse({
+    email: formData.get("email"),
+  });
+
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message ?? "Dados inválidos" };
+  }
+
+  if (!hasSupabaseConfig()) {
+    return { message: AUTH_COPY.forgotSent };
+  }
+
+  const recovery = await createRecoveryLink(
+    parsed.data.email,
+    "/redefinir-senha",
+  );
+
+  if (recovery) {
+    await sendPasswordResetEmail({
+      email: parsed.data.email,
+      displayName: recovery.displayName,
+      setPasswordUrl: recovery.actionLink,
+    });
+  }
+
+  return { message: AUTH_COPY.forgotSent };
 }

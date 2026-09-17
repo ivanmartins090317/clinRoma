@@ -1,0 +1,23 @@
+export const AUTH_COPY = {
+  setPasswordTitle: "Defina sua senha",
+  resetPasswordTitle: "Redefina sua senha",
+  setPasswordHelp:
+    "Mínimo 12 caracteres, com maiúscula, minúscula e número ou símbolo.",
+  passwordLabel: "Senha",
+  confirmLabel: "Confirme a senha",
+  submitSet: "Salvar senha",
+  submitReset: "Salvar nova senha",
+  submitting: "Salvando...",
+  mismatch: "As senhas não coincidem.",
+  weak: "Use pelo menos 12 caracteres, com maiúscula, minúscula e número ou símbolo.",
+  genericLink: "Link inválido ou expirado.",
+  saveFailed: "Não foi possível salvar a senha. Tente de novo.",
+  passwordSaved: "Senha definida. Entre com o e-mail e a senha nova.",
+  forgotTitle: "Esqueci minha senha",
+  forgotHelp: "Informe o e-mail do seu acesso. Se existir, enviamos um link.",
+  forgotSubmit: "Enviar link",
+  forgotSending: "Enviando...",
+  forgotSent: "Se o e-mail existir, enviamos um link.",
+  forgotLink: "Esqueci minha senha",
+  backToLogin: "Voltar ao login",
+} as const;
