@@ -396,7 +396,7 @@
           </div>
           <div>
             <span>Status do plano</span>
-            Em execução (40/63 aprovados · FL-08 completo · segurança smoke)
+            Em execução (49/63 aprovados · FL-07, FL-08 e FL-11 completos)
           </div>
         </div>
         <div class="scoreboard" id="scoreboard"></div>
@@ -1168,22 +1168,28 @@
               </tr>
             </thead>
             <tbody>
-              <tr data-flow="pwa" data-status="pending" data-roles="assistant">
+              <tr data-flow="pwa" data-status="pass" data-roles="assistant">
                 <td class="code">TC-37</td>
                 <td><span class="pill assistant">Auxiliar</span></td>
                 <td>
                   iOS: adicionar à tela inicial. Abrir o atalho cai em Scan (ou
                   login e depois Scan). Câmera pede permissão.
+                  <br /><small>Aprovado 16/09/2026 · atalho ClinRoma (NEO ROMA)
+                  na tela inicial. Evidência: tc37-ios-atalho-clinroma.png</small>
                 </td>
                 <td class="hide-sm">iPhone</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
-              <tr data-flow="pwa" data-status="pending" data-roles="assistant">
+              <tr data-flow="pwa" data-status="pass" data-roles="assistant">
                 <td class="code">TC-38</td>
                 <td><span class="pill assistant">Auxiliar</span></td>
-                <td>Android: mesmo atalho e abertura direta do Scan.</td>
+                <td>
+                  Android: mesmo atalho e abertura direta do Scan.
+                  <br /><small>Aprovado 16/09/2026 · atalho ClinRoma na tela
+                  inicial Android. Evidência: tc38-atalho-clinroma.png</small>
+                </td>
                 <td class="hide-sm">Android</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
             </tbody>
           </table>
@@ -1510,74 +1516,90 @@
               </tr>
             </thead>
             <tbody>
-              <tr data-flow="team" data-status="pending" data-roles="admin">
+              <tr data-flow="team" data-status="pass" data-roles="admin">
                 <td class="code">TC-57</td>
                 <td><span class="pill admin">Admin</span></td>
                 <td>
                   Criar colaborador por convite. O e-mail chega. O link define
                   senha e o login entra no papel escolhido.
-                  <br /><small>Fluxo atual: /definir-senha (não o login). Depois
-                  entrar com o e-mail cadastrado. Aguarda reteste.</small>
+                  <br /><small>Aprovado 16/09/2026 · /auth/confirm → /definir-senha;
+                  login Tc-57 Administração (menu Equipe). Evidência:
+                  tc57-convite-login-admin.png. Roteiro:
+                  docs/fixtures/ROTEIRO-definir-senha.md</small>
                 </td>
                 <td class="hide-sm">Desktop</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
-              <tr data-flow="team" data-status="pending" data-roles="admin">
+              <tr data-flow="team" data-status="pass" data-roles="admin">
                 <td class="code">TC-58</td>
                 <td><span class="pill admin">Admin</span></td>
                 <td>
                   Criar com senha temporária. A senha aparece uma vez. Login
                   entra.
+                  <br /><small>Aprovado 16/09/2026 · senha exibida uma vez;
+                  login TC-58 Dentista (Hoje). Evidências:
+                  tc58-senha-temporaria.png, tc58-login-dentista.png</small>
                 </td>
                 <td class="hide-sm">Desktop</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
-              <tr data-flow="team" data-status="pending" data-roles="admin">
+              <tr data-flow="team" data-status="pass" data-roles="admin">
                 <td class="code">TC-59</td>
                 <td><span class="pill admin">Admin</span></td>
                 <td>
                   Trocar o papel de um colaborador de teste. Na sessão seguinte
                   o menu dele muda.
+                  <br /><small>Aprovado 16/09/2026 · Tc-57 Administração →
+                  Recepção; refresh refletiu o papel. Evidências:
+                  tc59-papel-admin.png, tc59-papel-recepcao.png</small>
                 </td>
                 <td class="hide-sm">Desktop</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
-              <tr data-flow="team" data-status="pending" data-roles="admin">
+              <tr data-flow="team" data-status="pass" data-roles="admin">
                 <td class="code">TC-60</td>
                 <td><span class="pill admin">Admin</span></td>
                 <td>
                   Desativar colaborador. Login recusa com "Conta desativada".
                   Reativar permite entrar de novo.
+                  <br /><small>Aprovado 16/09/2026 · Tc-57 Inativo; login
+                  "Conta desativada. Fale com o administrador da clínica.";
+                  reativação e login ok. Evidências: tc60-conta-inativa.png,
+                  tc60-login-desativada.png, tc60-reativada-login.png</small>
                 </td>
                 <td class="hide-sm">Desktop</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
-              <tr data-flow="team" data-status="pending" data-roles="admin">
+              <tr data-flow="team" data-status="pass" data-roles="admin">
                 <td class="code">TC-61</td>
                 <td><span class="pill admin">Admin</span></td>
                 <td>
                   Tentar alterar o próprio papel: recusa. Tentar rebaixar o
                   único admin ativo: recusa.
+                  <br /><small>Aprovado 16/09/2026 · Admin Piloto (Você):
+                  "Seu próprio papel e acesso não são editáveis aqui."
+                  Evidência: tc61-proprio-papel-bloqueado.png</small>
                 </td>
                 <td class="hide-sm">Desktop</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
-              <tr data-flow="team" data-status="pending" data-roles="dentist,reception,assistant,viewer">
+              <tr data-flow="team" data-status="pass" data-roles="dentist,assistant,viewer">
                 <td class="code">TC-62</td>
                 <td>
                   <span class="pill dentist">Dentista</span>
-                  <span class="pill reception">Recepção</span>
                   <span class="pill assistant">Auxiliar</span>
                   <span class="pill viewer">Visualizador</span>
                 </td>
                 <td>
-                  Sem item Equipe no menu. <code>/equipe</code> negado nos quatro
-                  papéis.
+                  Sem item Equipe no menu. <code>/equipe</code> negado nos três
+                  papéis. (Recepção vê Equipe desde F7-11b; validar em matriz B.)
+                  <br /><small>Aprovado 16/09/2026 · dentista, auxiliar e
+                  visualizador sem Equipe /acesso negado</small>
                 </td>
                 <td class="hide-sm">Desktop</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
-              <tr data-flow="team" data-status="pending" data-roles="admin,reception,assistant">
+              <tr data-flow="team" data-status="pass" data-roles="admin,reception,assistant">
                 <td class="code">TC-63</td>
                 <td>
                   <span class="pill admin">Admin</span>
@@ -1586,11 +1608,14 @@
                 </td>
                 <td>
                   Celular, botão de conta: admin vê Equipe, WhatsApp e Scan.
-                  Recepção só WhatsApp. Auxiliar só Scan. Sair funciona em
-                  iPhone e Android.
+                  Recepção vê WhatsApp e Equipe. Auxiliar só Scan. Sair
+                  funciona em iPhone e Android.
+                  <br /><small>Aprovado 16/09/2026 · Admin Piloto: Scan QR,
+                  WhatsApp e Equipe no menu da conta. Evidência:
+                  tc63-mobile-admin-conta.png</small>
                 </td>
                 <td class="hide-sm">Celular</td>
-                <td><span class="status pending">Pendente</span></td>
+                <td><span class="status pass">Aprovado</span></td>
               </tr>
             </tbody>
           </table>
@@ -1726,7 +1751,7 @@
 
       <footer>
         ClinRoma · Clínica Neo Roma · POP-QA adaptado · Marca burgundy/gold ·
-        Evidências em docs/evidencias/ · Atualizado 2026-09-09 (FL-08 completo · 40/63 TCs ok)
+        Evidências em docs/evidencias/ · Atualizado 2026-09-16 (TC-37/38 PWA · FL-07 · 49/63 TCs ok)
       </footer>
     </div>
     <script>
@@ -1806,8 +1831,18 @@
         ["tc55-whatsapp-recebido-20h30.png", "TC-55: WhatsApp recebido 20:30 (janela 5 min)"],
         ["tc55-horario-passado-recusado.png", "TC-55: horário passado · Escolha data e hora futuras"],
         ["tc56-pos-cirurgia-cancelado.png", "TC-56: pós-cirurgia · Agendado cancelado"],
-        ["tc37", "PWA iOS"],
-        ["tc57", "Convite Equipe"],
+        ["tc37-ios-atalho-clinroma.png", "TC-37: iOS atalho ClinRoma na tela inicial"],
+        ["tc38-atalho-clinroma.png", "TC-38: Android atalho ClinRoma na tela inicial"],
+        ["tc57-convite-login-admin.png", "TC-57: convite · login Tc-57 Administração"],
+        ["tc58-senha-temporaria.png", "TC-58: senha temporária exibida uma vez"],
+        ["tc58-login-dentista.png", "TC-58: login TC-58 Dentista"],
+        ["tc59-papel-admin.png", "TC-59: Tc-57 Administração antes da troca"],
+        ["tc59-papel-recepcao.png", "TC-59: Tc-57 Recepção após refresh"],
+        ["tc60-conta-inativa.png", "TC-60: Tc-57 Inativo no painel Equipe"],
+        ["tc60-login-desativada.png", "TC-60: login recusa Conta desativada"],
+        ["tc60-reativada-login.png", "TC-60: login após reativação"],
+        ["tc61-proprio-papel-bloqueado.png", "TC-61: próprio papel não editável"],
+        ["tc63-mobile-admin-conta.png", "TC-63: mobile admin Scan/WhatsApp/Equipe"],
       ];
 
       function emptyStats() {

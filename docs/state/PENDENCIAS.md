@@ -2,7 +2,7 @@
 
 Fonte viva do que **ainda falta implementar ou validar**. Atualizar ao concluir cada fase.
 
-Última revisão: **2026-09-11** (nota de backup 3-2-1; FL-06 e FL-08 já estavam completos).
+Última revisão: **2026-09-16** (TC-37/38 PWA atalho · FL-07 ok).
 
 ---
 
@@ -305,23 +305,24 @@ Código F7-11b entregue (ver `docs/implementation/F7-11b-edicao-equipe.md` · ma
 - [x] **F7-11b:** migration `029_team_edit_f7.sql` (SELECT team + trigger só admin muda role/active)
 - [x] **db:push:** `029_team_edit_f7.sql` aplicada no remoto em 2026-09-09 (aviso Docker da CLI ignorado)
 - [ ] Conferir no painel Supabase se o signup público está desabilitado
-- [ ] Confirmar `RESEND_FROM_EMAIL` antes de usar o modo convite por e-mail
+- [x] Confirmar `RESEND_FROM_EMAIL` antes de usar o modo convite por e-mail (TC-57, 2026-09-16)
 - [x] Redirect URLs no Supabase: `/definir-senha` e `/redefinir-senha` (prod, 2026-09-16 · ver `docs/fixtures/ROTEIRO-definir-senha.md`)
+- [x] Recovery via `/auth/confirm` + `token_hash` (correção do *Link inválido*; TC-57, 2026-09-16)
 
 Homologação manual pendente:
 
-- [ ] Admin cria colaborador por convite; o link abre `/definir-senha`; login com e-mail cadastrado (TC-57)
-- [ ] Admin cria colaborador com senha temporária; a senha aparece uma vez e o login entra
-- [ ] Admin troca papel de um colaborador e o menu dele muda na sessão seguinte
-- [ ] Admin desativa colaborador e o login recusa com "Conta desativada"
-- [ ] Admin tenta alterar o próprio papel e recebe recusa
-- [ ] Admin tenta rebaixar o único admin ativo e recebe recusa
-- [ ] Dentista, auxiliar e visualizador não veem o item Equipe e têm `/equipe` negado
+- [x] Admin cria colaborador por convite; o link abre `/definir-senha`; login com e-mail cadastrado (TC-57, 2026-09-16)
+- [x] Admin cria colaborador com senha temporária; a senha aparece uma vez e o login entra (TC-58, 2026-09-16)
+- [x] Admin troca papel de um colaborador e o menu dele muda na sessão seguinte (TC-59, 2026-09-16 · Tc-57 admin → recepção)
+- [x] Admin desativa colaborador e o login recusa com "Conta desativada" (TC-60, 2026-09-16 · Tc-57; reativação ok)
+- [x] Admin tenta alterar o próprio papel e recebe recusa (TC-61, 2026-09-16)
+- [x] Admin tenta rebaixar o único admin ativo e recebe recusa (TC-61, 2026-09-16)
+- [x] Dentista, auxiliar e visualizador não veem o item Equipe e têm `/equipe` negado (TC-62, 2026-09-16)
 - [ ] Recepção vê Equipe; edita e-mail/nome/CRO de dentista não-admin; agenda reflete
 - [ ] Recepção não convida admin, não troca papel, não desativa, não edita conta admin
-- [x] Celular: botão de conta abre Equipe, WhatsApp e Scan QR para o admin (conferido em 390x844)
-- [ ] Celular: botão de conta mostra WhatsApp **e Equipe** para a recepção; só Scan QR para a auxiliar
-- [ ] Celular: Sair da conta funciona pelo botão de conta em iPhone e Android real
+- [x] Celular: botão de conta abre Equipe, WhatsApp e Scan QR para o admin (TC-63, 2026-09-16)
+- [x] Celular: botão de conta mostra WhatsApp **e Equipe** para a recepção; só Scan QR para a auxiliar (TC-63, 2026-09-16)
+- [x] Celular: Sair da conta funciona pelo botão de conta em iPhone e Android real (TC-63, 2026-09-16)
 
 ### Decisões com o Felipe (fechadas em 2026-09-01)
 
