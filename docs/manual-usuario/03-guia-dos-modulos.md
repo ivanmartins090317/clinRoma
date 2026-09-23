@@ -57,15 +57,15 @@ O sistema **não permite** dois atendimentos no mesmo horário para o mesmo dent
 
 ### Status da consulta
 
-| Status | Significado |
-| ------ | ----------- |
-| Agendada | Horário reservado |
-| Confirmada | Paciente confirmou (ex.: aceitou encaixe pela fila) |
-| Em atendimento | Consulta em andamento |
-| Concluída | Atendimento finalizado |
-| Faltou | Paciente não compareceu |
-| Cancelada | Horário liberado |
-| Remarcada | Consulta antiga; existe outra no lugar |
+| Status         | Significado                                         |
+| -------------- | --------------------------------------------------- |
+| Agendada       | Horário reservado                                   |
+| Confirmada     | Paciente confirmou (ex.: aceitou encaixe pela fila) |
+| Em atendimento | Consulta em andamento                               |
+| Concluída      | Atendimento finalizado                              |
+| Faltou         | Paciente não compareceu                             |
+| Cancelada      | Horário liberado                                    |
+| Remarcada      | Consulta antiga; existe outra no lugar              |
 
 Quando a **recepção ou administrador** marca a consulta como **Concluída**, o sistema prepara um **lembrete por e-mail** para o dentista (com resumo e link para o prontuário).
 
@@ -96,12 +96,12 @@ Sem o consentimento LGPD o cadastro não é concluído.
 
 A ficha tem abas:
 
-| Aba | Conteúdo |
-| --- | -------- |
-| **Resumo** | Dados cadastrais e visão geral |
-| **Anamnese** | Questionário de saúde (histórico, alergias, medicamentos etc.) |
-| **Odontograma** | Mapa dos dentes com condições registradas |
-| **Evoluções** | Notas de cada atendimento, com foto e áudio |
+| Aba             | Conteúdo                                                       |
+| --------------- | -------------------------------------------------------------- |
+| **Resumo**      | Dados cadastrais e visão geral                                 |
+| **Anamnese**    | Questionário de saúde (histórico, alergias, medicamentos etc.) |
+| **Odontograma** | Mapa dos dentes com condições registradas                      |
+| **Evoluções**   | Notas de cada atendimento, com foto e áudio                    |
 
 #### Anamnese
 
@@ -138,11 +138,11 @@ Na Agenda ou em Hoje, abra a consulta e use **Abrir prontuário**. Assim a evolu
 
 ### As colunas
 
-| Coluna | O que significa |
-| ------ | --------------- |
-| **Aguardando** | Paciente na fila, sem oferta ativa |
+| Coluna             | O que significa                                          |
+| ------------------ | -------------------------------------------------------- |
+| **Aguardando**     | Paciente na fila, sem oferta ativa                       |
 | **Oferta enviada** | Link enviado; paciente tem **40 minutos** para responder |
-| **Agendado** | Paciente aceitou e consulta foi criada na agenda |
+| **Agendado**       | Paciente aceitou e consulta foi criada na agenda         |
 
 ### Prioridade (cor do card)
 
@@ -179,10 +179,10 @@ O link expira em **40 minutos**. Depois disso a oferta perde validade sozinha.
 
 O ClinRoma controla o estoque em **dois níveis**:
 
-| O que você vê | Significado |
-| ------------- | ----------- |
-| **Saldo** (número no topo do insumo) | Quantas unidades do produto ainda existem na clínica no total |
-| **Pacote / etiqueta QR** | Uma embalagem física etiquetada. A retirada por câmera só funciona através desse QR |
+| O que você vê                        | Significado                                                                         |
+| ------------------------------------ | ----------------------------------------------------------------------------------- |
+| **Saldo** (número no topo do insumo) | Quantas unidades do produto ainda existem na clínica no total                       |
+| **Pacote / etiqueta QR**             | Uma embalagem física etiquetada. A retirada por câmera só funciona através desse QR |
 
 **Regra de ouro:** gerar QR quando o **material chega**; escanear o **mesmo** QR toda vez que retirar unidades. Não gere pacote novo só para “ver” a etiqueta.
 
@@ -197,11 +197,11 @@ O ClinRoma controla o estoque em **dois níveis**:
 
 **Uma ou várias etiquetas?**
 
-| Situação | Quantas etiquetas |
-| -------- | ----------------- |
-| Chegou um lote e fica junto na prateleira | **1** etiqueta com o total |
+| Situação                                  | Quantas etiquetas            |
+| ----------------------------------------- | ---------------------------- |
+| Chegou um lote e fica junto na prateleira | **1** etiqueta com o total   |
 | São caixas / embalagens físicas separadas | **1** etiqueta por embalagem |
-| Nova compra depois | Nova etiqueta (nova entrada) |
+| Nova compra depois                        | Nova etiqueta (nova entrada) |
 
 ### Lista de insumos
 
@@ -225,9 +225,10 @@ Ao abrir um produto:
 ### Registrar compra (entrada de material)
 
 1. Em Estoque, **Registrar compra** (ou no detalhe do insumo, aba **Entrada**)
-2. Opcional: foto da planilha do fornecedor (referência visual; o sistema **não lê** a foto automaticamente)
-3. Digite manualmente os itens, quantidades e lotes
-4. Gere **etiquetas com QR** e imprima (ou use **Ver / baixar QR**) para colar nas embalagens
+2. Opcional: foto da planilha do fornecedor (referência histórica; no celular dá para fotografar agora; não preenche as linhas sozinha)
+3. Opcional: **Sugerir itens da foto** (no celular fotografe a nota ou escolha o arquivo, espere a leitura, revise as linhas). A foto da sugestão **não** fica guardada. Você também pode digitar tudo à mão
+4. Revise quantidades, lotes e insumos. Auxiliar só confirma insumos já cadastrados
+5. Confirme a entrada e gere **etiquetas com QR** (ou use **Ver / baixar QR**) para colar nas embalagens
 
 Cada pacote recebe um código único (ex.: `CR-XXXXXXXXXXXX`).
 

@@ -2,7 +2,7 @@
 
 Fonte viva do que **ainda falta implementar ou validar**. Atualizar ao concluir cada fase.
 
-Última revisão: **2026-09-16** (TC-37/38 PWA atalho · FL-07 ok).
+Última revisão: **2026-09-23** (fatia captura câmera planilha em código).
 
 ---
 
@@ -171,8 +171,11 @@ Referência: `specs/2026-08-18-fase-5-insumos-estoque.md` · `docs/implementatio
 - [x] **iPhone real:** scan `CR-DEV001` → retirada → saldo atualizado (§8.3 spec) — TC-27 aprovado 04/09/2026 (`docs/evidencias/tc27-scan-iphone-retirada.png`)
 - [x] **Android real:** mesmo fluxo completo — TC-28 aprovado 04/09/2026
 - [x] Modo contínuo: 3 pacotes distintos sem voltar à lista — TC-29 aprovado 04/09/2026 (`docs/evidencias/tc28-tc29-android-modo-continuo.png`)
-- [x] Desktop admin: entrada de compra + alerta Anestésico na Hoje some após reposição — TC-30 aprovado 08/09/2026 (`docs/evidencias/tc30-hoje-anestesico-abaixo-minimo.png`, `tc30-hoje-sem-alerta-apos-entrada.png`); BG-06 fechado 17/09/2026 (upload resolvido; OCR/Vision em plano a aprovar)
-- [ ] Aprovar plano Vision/OCR da foto da planilha (`docs/plans/plano-sugestao-itens-planilha-vision.md`); OCR só com revisão humana
+- [x] Desktop admin: entrada de compra + alerta Anestésico na Hoje some após reposição — TC-30 aprovado 08/09/2026 (`docs/evidencias/tc30-hoje-anestesico-abaixo-minimo.png`, `tc30-hoje-sem-alerta-apos-entrada.png`); BG-06 fechado 17/09/2026 (upload resolvido)
+- [x] Spec / código: sugestão de itens da foto da planilha (`specs/2026-09-23-sugestao-itens-planilha-vision.md` · `docs/implementation/F5-sugestao-planilha-vision.md`) — revisão humana obrigatória; foto da sugestão não é guardada
+- [x] Spec / código: captura nativa da nota no celular (`specs/2026-09-23-captura-camera-planilha.md` · `docs/implementation/F5-captura-camera-planilha.md`) — `capture="environment"` nos dois inputs; sem viewfinder no app
+- [ ] Homologação manual da fatia sugestão (fixture `docs/fixtures/planilha-compra-teste-clinroma.png`): sugerir → revisar → confirmar; foto só da sugestão sem histórico; papel sem permissão; botão no celular
+- [ ] Homologação manual da fatia captura câmera (iPhone e Android, HTTPS): passo 2 abre câmera/galeria; foto na hora só lê no botão; negar permissão ainda permite galeria/digitação; desktop com fixture; passo 1 admin só histórico
 - [x] Recepção: `/estoque/scan` negado; alertas visíveis na Hoje — TC-31 aprovado 08/09/2026 (`docs/evidencias/tc31-recepcao-hoje-estoque.png`)
 - [x] Auxiliar: scan OK; cadastro base de insumo negado — TC-32 aprovado 09/09/2026
 - [x] F7-06 / TC-33: e-mail ao cruzar o mínimo com `FINANCE_ALERT_EMAIL` — aprovado 09/09/2026 (`docs/evidencias/tc33-email-estoque-baixo-financeiro.png`)
@@ -206,7 +209,7 @@ Referência: `specs/2026-08-18-fase-6-lembrete-piloto.md` · `docs/implementatio
 - [ ] Executar FL-01…FL-11 (63 TCs, 5 perfis + visitante) com evidências desktop e mobile · **40/63 aprovados** (FL-01 a FL-06 e FL-08 completos)
 - [ ] iPhone e Android nos fluxos áudio, scan, PWA e lembrete
 - [ ] Preencher `docs/relatorio-testes-manuais.html` e `docs/evidencias/` (FL-01 a FL-06 + FL-08; TC-04 e TC-05 sem screenshot; TC-40 sem screenshot dedicado)
-- [x] Nenhum bug crítico/alto aberto nos fluxos P0 (BG-01 a BG-07 fechados; OCR da planilha é plano futuro, não bug)
+- [x] Nenhum bug crítico/alto aberto nos fluxos P0 (BG-01 a BG-07 fechados; sugestão da planilha em código, homologação manual da fatia pendente)
 - [ ] Deploy produção (Supabase prod + Vercel) conforme checklist manual-dev § Deploy
 
 ### Pós-piloto
@@ -308,7 +311,7 @@ Código F7-11b entregue (ver `docs/implementation/F7-11b-edicao-equipe.md` · ma
 - [ ] Conferir no painel Supabase se o signup público está desabilitado
 - [x] Confirmar `RESEND_FROM_EMAIL` antes de usar o modo convite por e-mail (TC-57, 2026-09-16)
 - [x] Redirect URLs no Supabase: `/definir-senha` e `/redefinir-senha` (prod, 2026-09-16 · ver `docs/fixtures/ROTEIRO-definir-senha.md`)
-- [x] Recovery via `/auth/confirm` + `token_hash` (correção do *Link inválido*; TC-57, 2026-09-16)
+- [x] Recovery via `/auth/confirm` + `token_hash` (correção do _Link inválido_; TC-57, 2026-09-16)
 
 Homologação manual pendente:
 

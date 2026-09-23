@@ -59,13 +59,13 @@ No **computador**, o menu fica na barra lateral esquerda (fundo bordô).
 
 No **celular**, o menu fica na **barra inferior** com ícones:
 
-| Ícone | Módulo | Para que serve |
-| ----- | ------ | -------------- |
-| Casa | **Hoje** | Resumo do dia |
-| Calendário | **Agenda** | Marcar e consultar horários |
-| Pessoas | **Pacientes** | Cadastro e prontuário |
-| Grade | **Fila Kanban** | Lista de encaixe |
-| Caixa | **Estoque** | Insumos e materiais |
+| Ícone      | Módulo          | Para que serve              |
+| ---------- | --------------- | --------------------------- |
+| Casa       | **Hoje**        | Resumo do dia               |
+| Calendário | **Agenda**      | Marcar e consultar horários |
+| Pessoas    | **Pacientes**   | Cadastro e prontuário       |
+| Grade      | **Fila Kanban** | Lista de encaixe            |
+| Caixa      | **Estoque**     | Insumos e materiais         |
 
 **Importante:** cada pessoa vê só os módulos permitidos para seu perfil. Se você não enxergar um item do menu, é porque sua função não tem acesso a ele. Isso é normal e intencional.
 
@@ -73,11 +73,11 @@ A leitura de QR do estoque fica **dentro do módulo Estoque**, no caminho **Scan
 
 ### Celular x computador
 
-| Situação | Computador | Celular |
-| -------- | ---------- | ------- |
-| Recepção marcando consulta | Calendário completo, arrastar horários | Lista do dia (consulta e detalhes) |
-| Dentista documentando atendimento | Todas as abas do prontuário | Evolução com foto e áudio |
-| Auxiliar retirando insumo | Possível, mas o fluxo ideal é mobile | Scan QR com câmera traseira |
+| Situação                          | Computador                             | Celular                            |
+| --------------------------------- | -------------------------------------- | ---------------------------------- |
+| Recepção marcando consulta        | Calendário completo, arrastar horários | Lista do dia (consulta e detalhes) |
+| Dentista documentando atendimento | Todas as abas do prontuário            | Evolução com foto e áudio          |
+| Auxiliar retirando insumo         | Possível, mas o fluxo ideal é mobile   | Scan QR com câmera traseira        |
 
 **Dica para auxiliar:** no celular, você pode **adicionar o ClinRoma à tela inicial** (como um aplicativo). Assim o atalho **Scan estoque** abre direto a câmera de leitura.
 
@@ -89,24 +89,24 @@ Cada colaborador tem um **perfil**. O perfil define o que aparece no menu e o qu
 
 Existem **5 perfis** no ClinRoma:
 
-| Perfil | Quem costuma ser | Em uma frase |
-| ------ | ---------------- | ------------ |
-| **Administrador** | Dono, gerente ou TI da clínica | Acesso total |
-| **Recepção** | Atendimento na recepção | Agenda, pacientes e fila |
-| **Dentista** | Profissional clínico | Prontuário e evolução do paciente |
-| **Auxiliar de sala** | Quem prepara materiais na sala | Estoque e scan de QR |
-| **Visualizador** | Quem só precisa consultar | Leitura, sem alterar nada clínico |
+| Perfil               | Quem costuma ser               | Em uma frase                      |
+| -------------------- | ------------------------------ | --------------------------------- |
+| **Administrador**    | Dono, gerente ou TI da clínica | Acesso total                      |
+| **Recepção**         | Atendimento na recepção        | Agenda, pacientes e fila          |
+| **Dentista**         | Profissional clínico           | Prontuário e evolução do paciente |
+| **Auxiliar de sala** | Quem prepara materiais na sala | Estoque e scan de QR              |
+| **Visualizador**     | Quem só precisa consultar      | Leitura, sem alterar nada clínico |
 
 ### O que cada perfil vê no menu
 
-| Módulo | Admin | Recepção | Dentista | Auxiliar | Visualizador |
-| ------ | :---: | :------: | :------: | :------: | :----------: |
-| Hoje | Sim | Sim | Sim | Não | Sim |
-| Agenda | Sim | Sim | Sim* | Não | Sim* |
-| Pacientes | Sim | Sim | Sim | Não | Sim** |
-| Fila Kanban | Sim | Sim | Sim* | Não | Não |
-| Estoque | Sim | Sim* | Sim* | Sim | Não |
-| Scan QR | Sim | Não | Não | Sim | Não |
+| Módulo      | Admin | Recepção | Dentista | Auxiliar | Visualizador |
+| ----------- | :---: | :------: | :------: | :------: | :----------: |
+| Hoje        |  Sim  |   Sim    |   Sim    |   Não    |     Sim      |
+| Agenda      |  Sim  |   Sim    |   Sim*   |   Não    |     Sim*     |
+| Pacientes   |  Sim  |   Sim    |   Sim    |   Não    |    Sim**     |
+| Fila Kanban |  Sim  |   Sim    |   Sim*   |   Não    |     Não      |
+| Estoque     |  Sim  |   Sim*   |   Sim*   |   Sim    |     Não      |
+| Scan QR     |  Sim  |   Não    |   Não    |   Sim    |     Não      |
 
 \* Somente **consultar** (sem criar ou alterar, conforme o módulo).  
 \*\* Somente **dados cadastrais** (nome, contato). Sem prontuário clínico.
@@ -115,39 +115,39 @@ Existem **5 perfis** no ClinRoma:
 
 #### Pacientes
 
-| Ação | Admin | Recepção | Dentista | Auxiliar | Visualizador |
-| ---- | :---: | :------: | :------: | :------: | :----------: |
-| Buscar paciente na lista | Sim | Sim | Sim | Não | Sim |
-| Cadastrar paciente novo | Sim | Sim | Sim | Não | Não |
-| Ver prontuário (anamnese, odontograma) | Sim | Sim | Sim | Não | Não |
-| Preencher anamnese e odontograma | Sim | Sim | Sim | Não | Não |
-| Registrar evolução (texto, foto, áudio) | Sim | Não | Sim | Não | Não |
+| Ação                                    | Admin | Recepção | Dentista | Auxiliar | Visualizador |
+| --------------------------------------- | :---: | :------: | :------: | :------: | :----------: |
+| Buscar paciente na lista                |  Sim  |   Sim    |   Sim    |   Não    |     Sim      |
+| Cadastrar paciente novo                 |  Sim  |   Sim    |   Sim    |   Não    |     Não      |
+| Ver prontuário (anamnese, odontograma)  |  Sim  |   Sim    |   Sim    |   Não    |     Não      |
+| Preencher anamnese e odontograma        |  Sim  |   Sim    |   Sim    |   Não    |     Não      |
+| Registrar evolução (texto, foto, áudio) |  Sim  |   Não    |   Sim    |   Não    |     Não      |
 
 #### Agenda
 
-| Ação | Admin | Recepção | Dentista | Auxiliar | Visualizador |
-| ---- | :---: | :------: | :------: | :------: | :----------: |
-| Ver consultas | Sim | Sim | Sim | Não | Sim |
-| Marcar consulta nova | Sim | Sim | Não | Não | Não |
-| Remarcar ou cancelar | Sim | Sim | Não | Não | Não |
-| Marcar consulta como concluída | Sim | Sim | Não | Não | Não |
+| Ação                           | Admin | Recepção | Dentista | Auxiliar | Visualizador |
+| ------------------------------ | :---: | :------: | :------: | :------: | :----------: |
+| Ver consultas                  |  Sim  |   Sim    |   Sim    |   Não    |     Sim      |
+| Marcar consulta nova           |  Sim  |   Sim    |   Não    |   Não    |     Não      |
+| Remarcar ou cancelar           |  Sim  |   Sim    |   Não    |   Não    |     Não      |
+| Marcar consulta como concluída |  Sim  |   Sim    |   Não    |   Não    |     Não      |
 
 #### Fila de encaixe
 
-| Ação | Admin | Recepção | Dentista | Auxiliar | Visualizador |
-| ---- | :---: | :------: | :------: | :------: | :----------: |
-| Ver fila | Sim | Sim | Sim | Não | Não |
-| Incluir paciente na fila | Sim | Sim | Não | Não | Não |
-| Enviar oferta de horário (link) | Sim | Sim | Não | Não | Não |
+| Ação                            | Admin | Recepção | Dentista | Auxiliar | Visualizador |
+| ------------------------------- | :---: | :------: | :------: | :------: | :----------: |
+| Ver fila                        |  Sim  |   Sim    |   Sim    |   Não    |     Não      |
+| Incluir paciente na fila        |  Sim  |   Sim    |   Não    |   Não    |     Não      |
+| Enviar oferta de horário (link) |  Sim  |   Sim    |   Não    |   Não    |     Não      |
 
 #### Estoque
 
-| Ação | Admin | Recepção | Dentista | Auxiliar | Visualizador |
-| ---- | :---: | :------: | :------: | :------: | :----------: |
-| Ver saldos e alertas | Sim | Sim | Sim | Sim | Não |
-| Cadastrar ou editar insumo | Sim | Não | Não | Não | Não |
-| Registrar compra e gerar QR | Sim | Não | Não | Sim | Não |
-| Escanear QR para retirada | Sim | Não | Não | Sim | Não |
+| Ação                        | Admin | Recepção | Dentista | Auxiliar | Visualizador |
+| --------------------------- | :---: | :------: | :------: | :------: | :----------: |
+| Ver saldos e alertas        |  Sim  |   Sim    |   Sim    |   Sim    |     Não      |
+| Cadastrar ou editar insumo  |  Sim  |   Não    |   Não    |   Não    |     Não      |
+| Registrar compra e gerar QR |  Sim  |   Não    |   Não    |   Sim    |     Não      |
+| Escanear QR para retirada   |  Sim  |   Não    |   Não    |   Sim    |     Não      |
 
 #### Somente administrador
 
@@ -227,15 +227,15 @@ O sistema **não permite** dois atendimentos no mesmo horário para o mesmo dent
 
 **Status da consulta:**
 
-| Status | Significado |
-| ------ | ----------- |
-| Agendada | Horário reservado |
-| Confirmada | Paciente confirmou (ex.: aceitou encaixe pela fila) |
-| Em atendimento | Consulta em andamento |
-| Concluída | Atendimento finalizado |
-| Faltou | Paciente não compareceu |
-| Cancelada | Horário liberado |
-| Remarcada | Consulta antiga; existe outra no lugar |
+| Status         | Significado                                         |
+| -------------- | --------------------------------------------------- |
+| Agendada       | Horário reservado                                   |
+| Confirmada     | Paciente confirmou (ex.: aceitou encaixe pela fila) |
+| Em atendimento | Consulta em andamento                               |
+| Concluída      | Atendimento finalizado                              |
+| Faltou         | Paciente não compareceu                             |
+| Cancelada      | Horário liberado                                    |
+| Remarcada      | Consulta antiga; existe outra no lugar              |
 
 Quando a **recepção ou administrador** marca a consulta como **Concluída**, o sistema prepara um **lembrete por e-mail** para o dentista (com resumo e link para o prontuário).
 
@@ -262,12 +262,12 @@ Sem o consentimento LGPD o cadastro não é concluído.
 
 **Ficha do paciente (prontuário):**
 
-| Aba | Conteúdo |
-| --- | -------- |
-| **Resumo** | Dados cadastrais e visão geral |
-| **Anamnese** | Questionário de saúde (histórico, alergias, medicamentos etc.) |
-| **Odontograma** | Mapa dos dentes com condições registradas |
-| **Evoluções** | Notas de cada atendimento, com foto e áudio |
+| Aba             | Conteúdo                                                       |
+| --------------- | -------------------------------------------------------------- |
+| **Resumo**      | Dados cadastrais e visão geral                                 |
+| **Anamnese**    | Questionário de saúde (histórico, alergias, medicamentos etc.) |
+| **Odontograma** | Mapa dos dentes com condições registradas                      |
+| **Evoluções**   | Notas de cada atendimento, com foto e áudio                    |
 
 **Anamnese:** formulário padronizado da clínica. Se passou de **12 meses** desde a última atualização, o sistema avisa para revisar.
 
@@ -294,11 +294,11 @@ Sem o consentimento LGPD o cadastro não é concluído.
 
 **As colunas:**
 
-| Coluna | O que significa |
-| ------ | --------------- |
-| **Aguardando** | Paciente na fila, sem oferta ativa |
+| Coluna             | O que significa                                          |
+| ------------------ | -------------------------------------------------------- |
+| **Aguardando**     | Paciente na fila, sem oferta ativa                       |
 | **Oferta enviada** | Link enviado; paciente tem **40 minutos** para responder |
-| **Agendado** | Paciente aceitou e consulta foi criada na agenda |
+| **Agendado**       | Paciente aceitou e consulta foi criada na agenda         |
 
 **Prioridade (cor do card):** dentro de **Aguardando**, vermelho é mais urgente, amarelo é média e verde é menor urgência.
 
@@ -325,10 +325,10 @@ O link expira em **40 minutos**. Depois disso a oferta perde validade sozinha.
 
 **Ideia principal:** o ClinRoma controla o estoque em dois níveis.
 
-| O que você vê | Significado |
-| ------------- | ----------- |
-| **Saldo** (número no topo do insumo) | Quantas unidades do produto ainda existem na clínica no total |
-| **Pacote / etiqueta QR** | Uma embalagem física etiquetada. A retirada por câmera só funciona através desse QR |
+| O que você vê                        | Significado                                                                         |
+| ------------------------------------ | ----------------------------------------------------------------------------------- |
+| **Saldo** (número no topo do insumo) | Quantas unidades do produto ainda existem na clínica no total                       |
+| **Pacote / etiqueta QR**             | Uma embalagem física etiquetada. A retirada por câmera só funciona através desse QR |
 
 **Regra de ouro:** gerar QR quando o **material chega**; escanear o **mesmo** QR toda vez que retirar unidades. Não gere pacote novo só para “ver” a etiqueta.
 
@@ -343,11 +343,11 @@ O link expira em **40 minutos**. Depois disso a oferta perde validade sozinha.
 
 **Uma ou várias etiquetas?**
 
-| Situação | Quantas etiquetas |
-| -------- | ----------------- |
-| Chegou um lote e fica junto na prateleira | **1** etiqueta com o total |
+| Situação                                  | Quantas etiquetas            |
+| ----------------------------------------- | ---------------------------- |
+| Chegou um lote e fica junto na prateleira | **1** etiqueta com o total   |
 | São caixas / embalagens físicas separadas | **1** etiqueta por embalagem |
-| Nova compra depois | Nova etiqueta (nova entrada) |
+| Nova compra depois                        | Nova etiqueta (nova entrada) |
 
 **Lista de insumos:** cada item mostra nome, unidade, saldo atual e situação (**OK**, **Abaixo do mínimo** ou **Zerado**).
 
@@ -360,9 +360,10 @@ O link expira em **40 minutos**. Depois disso a oferta perde validade sozinha.
 **Registrar compra (entrada de material):**
 
 1. Em Estoque, **Registrar compra** (ou no detalhe, aba **Entrada**)
-2. Opcional: foto da planilha do fornecedor (referência visual; o sistema **não lê** a foto automaticamente)
-3. Digite manualmente os itens, quantidades e lotes
-4. Gere **etiquetas com QR** e imprima (ou use **Ver / baixar QR**) para colar nas embalagens
+2. Opcional: foto da planilha do fornecedor (referência histórica; no celular dá para fotografar agora; não preenche as linhas sozinha)
+3. Opcional: **Sugerir itens da foto** (no celular fotografe a nota ou escolha o arquivo, espere a leitura, revise as linhas). A foto da sugestão **não** fica guardada. Você também pode digitar tudo à mão
+4. Revise quantidades, lotes e insumos. Auxiliar só confirma insumos já cadastrados
+5. Confirme a entrada e gere **etiquetas com QR** (ou use **Ver / baixar QR**) para colar nas embalagens
 
 Cada pacote recebe um código único (ex.: `CR-XXXXXXXXXXXX`).
 
@@ -486,12 +487,12 @@ Por enquanto o lembrete vai **só para o dentista**, não para o paciente.
 
 Pode fazer **tudo** que os outros perfis fazem, mais:
 
-| Tarefa | Onde |
-| ------ | ---- |
-| Cadastrar e editar insumos | Estoque |
-| Corrigir retirada excepcional de estoque | Detalhe do insumo |
-| Reenviar lembretes com falha | Hoje |
-| Gerenciar usuários e perfis | Via suporte técnico |
+| Tarefa                                   | Onde                |
+| ---------------------------------------- | ------------------- |
+| Cadastrar e editar insumos               | Estoque             |
+| Corrigir retirada excepcional de estoque | Detalhe do insumo   |
+| Reenviar lembretes com falha             | Hoje                |
+| Gerenciar usuários e perfis              | Via suporte técnico |
 
 **Checklist semanal sugerido:**
 
@@ -618,7 +619,7 @@ O sistema ignora leituras repetidas muito rápidas. Confira o saldo no detalhe d
 Chame a **auxiliar de sala** ou o **administrador**.
 
 **Foto da planilha na compra preenche os campos?**  
-**Não.** A foto serve só de referência. Digite os itens manualmente.
+Se você usar **Sugerir itens da foto**, o sistema propõe linhas para você revisar. A entrada só grava depois de **Confirmar entrada**. A foto da sugestão não fica guardada. A foto histórica opcional continua só como referência.
 
 **Para que serve Ajuste de saldo?**  
 Só para corrigir o número. Não gera QR e não substitui o Scan.
@@ -641,31 +642,31 @@ Safari (iPhone) ou Chrome (Android): **Adicionar à tela inicial**.
 
 ### Quem procurar
 
-| Situação | Procurar |
-| -------- | -------- |
-| Senha, perfil errado, acesso bloqueado | Administrador da clínica |
-| Horário, fila, cadastro de paciente | Recepção |
-| Prontuário, evolução, odontograma | Dentista |
-| Material, QR, retirada de insumo | Auxiliar de sala |
-| Erro técnico, sistema fora do ar | Administrador + suporte técnico |
+| Situação                               | Procurar                        |
+| -------------------------------------- | ------------------------------- |
+| Senha, perfil errado, acesso bloqueado | Administrador da clínica        |
+| Horário, fila, cadastro de paciente    | Recepção                        |
+| Prontuário, evolução, odontograma      | Dentista                        |
+| Material, QR, retirada de insumo       | Auxiliar de sala                |
+| Erro técnico, sistema fora do ar       | Administrador + suporte técnico |
 
 ---
 
 ## 6. Glossário
 
-| Termo | Significado simples |
-| ----- | ------------------- |
-| **Prontuário** | Ficha clínica completa do paciente |
-| **Anamnese** | Questionário de saúde e histórico |
-| **Odontograma** | Mapa dos dentes e condições |
-| **Evolução** | Registro do que foi feito na consulta |
-| **LGPD** | Lei de proteção de dados; consentimento do paciente |
-| **Encaixe / Fila** | Lista de quem espera horário que abrir |
-| **QR / Scan** | Código na embalagem de material; leitura pela câmera |
+| Termo                 | Significado simples                                        |
+| --------------------- | ---------------------------------------------------------- |
+| **Prontuário**        | Ficha clínica completa do paciente                         |
+| **Anamnese**          | Questionário de saúde e histórico                          |
+| **Odontograma**       | Mapa dos dentes e condições                                |
+| **Evolução**          | Registro do que foi feito na consulta                      |
+| **LGPD**              | Lei de proteção de dados; consentimento do paciente        |
+| **Encaixe / Fila**    | Lista de quem espera horário que abrir                     |
+| **QR / Scan**         | Código na embalagem de material; leitura pela câmera       |
 | **Pacote / etiqueta** | Embalagem com QR; a retirada baixa o restante desse pacote |
-| **Saldo** | Total de unidades do produto na clínica |
-| **Perfil** | Tipo de acesso (recepção, dentista etc.) |
+| **Saldo**             | Total de unidades do produto na clínica                    |
+| **Perfil**            | Tipo de acesso (recepção, dentista etc.)                   |
 
 ---
 
-*ClinRoma · Clínica Neo Roma · Manual do usuário · setembro/2026*
+_ClinRoma · Clínica Neo Roma · Manual do usuário · setembro/2026_

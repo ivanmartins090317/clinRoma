@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 
 import type { SupplyQuantitySnapshot } from "@/features/stock/domain/finance-alert";
+import { matchSupplyName } from "@/features/stock/domain/supply-name-match";
 import {
   applyBulkEntry,
   applyStockEntry,
@@ -12,6 +13,7 @@ import { applyWithdrawal } from "@/features/stock/lib/apply-withdrawal";
 import { syncFinanceAlertForSupply } from "@/features/stock/lib/enqueue-finance-alert";
 import {
   listSupplies,
+  listSuppliesForSelect,
   lookupPackageByQr,
   type PackageLookupResult,
   type SupplyListItem,
@@ -22,15 +24,21 @@ import {
   createSupplySchema,
   deletePackageSchema,
   registerPurchaseSchema,
+  type SuggestedPurchaseLine,
   updateSupplySchema,
   uploadSupplySheetSchema,
   withdrawPackageSchema,
 } from "@/features/stock/schemas";
 import { normalizeScannedQrCode } from "@/features/stock/domain/qr-code";
 import { SUPPLY_UNIT_LABELS } from "@/features/stock/lib/clinic-date";
+import { writeAuditLog } from "@/lib/audit/write-audit-log";
 import { getModuleAccess } from "@/lib/auth/roles";
 import { requireAuthSession } from "@/lib/auth/session";
 import { hasSupabaseConfig } from "@/lib/env";
+import {
+  extractPurchaseSheetFromImage,
+  validatePurchaseSheetFile,
+} from "@/lib/stock/extract-purchase-sheet";
 import { createClient } from "@/lib/supabase/server";
 import type { UserRole } from "@/types/clinroma";
 
@@ -40,6 +48,17 @@ export interface StockActionResult {
   supplyId?: string;
   packages?: Array<{ id: string; qrCode: string; quantity: number }>;
 }
+
+export interface SuggestPurchaseItemsResult {
+  success?: boolean;
+  error?: string;
+  lines?: SuggestedPurchaseLine[];
+  visionModel?: string;
+  truncated?: boolean;
+}
+
+const SUGGEST_FAIL_MESSAGE =
+  "Não consegui ler a foto. Digite os itens manualmente.";
 
 export interface WithdrawActionResult {
   success?: boolean;
@@ -334,6 +353,31 @@ export async function registerPurchaseAction(
       await syncFinanceAlertForSupply(supplyId, before);
     }
 
+    if (parsed.data.suggestionTrace) {
+      const audit = await writeAuditLog({
+        actorId: session.profile.id,
+        action: "purchase_confirm_with_suggestion",
+        entityType: "supply_purchase",
+        entityId: createdPackages[0]?.id ?? null,
+        metadata: {
+          suggestedLineCount: parsed.data.suggestionTrace.suggestedLineCount,
+          keptCount: parsed.data.suggestionTrace.keptCount,
+          editedCount: parsed.data.suggestionTrace.editedCount,
+          discardedCount: parsed.data.suggestionTrace.discardedCount,
+          manualCount: parsed.data.suggestionTrace.manualCount,
+          visionModel: parsed.data.suggestionTrace.visionModel,
+          packageCount: createdPackages.length,
+        },
+      });
+
+      if (!audit.ok) {
+        console.error(
+          "[stock] falha ao gravar rastro da sugestão:",
+          audit.error,
+        );
+      }
+    }
+
     revalidatePath("/estoque");
     revalidatePath("/hoje");
     return { success: true, packages: createdPackages };
@@ -341,6 +385,71 @@ export async function registerPurchaseAction(
     return {
       error: error instanceof Error ? error.message : "Erro inesperado",
     };
+  }
+}
+
+export async function suggestPurchaseItemsAction(
+  formData: FormData,
+): Promise<SuggestPurchaseItemsResult> {
+  try {
+    const session = await requireAuthSession("/estoque");
+
+    if (!canRegisterPackages(session.profile.role)) {
+      return { error: "Sem permissão para sugerir itens da compra" };
+    }
+
+    const file = formData.get("file");
+
+    if (!(file instanceof File)) {
+      return { error: "Selecione um arquivo" };
+    }
+
+    const fileCheck = validatePurchaseSheetFile({
+      fileName: file.name,
+      mimeType: file.type,
+      fileSizeBytes: file.size,
+    });
+
+    if (!fileCheck.ok) {
+      return { error: fileCheck.error };
+    }
+
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const extracted = await extractPurchaseSheetFromImage(buffer, file.type);
+
+    if (!extracted.ok || !extracted.lines?.length) {
+      return { error: SUGGEST_FAIL_MESSAGE };
+    }
+
+    const catalog = await listSuppliesForSelect();
+    const candidates = catalog.map((supply) => ({
+      id: supply.id,
+      name: supply.name,
+    }));
+
+    const lines: SuggestedPurchaseLine[] = extracted.lines.map((line) => {
+      const match = matchSupplyName(line.name, candidates);
+      return {
+        name: line.name,
+        quantityPerPackage: line.quantityPerPackage,
+        packageCount: line.packageCount,
+        lotNumber: line.lotNumber,
+        expiresAt: line.expiresAt,
+        unit: line.unit,
+        confidence: match.confidence,
+        mode: match.mode,
+        supplyId: match.supplyId,
+      };
+    });
+
+    return {
+      success: true,
+      lines,
+      visionModel: extracted.model,
+      truncated: extracted.truncated ?? false,
+    };
+  } catch {
+    return { error: SUGGEST_FAIL_MESSAGE };
   }
 }
 

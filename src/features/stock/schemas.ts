@@ -38,11 +38,33 @@ export const purchaseItemSchema = z.object({
   bulkQuantity: z.coerce.number().min(0).optional(),
 });
 
+export const purchaseSuggestionTraceSchema = z.object({
+  suggestedLineCount: z.coerce.number().int().min(0),
+  keptCount: z.coerce.number().int().min(0),
+  editedCount: z.coerce.number().int().min(0),
+  discardedCount: z.coerce.number().int().min(0),
+  manualCount: z.coerce.number().int().min(0),
+  visionModel: z.string().trim().min(1),
+});
+
 export const registerPurchaseSchema = z.object({
   sheetStoragePath: z.string().optional(),
   sheetMimeType: z.string().optional(),
   sheetFileSizeBytes: z.coerce.number().positive().optional(),
   items: z.array(purchaseItemSchema).min(1, "Adicione ao menos um item"),
+  suggestionTrace: purchaseSuggestionTraceSchema.optional(),
+});
+
+export const suggestedPurchaseLineSchema = z.object({
+  name: z.string().trim().min(1),
+  quantityPerPackage: z.number().positive().nullable(),
+  packageCount: z.number().int().positive().nullable(),
+  lotNumber: z.string().nullable(),
+  expiresAt: z.string().nullable(),
+  unit: supplyUnitSchema.nullable(),
+  confidence: z.enum(["high", "low"]),
+  mode: z.enum(["existing", "new"]),
+  supplyId: z.string().uuid().nullable(),
 });
 
 export const addPackageSchema = z.object({
@@ -81,5 +103,9 @@ export const uploadSupplySheetSchema = z.object({
 export type CreateSupplyInput = z.infer<typeof createSupplySchema>;
 export type UpdateSupplyInput = z.infer<typeof updateSupplySchema>;
 export type RegisterPurchaseInput = z.infer<typeof registerPurchaseSchema>;
+export type PurchaseSuggestionTrace = z.infer<
+  typeof purchaseSuggestionTraceSchema
+>;
+export type SuggestedPurchaseLine = z.infer<typeof suggestedPurchaseLineSchema>;
 export type WithdrawPackageInput = z.infer<typeof withdrawPackageSchema>;
 export type AdjustSupplyInput = z.infer<typeof adjustSupplySchema>;

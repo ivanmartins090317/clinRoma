@@ -13,15 +13,15 @@
 
 ## Superfícies
 
-| Superfície               | Auth                | Regra                                                                 |
-| ------------------------ | ------------------- | --------------------------------------------------------------------- |
-| `/`, marketing           | Público             | Sem PHI                                                               |
-| `/login`                 | Auth Supabase       | Rate limit login                                                      |
+| Superfície               | Auth                | Regra                                                                       |
+| ------------------------ | ------------------- | --------------------------------------------------------------------------- |
+| `/`, marketing           | Público             | Sem PHI                                                                     |
+| `/login`                 | Auth Supabase       | Rate limit login                                                            |
 | `/auth/confirm`          | Token de recovery   | Só `type=recovery`; `next` limitado a `/definir-senha` e `/redefinir-senha` |
-| `/(app)/*`               | Sessão + role       | RLS por sessão e papel                                                |
-| `/fila/resposta/[token]` | Token opaco         | Expira 40 min; mínimo de dados; consentimento LGPD                    |
-| `/anamnese/[token]`      | Token opaco         | Pré-consulta 7 dias ou fim do dia (SP); nome + questionário em branco |
-| `/api/*`                 | Server-only secrets | Validar sessão ou assinatura webhook                                  |
+| `/(app)/*`               | Sessão + role       | RLS por sessão e papel                                                      |
+| `/fila/resposta/[token]` | Token opaco         | Expira 40 min; mínimo de dados; consentimento LGPD                          |
+| `/anamnese/[token]`      | Token opaco         | Pré-consulta 7 dias ou fim do dia (SP); nome + questionário em branco       |
+| `/api/*`                 | Server-only secrets | Validar sessão ou assinatura webhook                                        |
 
 ## LGPD / link ao paciente (fila)
 
@@ -93,5 +93,5 @@
 ## Fora do escopo v0.1
 
 - Export LGPD automatizado
-- OCR planilha sem revisão humana
+- OCR planilha sem revisão humana (a sugestão por foto exige revisão e não guarda a imagem)
 - Integração WhatsApp Business completa

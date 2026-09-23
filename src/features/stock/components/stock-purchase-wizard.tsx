@@ -9,6 +9,13 @@ import {
 } from "@/features/stock/actions";
 import { StockLabelSheet } from "@/features/stock/components/stock-label-sheet";
 import type { LabelPackageData } from "@/features/stock/components/stock-label-sheet";
+import { SuggestPurchaseItems } from "@/features/stock/components/suggest-purchase-items";
+import { purchasePhotoInputAttrs } from "@/features/stock/domain/purchase-photo-capture";
+import type {
+  PurchaseSuggestionTrace,
+  SuggestedPurchaseLine,
+} from "@/features/stock/schemas";
+import { SUPPLY_UNIT_LABELS } from "@/features/stock/lib/clinic-date";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -26,7 +33,7 @@ interface PurchaseLine {
   mode: "existing" | "new";
   supplyId: string;
   newName: string;
-  newUnit: SupplyType;
+  newUnit: SupplyType | "";
   newMinimum: string;
   quantityPerPackage: string;
   packageCount: string;
@@ -35,11 +42,26 @@ interface PurchaseLine {
   bulkQuantity: string;
 }
 
+interface SuggestionBaseline {
+  key: string;
+  fingerprint: string;
+}
+
+interface SuggestionSession {
+  suggestedLineCount: number;
+  visionModel: string;
+  baselines: SuggestionBaseline[];
+}
+
 interface StockPurchaseWizardProps {
   existingSupplies: Array<{ id: string; name: string; unit: SupplyType }>;
   canCreateSupply: boolean;
   onClose: () => void;
 }
+
+const UNIT_OPTIONS = Object.entries(SUPPLY_UNIT_LABELS) as Array<
+  [SupplyType, string]
+>;
 
 function createEmptyLine(): PurchaseLine {
   return {
@@ -57,6 +79,87 @@ function createEmptyLine(): PurchaseLine {
   };
 }
 
+function lineFingerprint(line: PurchaseLine): string {
+  return [
+    line.mode,
+    line.supplyId,
+    line.newName.trim(),
+    line.newUnit,
+    line.quantityPerPackage.trim(),
+    line.packageCount.trim(),
+    line.lotNumber.trim(),
+    line.expiresAt.trim(),
+  ].join("|");
+}
+
+function mapSuggestedToLine(
+  suggested: SuggestedPurchaseLine,
+  canCreateSupply: boolean,
+): PurchaseLine {
+  const useExisting =
+    suggested.mode === "existing" && Boolean(suggested.supplyId);
+  const mode: "existing" | "new" =
+    canCreateSupply && !useExisting ? "new" : "existing";
+
+  return {
+    key: crypto.randomUUID(),
+    mode,
+    supplyId: useExisting ? (suggested.supplyId ?? "") : "",
+    newName: suggested.name,
+    newUnit: suggested.unit ?? "",
+    newMinimum: "0",
+    quantityPerPackage:
+      suggested.quantityPerPackage !== null
+        ? String(suggested.quantityPerPackage)
+        : "",
+    packageCount:
+      suggested.packageCount !== null ? String(suggested.packageCount) : "1",
+    lotNumber: suggested.lotNumber ?? "",
+    expiresAt: suggested.expiresAt ?? "",
+    bulkQuantity: "",
+  };
+}
+
+function buildSuggestionTrace(
+  session: SuggestionSession | null,
+  lines: PurchaseLine[],
+): PurchaseSuggestionTrace | undefined {
+  if (!session) return undefined;
+
+  const currentByKey = new Map(lines.map((line) => [line.key, line]));
+  let keptCount = 0;
+  let editedCount = 0;
+  let discardedCount = 0;
+
+  for (const baseline of session.baselines) {
+    const current = currentByKey.get(baseline.key);
+    if (!current) {
+      discardedCount += 1;
+      continue;
+    }
+
+    if (lineFingerprint(current) === baseline.fingerprint) {
+      keptCount += 1;
+    } else {
+      editedCount += 1;
+    }
+  }
+
+  const baselineKeys = new Set(session.baselines.map((item) => item.key));
+  const manualCount = lines.filter(
+    (line) => !baselineKeys.has(line.key),
+  ).length;
+
+  return {
+    suggestedLineCount: session.suggestedLineCount,
+    keptCount,
+    editedCount,
+    discardedCount,
+    manualCount,
+    visionModel: session.visionModel,
+  };
+}
+
 export function StockPurchaseWizard({
   existingSupplies,
   canCreateSupply,
@@ -70,6 +173,9 @@ export function StockPurchaseWizard({
     fileSizeBytes: number;
   } | null>(null);
   const [lines, setLines] = useState<PurchaseLine[]>([createEmptyLine()]);
+  const [suggestionSession, setSuggestionSession] =
+    useState<SuggestionSession | null>(null);
+  const [infoMessage, setInfoMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [labelPackages, setLabelPackages] = useState<LabelPackageData[]>([]);
   const [isPending, startTransition] = useTransition();
@@ -95,6 +201,13 @@ export function StockPurchaseWizard({
     );
   }
 
+  function removeLine(key: string) {
+    setLines((current) => {
+      if (current.length <= 1) return current;
+      return current.filter((line) => line.key !== key);
+    });
+  }
+
   function handleUpload(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -118,14 +231,62 @@ export function StockPurchaseWizard({
     });
   }
 
+  function handleSuggested(result: {
+    lines: SuggestedPurchaseLine[];
+    visionModel: string;
+    truncated: boolean;
+  }) {
+    const mapped = result.lines.map((line) =>
+      mapSuggestedToLine(line, canCreateSupply),
+    );
+
+    setLines(mapped);
+    setSuggestionSession({
+      suggestedLineCount: mapped.length,
+      visionModel: result.visionModel,
+      baselines: mapped.map((line) => ({
+        key: line.key,
+        fingerprint: lineFingerprint(line),
+      })),
+    });
+    setError(null);
+    setInfoMessage(
+      result.truncated
+        ? "Mostrei as 40 primeiras linhas. Digite o restante manualmente."
+        : "Revise as linhas sugeridas antes de confirmar a entrada.",
+    );
+    setStep(2);
+  }
+
   function handleConfirm() {
     setError(null);
+
+    if (!canCreateSupply) {
+      const hasUnresolvedNew = lines.some(
+        (line) => line.mode === "new" || !line.supplyId,
+      );
+      if (hasUnresolvedNew) {
+        setError(
+          "Selecione um insumo existente em cada linha ou remova a linha.",
+        );
+        return;
+      }
+    } else {
+      const missingUnit = lines.some(
+        (line) => line.mode === "new" && !line.newUnit,
+      );
+      if (missingUnit) {
+        setError("Selecione a unidade de cada insumo novo.");
+        return;
+      }
+    }
 
     startTransition(async () => {
       const result = await registerPurchaseAction({
         sheetStoragePath: sheetPath,
         sheetMimeType: sheetMeta?.mimeType,
         sheetFileSizeBytes: sheetMeta?.fileSizeBytes,
+        suggestionTrace: buildSuggestionTrace(suggestionSession, lines),
         items: lines.map((line) => {
           const mode = canCreateSupply ? line.mode : "existing";
           return {
@@ -134,7 +295,7 @@ export function StockPurchaseWizard({
               canCreateSupply && mode === "new"
                 ? {
                     name: line.newName,
-                    unit: line.newUnit,
+                    unit: line.newUnit || "unit",
                     minimumQuantity: line.newMinimum,
                   }
                 : undefined,
@@ -167,7 +328,7 @@ export function StockPurchaseWizard({
               lotNumber: line.lotNumber || null,
               expiresAt: line.expiresAt || null,
               supplyName: supply?.name ?? line.newName,
-              unitLabel: supply?.unit ?? line.newUnit,
+              unitLabel: supply?.unit ?? (line.newUnit || "unit"),
             };
           }),
         );
@@ -184,19 +345,20 @@ export function StockPurchaseWizard({
         <h3 className="text-xl font-semibold">Registrar compra / planilha</h3>
         <p className="mt-1 text-sm text-muted-foreground">
           {canCreateSupply
-            ? "Digite os itens manualmente a partir da foto. Sem OCR."
-            : "Selecione insumos já cadastrados e registre os pacotes."}
+            ? "Sugira itens pela foto ou digite à mão. A entrada só grava depois da confirmação."
+            : "Sugira itens pela foto ou selecione insumos já cadastrados. A entrada só grava depois da confirmação."}
         </p>
       </div>
 
       {step === 1 ? (
         <section className="space-y-3 rounded-xl border border-border p-4">
           <p className="font-medium">1. Foto da planilha (opcional)</p>
-          <Input
-            type="file"
-            accept="image/jpeg,image/png,image/webp"
-            onChange={handleUpload}
-          />
+          <p className="text-sm text-muted-foreground">
+            No celular, fotografe a planilha agora ou escolha um arquivo.
+            Guarda só como referência histórica. Não preenche as linhas. Para
+            sugerir itens, use o passo seguinte.
+          </p>
+          <Input {...purchasePhotoInputAttrs()} onChange={handleUpload} />
           {sheetPath ? (
             <p className="text-sm text-priority-green">Planilha enviada.</p>
           ) : null}
@@ -208,12 +370,31 @@ export function StockPurchaseWizard({
 
       {step === 2 ? (
         <section className="space-y-4">
-          <p className="font-medium">2. Itens digitados</p>
+          <p className="font-medium">2. Itens</p>
+
+          <SuggestPurchaseItems
+            onSuggested={handleSuggested}
+            onError={(message) => {
+              setInfoMessage(null);
+              setError(message);
+            }}
+          />
+
+          {infoMessage ? (
+            <p className="text-sm text-muted-foreground">{infoMessage}</p>
+          ) : null}
+
           {lines.map((line) => (
             <div
               key={line.key}
               className="space-y-3 rounded-xl border border-border p-4"
             >
+              {!canCreateSupply && line.newName ? (
+                <p className="text-sm text-muted-foreground">
+                  Lido na foto: {line.newName}
+                </p>
+              ) : null}
+
               <div className="grid gap-3 sm:grid-cols-2">
                 {canCreateSupply ? (
                   <div className="space-y-2">
@@ -273,6 +454,28 @@ export function StockPurchaseWizard({
                         }
                         className="text-base"
                       />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Unidade</Label>
+                      <Select
+                        value={line.newUnit || undefined}
+                        onValueChange={(value) =>
+                          updateLine(line.key, {
+                            newUnit: value as SupplyType,
+                          })
+                        }
+                      >
+                        <SelectTrigger className="text-base">
+                          <SelectValue placeholder="Selecione" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {UNIT_OPTIONS.map(([value, label]) => (
+                            <SelectItem key={value} value={value}>
+                              {label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div className="space-y-2">
                       <Label>Mínimo</Label>
@@ -338,6 +541,17 @@ export function StockPurchaseWizard({
                   />
                 </div>
               </div>
+
+              {lines.length > 1 ? (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={() => removeLine(line.key)}
+                  className="min-h-11"
+                >
+                  Remover linha
+                </Button>
+              ) : null}
             </div>
           ))}
 
@@ -348,6 +562,7 @@ export function StockPurchaseWizard({
               onClick={() =>
                 setLines((current) => [...current, createEmptyLine()])
               }
+              className="min-h-11"
             >
               Adicionar linha
             </Button>
@@ -366,8 +581,8 @@ export function StockPurchaseWizard({
         <section className="space-y-4 rounded-xl border border-border p-4">
           <p className="font-medium">3. Revisão</p>
           <p className="text-sm text-muted-foreground">
-            {review.totalPackages} pacote(s) · {review.totalEntries} unidades de
-            entrada
+            {review.totalPackages} pacote(s) e {review.totalPackages}{" "}
+            etiqueta(s) · {review.totalEntries} unidades de entrada
           </p>
           <Button
             type="button"
@@ -376,6 +591,14 @@ export function StockPurchaseWizard({
             className="min-h-11"
           >
             {isPending ? "Registrando..." : "Confirmar entrada"}
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => setStep(2)}
+            className="min-h-11"
+          >
+            Voltar aos itens
           </Button>
         </section>
       ) : null}
