@@ -16,6 +16,7 @@ Controle de insumos com QR por pacote, retirada mobile e alertas operacionais.
 - Retirada parcial ou total, modo contínuo, feedback sonoro e vibração
 - Alertas de estoque na **Hoje**
 - PWA instalável com atalho **Scan estoque**
+- Fatia posterior: editar e apagar insumo ([23-edicao-exclusao-insumo.md](./23-edicao-exclusao-insumo.md))
 
 ## O que não entrega
 

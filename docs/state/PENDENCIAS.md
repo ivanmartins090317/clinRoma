@@ -2,7 +2,7 @@
 
 Fonte viva do que **ainda falta implementar ou validar**. Atualizar ao concluir cada fase.
 
-Última revisão: **2026-09-23** (fatia captura câmera planilha em código).
+Última revisão: **2026-09-29** (editar e apagar insumo em código).
 
 ---
 
@@ -176,6 +176,7 @@ Referência: `specs/2026-08-18-fase-5-insumos-estoque.md` · `docs/implementatio
 - [x] Spec / código: captura nativa da nota no celular (`specs/2026-09-23-captura-camera-planilha.md` · `docs/implementation/F5-captura-camera-planilha.md`) — `capture="environment"` nos dois inputs; sem viewfinder no app
 - [ ] Homologação manual da fatia sugestão (fixture `docs/fixtures/planilha-compra-teste-clinroma.png`): sugerir → revisar → confirmar; foto só da sugestão sem histórico; papel sem permissão; botão no celular
 - [ ] Homologação manual da fatia captura câmera (iPhone e Android, HTTPS): passo 2 abre câmera/galeria; foto na hora só lê no botão; negar permissão ainda permite galeria/digitação; desktop com fixture; passo 1 admin só histórico
+- [ ] Homologação manual da fatia editar/apagar insumo (`docs/fixtures/ROTEIRO-editar-deletar-insumo.md`): mínimo 0 sem apagar; saldo vira ajuste; delete some histórico; auxiliar sem os botões
 - [x] Recepção: `/estoque/scan` negado; alertas visíveis na Hoje — TC-31 aprovado 08/09/2026 (`docs/evidencias/tc31-recepcao-hoje-estoque.png`)
 - [x] Auxiliar: scan OK; cadastro base de insumo negado — TC-32 aprovado 09/09/2026
 - [x] F7-06 / TC-33: e-mail ao cruzar o mínimo com `FINANCE_ALERT_EMAIL` — aprovado 09/09/2026 (`docs/evidencias/tc33-email-estoque-baixo-financeiro.png`)

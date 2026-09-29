@@ -3,6 +3,10 @@
 import { revalidatePath } from "next/cache";
 
 import type { SupplyQuantitySnapshot } from "@/features/stock/domain/finance-alert";
+import {
+  planSupplyBalanceAdjustment,
+  SUPPLY_BALANCE_EDIT_NOTE,
+} from "@/features/stock/domain/supply-balance-edit";
 import { matchSupplyName } from "@/features/stock/domain/supply-name-match";
 import {
   applyBulkEntry,
@@ -23,6 +27,7 @@ import {
   addPackageSchema,
   createSupplySchema,
   deletePackageSchema,
+  deleteSupplySchema,
   registerPurchaseSchema,
   type SuggestedPurchaseLine,
   updateSupplySchema,
@@ -220,6 +225,11 @@ export async function updateSupplyAction(
 
     const supabase = await createClient();
     const before = await readSupplySnapshot(supabase, parsed.data.id);
+
+    if (!before) {
+      return { error: "Insumo não encontrado" };
+    }
+
     const { error } = await supabase
       .from("supplies")
       .update({
@@ -234,11 +244,36 @@ export async function updateSupplyAction(
       return { error: error.message };
     }
 
+    const balanceAdjustment = planSupplyBalanceAdjustment({
+      liveQuantity: before.currentQuantity,
+      baselineQuantity: parsed.data.baselineQuantity,
+      desiredQuantity: parsed.data.currentQuantity,
+    });
+
+    if (balanceAdjustment) {
+      const { error: movementError } = await supabase
+        .from("supply_movements")
+        .insert({
+          supply_id: parsed.data.id,
+          package_id: null,
+          movement_type: "adjustment",
+          quantity: balanceAdjustment.quantity,
+          adjustment_direction: balanceAdjustment.direction,
+          performed_by: session.profile.id,
+          notes: SUPPLY_BALANCE_EDIT_NOTE,
+        });
+
+      if (movementError) {
+        await syncFinanceAlertForSupply(parsed.data.id, before);
+        revalidatePath("/estoque");
+        revalidatePath("/hoje");
+        return { error: movementError.message };
+      }
+    }
+
     revalidatePath("/estoque");
     revalidatePath("/hoje");
-    if (before) {
-      await syncFinanceAlertForSupply(parsed.data.id, before);
-    }
+    await syncFinanceAlertForSupply(parsed.data.id, before);
     return { success: true, supplyId: parsed.data.id };
   } catch (error) {
     return {
@@ -564,6 +599,48 @@ export async function withdrawPackageAction(
       currentQuantity: result.currentQuantity,
       unitLabel: SUPPLY_UNIT_LABELS[result.unit],
     };
+  } catch (error) {
+    return {
+      error: error instanceof Error ? error.message : "Erro inesperado",
+    };
+  }
+}
+
+export async function deleteSupplyAction(
+  input: unknown,
+): Promise<StockActionResult> {
+  try {
+    const session = await requireAuthSession("/estoque");
+
+    if (!canManageSupplies(session.profile.role)) {
+      return { error: "Sem permissão para apagar insumo" };
+    }
+
+    const parsed = deleteSupplySchema.safeParse(input);
+    if (!parsed.success) {
+      return { error: parsed.error.issues[0]?.message ?? "Dados inválidos" };
+    }
+
+    const supabase = await createClient();
+    const { error } = await supabase
+      .from("supplies")
+      .delete()
+      .eq("id", parsed.data.id);
+
+    if (error) {
+      if (error.code === "23503") {
+        return {
+          error:
+            "Não foi possível apagar este insumo porque o histórico ainda está ligado a ele.",
+        };
+      }
+
+      return { error: error.message };
+    }
+
+    revalidatePath("/estoque");
+    revalidatePath("/hoje");
+    return { success: true };
   } catch (error) {
     return {
       error: error instanceof Error ? error.message : "Erro inesperado",

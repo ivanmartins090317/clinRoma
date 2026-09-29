@@ -68,3 +68,15 @@ Obrigatória em **iPhone e Android reais** antes do fechamento operacional:
 - Admin: cadastro, etiquetas, alerta na Hoje
 
 Ver `docs/manual-dev/07-fase-5-insumos-estoque.md` e `docs/state/PENDENCIAS.md`.
+
+## Ajuste · 2026-09-29 · editar e apagar insumo
+
+Plano: `docs/plans/plano-edicao-exclusao-insumo.md`. Manual: `docs/manual-dev/23-edicao-exclusao-insumo.md`.
+
+| Arquivo | Conteúdo |
+| ------- | -------- |
+| `030_supply_delete_cascade.sql` | Histórico de movimentação cai com o insumo; delete só admin |
+| `supply-balance-edit.ts` | Decide se o saldo editado vira ajuste |
+| Formulário e diálogos do detalhe | Editar insumo e deletar com aviso de histórico |
+
+Homologação: `docs/fixtures/ROTEIRO-editar-deletar-insumo.md`.

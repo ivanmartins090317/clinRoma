@@ -6,7 +6,8 @@ import Link from "next/link";
 import { StockAdjustmentForm } from "@/features/stock/components/stock-adjustment-form";
 import { StockLabelSheet } from "@/features/stock/components/stock-label-sheet";
 import { StockPackageForm } from "@/features/stock/components/stock-package-form";
-import { StockSupplyNameEditor } from "@/features/stock/components/stock-supply-name-editor";
+import { StockSupplyDeleteDialog } from "@/features/stock/components/stock-supply-delete-dialog";
+import { StockSupplyEditorDialog } from "@/features/stock/components/stock-supply-editor-dialog";
 import { StockSupplyPackagesPanel } from "@/features/stock/components/stock-supply-packages-panel";
 import type { SupplyDetail, SupplyPackageItem } from "@/features/stock/queries";
 import { Badge } from "@/components/ui/badge";
@@ -38,6 +39,8 @@ export function StockSupplyDetail({
   onClose,
 }: StockSupplyDetailProps) {
   const [activeTab, setActiveTab] = useState("packages");
+  const [isEditing, setIsEditing] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [labelPackages, setLabelPackages] = useState<
     Array<SupplyPackageItem & { supplyName: string; unitLabel: string }>
   >([]);
@@ -86,11 +89,29 @@ export function StockSupplyDetail({
     <div className="space-y-6">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <StockSupplyNameEditor
-            supply={supply}
-            canEdit={canManage}
-            onSaved={onRefresh}
-          />
+          <div className="flex flex-wrap items-center gap-2">
+            <h3 className="text-xl font-semibold">{supply.name}</h3>
+            {canManage ? (
+              <>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setIsEditing(true)}
+                  className="min-h-11"
+                >
+                  Editar insumo
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setIsDeleting(true)}
+                  className="min-h-11"
+                >
+                  Deletar
+                </Button>
+              </>
+            ) : null}
+          </div>
           <p className="mt-1 text-sm text-muted-foreground">
             Saldo {supply.currentQuantity} {supply.unitLabel} · mínimo{" "}
             {supply.minimumQuantity}
@@ -237,6 +258,22 @@ export function StockSupplyDetail({
           </TabsContent>
         ) : null}
       </Tabs>
+
+      {canManage ? (
+        <>
+          <StockSupplyEditorDialog
+            supply={supply}
+            open={isEditing}
+            onOpenChange={setIsEditing}
+          />
+          <StockSupplyDeleteDialog
+            supply={supply}
+            open={isDeleting}
+            onOpenChange={setIsDeleting}
+            onDeleted={onClose}
+          />
+        </>
+      ) : null}
 
       {labelPackages.length > 0 ? (
         <StockLabelSheet

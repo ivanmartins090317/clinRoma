@@ -39,7 +39,11 @@ export function StockSupplyForm({ supply, onClose }: StockSupplyFormProps) {
   const [minimumQuantity, setMinimumQuantity] = useState(
     String(supply?.minimumQuantity ?? 0),
   );
+  const [currentQuantity, setCurrentQuantity] = useState(
+    String(supply?.currentQuantity ?? 0),
+  );
   const [initialQuantity, setInitialQuantity] = useState("0");
+  const baselineQuantity = supply?.currentQuantity ?? 0;
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
@@ -54,6 +58,8 @@ export function StockSupplyForm({ supply, onClose }: StockSupplyFormProps) {
             name,
             unit,
             minimumQuantity,
+            currentQuantity,
+            baselineQuantity,
           })
         : await createSupplyAction({
             name,
@@ -116,9 +122,31 @@ export function StockSupplyForm({ supply, onClose }: StockSupplyFormProps) {
           onChange={(event) => setMinimumQuantity(event.target.value)}
           className="text-base"
         />
+        <p className="text-sm text-muted-foreground">
+          Use 0 para parar o alerta de reposição. O item continua na lista.
+        </p>
       </div>
 
-      {!supply ? (
+      {supply ? (
+        <div className="space-y-2">
+          <Label htmlFor="supply-balance">Saldo</Label>
+          <Input
+            id="supply-balance"
+            type="number"
+            min={0}
+            step="any"
+            value={currentQuantity}
+            onChange={(event) => setCurrentQuantity(event.target.value)}
+            className="text-base"
+            required
+          />
+          <p className="text-sm text-muted-foreground">
+            Ao salvar, o saldo passa a ser este número e fica registrado um
+            ajuste. As etiquetas QR não mudam. Trocar a unidade não converte
+            essa quantidade.
+          </p>
+        </div>
+      ) : (
         <div className="space-y-2">
           <Label htmlFor="supply-initial">Saldo inicial (opcional)</Label>
           <Input
@@ -131,7 +159,7 @@ export function StockSupplyForm({ supply, onClose }: StockSupplyFormProps) {
             className="text-base"
           />
         </div>
-      ) : null}
+      )}
 
       {error ? <p className="text-sm text-destructive">{error}</p> : null}
 

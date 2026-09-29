@@ -65,6 +65,7 @@ Existem **5 perfis** no ClinRoma:
 | ---- | :---: | :------: | :------: | :------: | :----------: |
 | Ver saldos e alertas | Sim | Sim | Sim | Sim | Não |
 | Cadastrar ou editar insumo | Sim | Não | Não | Não | Não |
+| Apagar insumo | Sim | Não | Não | Não | Não |
 | Registrar compra e gerar QR | Sim | Não | Não | Sim | Não |
 | Escanear QR para retirada | Sim | Não | Não | Sim | Não |
 

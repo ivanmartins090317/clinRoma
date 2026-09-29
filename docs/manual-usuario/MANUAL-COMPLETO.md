@@ -146,6 +146,7 @@ Existem **5 perfis** no ClinRoma:
 | --------------------------- | :---: | :------: | :------: | :------: | :----------: |
 | Ver saldos e alertas        |  Sim  |   Sim    |   Sim    |   Sim    |     Não      |
 | Cadastrar ou editar insumo  |  Sim  |   Não    |   Não    |   Não    |     Não      |
+| Apagar insumo               |  Sim  |   Não    |   Não    |   Não    |     Não      |
 | Registrar compra e gerar QR |  Sim  |   Não    |   Não    |   Sim    |     Não      |
 | Escanear QR para retirada   |  Sim  |   Não    |   Não    |   Sim    |     Não      |
 
@@ -355,7 +356,11 @@ O link expira em **40 minutos**. Depois disso a oferta perde validade sozinha.
 
 1. **Pacotes** – consulta etiquetas; use **Ver / baixar QR** para ver ou baixar a da prateleira. Pacotes esgotados ficam no histórico.
 2. **Entrada** – só quando o material chegou. Cria QR novo e aumenta o saldo.
-3. **Ajuste** (administrador) – corrige o número do saldo. Não gera QR e não substitui o Scan.
+3. **Ajuste** (administrador) – corrige o número do saldo, com observação livre. Não gera QR e não substitui o Scan.
+
+**Editar insumo (administrador):** no detalhe, abre o mesmo formulário do cadastro (nome, unidade, mínimo e saldo). Mínimo **0** para o alerta e mantém o item na lista. Mudar o saldo grava um ajuste; as etiquetas QR não mudam. Trocar a unidade não converte o número.
+
+**Deletar insumo (administrador):** pede confirmação e apaga o item, as etiquetas e o histórico. Não volta atrás. Para só parar o alerta, cancele e use mínimo **0**. É diferente de deletar um pacote.
 
 **Registrar compra (entrada de material):**
 
@@ -622,10 +627,13 @@ Chame a **auxiliar de sala** ou o **administrador**.
 Se você usar **Sugerir itens da foto**, o sistema propõe linhas para você revisar. A entrada só grava depois de **Confirmar entrada**. A foto da sugestão não fica guardada. A foto histórica opcional continua só como referência.
 
 **Para que serve Ajuste de saldo?**  
-Só para corrigir o número. Não gera QR e não substitui o Scan.
+Só para corrigir o número, com uma observação sua. Não gera QR e não substitui o Scan. O saldo também pode ser corrigido em **Editar insumo**; a observação fica automática e as etiquetas não mudam.
 
-**Para que serve Ajuste de saldo?**  
-Só para corrigir o número. Não gera QR e não substitui o Scan.
+**Não vou mais comprar este insumo. Apago?**  
+Só se quiser remover o item e o histórico. **Deletar** apaga insumo, etiquetas e movimentações. Para só parar o alerta, use **Editar insumo** e coloque o mínimo em **0**.
+
+**Como mudo o mínimo ou o nome?**  
+Administrador: abra o insumo, **Editar insumo**, altere e **Salvar**.
 
 ### Lembretes
 

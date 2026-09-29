@@ -151,7 +151,19 @@ No detalhe do insumo → **Pacotes** → **Deletar** → confirme **Sim, deletar
 
 ### Para que serve Ajuste de saldo?
 
-Só para **corrigir** o número (contagem, quebra, diferença). Não gera QR e não substitui o Scan.
+Só para **corrigir** o número (contagem, quebra, diferença), com uma observação sua. Não gera QR e não substitui o Scan.
+
+O saldo também pode ser corrigido em **Editar insumo**. Nesse caso a observação fica automática e as etiquetas não mudam.
+
+### Não vou mais comprar este insumo. Apago?
+
+Só se quiser remover o item e o histórico. **Deletar** (administrador) apaga o insumo, as etiquetas e as movimentações. Não volta atrás.
+
+Para só parar o alerta de reposição, use **Editar insumo** e coloque o **estoque mínimo em 0**. O item continua na lista, mesmo zerado.
+
+### Como mudo o mínimo ou o nome?
+
+Administrador: abra o insumo → **Editar insumo** → altere nome, unidade, mínimo ou saldo → **Salvar**.
 
 ---
 

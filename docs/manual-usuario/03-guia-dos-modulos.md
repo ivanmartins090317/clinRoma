@@ -220,7 +220,24 @@ Ao abrir um produto:
 2. **Entrada**  
    Só quando o material **chegou**. Cria QR novo e **aumenta** o saldo. Não use esta aba só para consultar etiqueta.
 3. **Ajuste** (administrador)  
-   Correção manual do número do saldo (contagem, quebra, diferença). **Não** gera QR e **não** substitui a retirada por scan.
+   Correção manual do número do saldo (contagem, quebra, diferença), com observação livre. **Não** gera QR e **não** substitui a retirada por scan.
+
+### Editar insumo (administrador)
+
+No detalhe, **Editar insumo** abre o mesmo formulário do cadastro, já preenchido:
+
+- Nome
+- Unidade (unitário, caixa, rolo, frasco). Trocar a unidade **não** converte o número: 50 unitários passam a valer 50 na unidade nova
+- Estoque mínimo. Use **0** para parar o alerta de reposição sem apagar o item
+- Saldo. Ao salvar um número diferente, o sistema registra um ajuste. As etiquetas QR **não** mudam
+
+### Deletar insumo (administrador)
+
+**Deletar** pede confirmação. Apaga o item, as etiquetas QR e o histórico de entradas e saídas. Essa ação não volta atrás.
+
+Se a ideia é só parar o alerta, cancele e use **Editar insumo** com mínimo **0**. O item continua na lista.
+
+Isso é diferente de **Deletar** na lista de pacotes, que remove só uma etiqueta.
 
 ### Registrar compra (entrada de material)
 

@@ -18,6 +18,8 @@ export const updateSupplySchema = z.object({
   name: z.string().trim().min(1, "Informe o nome do insumo"),
   unit: supplyUnitSchema,
   minimumQuantity: z.coerce.number().min(0, "Mínimo inválido"),
+  currentQuantity: z.coerce.number().min(0, "Saldo inválido"),
+  baselineQuantity: z.coerce.number().min(0, "Saldo inválido"),
 });
 
 export const purchaseItemSchema = z.object({
@@ -76,6 +78,10 @@ export const addPackageSchema = z.object({
 
 export const deletePackageSchema = z.object({
   packageId: z.string().uuid("Pacote inválido"),
+});
+
+export const deleteSupplySchema = z.object({
+  id: z.string().uuid("Insumo inválido"),
 });
 
 export const withdrawPackageSchema = z.object({
