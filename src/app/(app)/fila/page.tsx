@@ -9,7 +9,8 @@ export const metadata = { title: "Fila Kanban" };
 
 export default async function FilaPage() {
   const session = await requireAuthSession("/fila");
-  const canWrite = getModuleAccess(session.profile.role, "waitlist") === "write";
+  const canWrite =
+    getModuleAccess(session.profile.role, "waitlist") === "write";
 
   const [entries, dentists] = await Promise.all([
     getWaitlistBoardEntries(),
@@ -19,14 +20,18 @@ export default async function FilaPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-semibold">Fila Kanban</h2>
+        <h2 className="text-2xl font-semibold">Fila</h2>
         <p className="mt-1 text-zinc-600">
           Priorize pacientes, ofereça horários liberados e acompanhe respostas
           pelo link (40 min).
         </p>
       </div>
 
-      <WaitlistBoard entries={entries} dentists={dentists} canWrite={canWrite} />
+      <WaitlistBoard
+        entries={entries}
+        dentists={dentists}
+        canWrite={canWrite}
+      />
 
       <div className="flex flex-wrap gap-3">
         {Object.entries(WAITLIST_COLORS).map(([key, color]) => (
