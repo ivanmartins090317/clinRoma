@@ -26,6 +26,7 @@ import { PATIENT_MESSAGE_COPY } from "@/features/records/domain/patient-message"
 import { PatientSummary } from "@/features/patients/components/patient-summary";
 import type { PatientDetail } from "@/features/patients/queries";
 import { PatientForm } from "@/features/patients/components/patient-form";
+import { BackLink } from "@/components/back-link";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
@@ -81,6 +82,20 @@ export function PatientChart({
 
   return (
     <div className="space-y-6">
+      <div className="space-y-3">
+        <BackLink href="/pacientes" label="Voltar" />
+        <div>
+          <h2 className="text-2xl font-semibold tracking-tight">
+            {patient.fullName}
+          </h2>
+          {appointmentId ? (
+            <p className="mt-1 text-sm text-muted-foreground">
+              Consulta vinculada pela agenda.
+            </p>
+          ) : null}
+        </div>
+      </div>
+
       <PatientSummary
         patient={patient}
         clinicalSummary={canViewClinical ? (cardSummary ?? null) : null}

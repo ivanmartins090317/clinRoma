@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { getPatientById } from "@/features/patients/queries";
@@ -42,21 +41,6 @@ export default async function PatientDetailPage({
 
   return (
     <div className="space-y-6">
-      <div>
-        <Link
-          href="/pacientes"
-          className="text-sm text-muted-foreground hover:text-foreground"
-        >
-          Voltar para pacientes
-        </Link>
-        <h2 className="mt-2 text-2xl font-semibold">{patient.fullName}</h2>
-        {consulta ? (
-          <p className="mt-1 text-sm text-muted-foreground">
-            Consulta vinculada pela agenda.
-          </p>
-        ) : null}
-      </div>
-
       <PatientChart
         patient={patient}
         chart={chart}
