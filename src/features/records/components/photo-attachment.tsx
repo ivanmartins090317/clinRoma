@@ -114,7 +114,7 @@ export function PhotoAttachment({
         <img
           src={previewUrl}
           alt="Prévia da foto"
-          className="max-h-48 w-full rounded-md object-cover"
+          className="mx-auto block h-auto max-h-80 w-auto max-w-full rounded-md object-contain"
         />
       ) : null}
       {error ? <p className="text-sm text-destructive">{error}</p> : null}

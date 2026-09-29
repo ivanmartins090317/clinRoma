@@ -94,7 +94,7 @@ function EvolutionCard({
             <img
               src={attachment.signedUrl}
               alt="Foto clínica"
-              className="max-h-64 w-full rounded-md object-cover"
+              className="mx-auto block h-auto max-h-[70vh] w-auto max-w-full rounded-md object-contain"
             />
           ) : null}
 
