@@ -9,34 +9,38 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { buildAgendaHref } from "@/features/agenda/domain/agenda-range";
 import type { AgendaDentist } from "@/features/agenda/types";
 
 interface AgendaDentistFilterProps {
   dentists: AgendaDentist[];
   selectedDate: string;
   value: string;
+  from?: string;
+  to?: string;
 }
 
-function buildHref(date: string, dentistId: string): string {
-  const params = new URLSearchParams({ date });
-
-  if (dentistId !== "all") {
-    params.set("dentist", dentistId);
-  }
-
-  return `/agenda?${params.toString()}`;
+function buildHref(
+  date: string,
+  dentistId: string,
+  from?: string,
+  to?: string,
+): string {
+  return buildAgendaHref({ date, dentistId, from, to });
 }
 
 export function AgendaDentistFilter({
   dentists,
   selectedDate,
   value,
+  from,
+  to,
 }: AgendaDentistFilterProps) {
   return (
     <Select
       value={value}
       onValueChange={(dentistId) => {
-        window.location.href = buildHref(selectedDate, dentistId);
+        window.location.href = buildHref(selectedDate, dentistId, from, to);
       }}
     >
       <SelectTrigger className="w-full sm:w-56">
@@ -58,11 +62,13 @@ export function AgendaDentistFilterLinks({
   dentists,
   selectedDate,
   value,
+  from,
+  to,
 }: AgendaDentistFilterProps) {
   return (
     <nav className="flex flex-wrap gap-2">
       <Link
-        href={buildHref(selectedDate, "all")}
+        href={buildHref(selectedDate, "all", from, to)}
         className={
           value === "all"
             ? "rounded-full bg-primary px-3 py-1.5 text-sm text-primary-foreground"
@@ -74,7 +80,7 @@ export function AgendaDentistFilterLinks({
       {dentists.map((dentist) => (
         <Link
           key={dentist.id}
-          href={buildHref(selectedDate, dentist.id)}
+          href={buildHref(selectedDate, dentist.id, from, to)}
           className={
             value === dentist.id
               ? "rounded-full px-3 py-1.5 text-sm text-white"

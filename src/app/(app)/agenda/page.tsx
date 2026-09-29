@@ -1,7 +1,10 @@
 import { AgendaView } from "@/features/agenda/components/agenda-view";
 import {
+  clinicRangeBounds,
+  resolveAgendaDateRange,
+} from "@/features/agenda/domain/agenda-range";
+import {
   clinicDateNavigation,
-  clinicDayBounds,
   clinicWeekBounds,
   formatClinicDate,
   getActiveDentists,
@@ -19,6 +22,8 @@ interface AgendaPageProps {
   searchParams: Promise<{
     date?: string;
     dentist?: string;
+    from?: string;
+    to?: string;
   }>;
 }
 
@@ -31,19 +36,23 @@ export default async function AgendaPage({ searchParams }: AgendaPageProps) {
   const formattedDate = formatClinicDate(selectedDate);
   const todayDate = formatClinicDate(parseClinicDateParam(undefined));
   const dentistFilter = params.dentist ?? "all";
+  const range = resolveAgendaDateRange(params.from, params.to, formattedDate);
+  const calendarMoment = range.isExplicit
+    ? parseClinicDateParam(range.from)
+    : selectedDate;
 
   const dentists = await getActiveDentists();
-  const dayBounds = clinicDayBounds(selectedDate);
-  const weekBounds = clinicWeekBounds(selectedDate);
+  const rangeBounds = clinicRangeBounds(range.from, range.to);
+  const weekBounds = clinicWeekBounds(calendarMoment);
 
-  const [dayAppointments, weekAppointments] = await Promise.all([
-    getAppointmentsInRange(dayBounds.start, dayBounds.end, null),
+  const [rangeAppointments, weekAppointments] = await Promise.all([
+    getAppointmentsInRange(rangeBounds.start, rangeBounds.end, null),
     getAppointmentsInRange(weekBounds.start, weekBounds.end, null),
   ]);
 
   const appointmentIds = [
     ...new Set(
-      [...dayAppointments, ...weekAppointments].map(
+      [...rangeAppointments, ...weekAppointments].map(
         (appointment) => appointment.id,
       ),
     ),
@@ -56,12 +65,16 @@ export default async function AgendaPage({ searchParams }: AgendaPageProps) {
       canWrite={canWrite}
       linkedDentistId={linkedDentistId}
       dentists={dentists}
-      selectedDate={formattedDate}
+      selectedDate={formatClinicDate(calendarMoment)}
       todayDate={todayDate}
       dentistFilter={dentistFilter}
-      dayAppointments={dayAppointments}
+      rangeFrom={range.from}
+      rangeTo={range.to}
+      rangeWasClamped={range.wasClamped}
+      rangeIsExplicit={range.isExplicit}
+      rangeAppointments={rangeAppointments}
       weekAppointments={weekAppointments}
-      dateNavigation={clinicDateNavigation(selectedDate)}
+      dateNavigation={clinicDateNavigation(calendarMoment)}
       remindersByAppointmentId={remindersByAppointmentId}
     />
   );

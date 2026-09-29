@@ -7,14 +7,15 @@ import { useMemo, useState } from "react";
 import { AppointmentDetail } from "@/features/agenda/components/appointment-detail";
 import { AppointmentForm } from "@/features/agenda/components/appointment-form";
 import { AgendaDateNav } from "@/features/agenda/components/agenda-date-nav";
-import { AgendaDayList } from "@/features/agenda/components/agenda-day-list";
 import { AgendaDentistFilter } from "@/features/agenda/components/agenda-dentist-filter";
+import { AgendaRangeFilter } from "@/features/agenda/components/agenda-range-filter";
+import { AgendaRangeList } from "@/features/agenda/components/agenda-range-list";
 import {
   RescheduleConfirmDialog,
   type ReschedulePayload,
 } from "@/features/agenda/components/reschedule-confirm-dialog";
+import { groupAppointmentsByClinicDay } from "@/features/agenda/domain/agenda-range";
 import {
-  groupAppointmentsByDentist,
   toCalendarEvents,
   type AgendaAppointment,
   type AgendaCalendarEvent,
@@ -45,7 +46,11 @@ interface AgendaViewProps {
   selectedDate: string;
   todayDate: string;
   dentistFilter: string;
-  dayAppointments: AgendaAppointment[];
+  rangeFrom: string;
+  rangeTo: string;
+  rangeWasClamped: boolean;
+  rangeIsExplicit: boolean;
+  rangeAppointments: AgendaAppointment[];
   weekAppointments: AgendaAppointment[];
   dateNavigation: {
     previous: string;
@@ -62,7 +67,11 @@ export function AgendaView({
   selectedDate,
   todayDate,
   dentistFilter,
-  dayAppointments,
+  rangeFrom,
+  rangeTo,
+  rangeWasClamped,
+  rangeIsExplicit,
+  rangeAppointments,
   weekAppointments,
   dateNavigation,
   remindersByAppointmentId,
@@ -94,19 +103,19 @@ export function AgendaView({
         ? linkedDentistId
         : "all";
 
-  const filteredDayAppointments = useMemo(() => {
+  const filteredRangeAppointments = useMemo(() => {
     if (mobileDentistFilter === "all") {
-      return dayAppointments;
+      return rangeAppointments;
     }
 
-    return dayAppointments.filter(
+    return rangeAppointments.filter(
       (appointment) => appointment.dentistId === mobileDentistFilter,
     );
-  }, [dayAppointments, mobileDentistFilter]);
+  }, [rangeAppointments, mobileDentistFilter]);
 
-  const dayGroups = useMemo(
-    () => groupAppointmentsByDentist(filteredDayAppointments, dentists),
-    [filteredDayAppointments, dentists],
+  const rangeDays = useMemo(
+    () => groupAppointmentsByClinicDay(filteredRangeAppointments, dentists),
+    [filteredRangeAppointments, dentists],
   );
 
   const calendarDentists = useMemo(() => {
@@ -178,23 +187,37 @@ export function AgendaView({
         ) : null}
       </section>
 
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-        <AgendaDateNav
-          previousDate={dateNavigation.previous}
-          currentDate={dateNavigation.current}
-          nextDate={dateNavigation.next}
-          dentistFilter={mobileDentistFilter}
-          todayDate={todayDate}
-        />
-        <AgendaDentistFilter
-          dentists={dentists}
-          selectedDate={selectedDate}
-          value={mobileDentistFilter}
-        />
+      <div className="flex flex-col gap-4">
+        <div className="md:hidden">
+          <AgendaRangeFilter
+            key={`${rangeFrom}:${rangeTo}`}
+            from={rangeFrom}
+            to={rangeTo}
+            dentistFilter={mobileDentistFilter}
+            wasClamped={rangeWasClamped}
+          />
+        </div>
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <AgendaDateNav
+            className="hidden md:flex"
+            previousDate={dateNavigation.previous}
+            currentDate={dateNavigation.current}
+            nextDate={dateNavigation.next}
+            dentistFilter={mobileDentistFilter}
+            todayDate={todayDate}
+          />
+          <AgendaDentistFilter
+            dentists={dentists}
+            selectedDate={selectedDate}
+            value={mobileDentistFilter}
+            from={rangeIsExplicit ? rangeFrom : undefined}
+            to={rangeIsExplicit ? rangeTo : undefined}
+          />
+        </div>
       </div>
 
       <div className="md:hidden">
-        <AgendaDayList groups={dayGroups} onSelectAppointment={openDetail} />
+        <AgendaRangeList days={rangeDays} onSelectAppointment={openDetail} />
       </div>
 
       <div className="hidden md:block">

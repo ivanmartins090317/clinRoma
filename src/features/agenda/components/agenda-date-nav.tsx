@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { buildAgendaHref } from "@/features/agenda/domain/agenda-range";
 import { cn } from "@/lib/utils";
 
 interface AgendaDateNavProps {
@@ -16,13 +17,7 @@ interface AgendaDateNavProps {
 }
 
 function buildHref(date: string, dentistFilter: string): string {
-  const params = new URLSearchParams({ date });
-
-  if (dentistFilter && dentistFilter !== "all") {
-    params.set("dentist", dentistFilter);
-  }
-
-  return `/agenda?${params.toString()}`;
+  return buildAgendaHref({ date, dentistId: dentistFilter });
 }
 
 export function AgendaDateNav({
