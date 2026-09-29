@@ -1,10 +1,7 @@
 "use client";
 
 import { getAppointmentStatusLabel } from "@/features/agenda/domain/appointment-status";
-import {
-  formatClinicDateTime,
-  formatClinicTime,
-} from "@/features/agenda/types";
+import { formatClinicTime } from "@/features/agenda/types";
 import type {
   AgendaAppointment,
   AgendaDayGroup,
@@ -97,27 +94,6 @@ export function AgendaDayList({
           </ul>
         </section>
       ))}
-    </div>
-  );
-}
-
-export function AgendaTodaySummaryItem({
-  appointment,
-}: {
-  appointment: AgendaAppointment;
-}) {
-  return (
-    <div className="flex items-center justify-between gap-3 rounded-lg border border-border bg-background px-4 py-3">
-      <div>
-        <p className="font-medium">{appointment.patientName}</p>
-        <p className="text-sm text-muted-foreground">
-          {appointment.dentistName} ·{" "}
-          {formatClinicDateTime(appointment.startsAt)}
-        </p>
-      </div>
-      <Badge variant={statusVariant(appointment.status)}>
-        {getAppointmentStatusLabel(appointment.status)}
-      </Badge>
     </div>
   );
 }

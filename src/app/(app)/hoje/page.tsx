@@ -1,12 +1,6 @@
 import Link from "next/link";
-import { CalendarDays } from "lucide-react";
 
-import { AgendaTodaySummaryItem } from "@/features/agenda/components/agenda-day-list";
-import { getAppointmentStatusLabel } from "@/features/agenda/domain/appointment-status";
-import {
-  formatClinicTime,
-  groupAppointmentsByDentist,
-} from "@/features/agenda/types";
+import { TodayAppointmentsCard } from "@/features/agenda/components/today-appointments-card";
 import {
   getActiveDentists,
   getTodayAppointments,
@@ -20,7 +14,6 @@ import {
 } from "@/features/whatsapp/permissions";
 import { getClinicWhatsAppSessionStatus } from "@/features/whatsapp/queries";
 import { ReminderFailuresPanel } from "@/features/reminders/components/reminder-failures-panel";
-import { ReminderStatusBadge } from "@/features/reminders/components/reminder-status-badge";
 import {
   getRecentFailedReminders,
   getRemindersByAppointmentIds,
@@ -66,10 +59,6 @@ export default async function HojePage() {
     appointments.map((appointment) => appointment.id),
   );
 
-  const grouped = groupAppointmentsByDentist(appointments, dentists);
-  const chronological = [...appointments].sort(
-    (a, b) => new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime(),
-  );
   const expiringCount = waitlistSummary.expiringSoon.length;
 
   return (
@@ -124,109 +113,11 @@ export default async function HojePage() {
         />
       ) : null}
 
-      <section className="rounded-(--radius) border border-[#f0e3db] bg-neo-white p-5 shadow-neo md:p-5.5">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-          <div>
-            <h3 className="text-[17px] font-bold text-foreground">
-              Consultas de hoje
-            </h3>
-            <p className="mt-0.5 text-[13.5px] text-muted-foreground">
-              {appointments.length === 0
-                ? "Nenhuma consulta hoje"
-                : `${appointments.length} consulta(s) ativa(s)`}
-            </p>
-          </div>
-          <Button asChild variant="secondary" size="sm" className="min-h-11">
-            <Link href="/agenda">
-              <CalendarDays aria-hidden />
-              Abrir agenda completa
-            </Link>
-          </Button>
-        </div>
-
-        {appointments.length === 0 ? (
-          <p className="mt-5 text-sm text-neo-ink-3">
-            Nenhuma consulta hoje. Use a agenda para marcar horários.
-          </p>
-        ) : (
-          <div className="mt-5 space-y-5">
-            <div className="space-y-3.5 md:hidden">
-              {chronological.map((appointment) => (
-                <div key={appointment.id} className="space-y-2">
-                  <div className="rounded-[9px] border border-neo-cream-line bg-neo-cream-soft px-4 py-3">
-                    <AgendaTodaySummaryItem appointment={appointment} />
-                  </div>
-                  {appointment.status === "completed" ? (
-                    <ReminderStatusBadge
-                      reminder={remindersByAppointmentId[appointment.id]}
-                    />
-                  ) : null}
-                  <Link
-                    href={`/pacientes/${appointment.patientId}?consulta=${appointment.id}`}
-                    className="inline-flex min-h-11 items-center text-sm font-semibold text-neo-burgundy-800 underline-offset-4 hover:underline"
-                  >
-                    Abrir prontuário
-                  </Link>
-                </div>
-              ))}
-            </div>
-
-            <div className="hidden space-y-4 md:block">
-              {grouped.map((group) => (
-                <div key={group.dentist.id}>
-                  <div className="mb-2 flex items-center gap-2 text-[14.5px] font-bold">
-                    <span
-                      className="size-2.25 rounded-full"
-                      style={{ backgroundColor: group.dentist.calendarColor }}
-                      aria-hidden
-                    />
-                    {group.dentist.fullName}
-                  </div>
-                  <ul className="space-y-2">
-                    {group.appointments.map((appointment) => (
-                      <li
-                        key={appointment.id}
-                        className="flex items-center justify-between gap-3.5 rounded-[9px] border border-neo-cream-line bg-neo-cream-soft px-4 py-3"
-                      >
-                        <div>
-                          <p className="text-[15px] font-bold">
-                            {appointment.patientName}
-                          </p>
-                          <p className="mt-0.5 text-[13.5px] text-muted-foreground">
-                            {formatClinicTime(appointment.startsAt)} ·{" "}
-                            {formatClinicTime(appointment.endsAt)}
-                            {appointment.procedureName
-                              ? ` · ${appointment.procedureName}`
-                              : ""}
-                          </p>
-                        </div>
-                        <div className="flex flex-col items-end gap-2">
-                          <span className="text-sm text-muted-foreground">
-                            {getAppointmentStatusLabel(appointment.status)}
-                          </span>
-                          {appointment.status === "completed" ? (
-                            <ReminderStatusBadge
-                              reminder={
-                                remindersByAppointmentId[appointment.id]
-                              }
-                            />
-                          ) : null}
-                          <Link
-                            href={`/pacientes/${appointment.patientId}?consulta=${appointment.id}`}
-                            className="text-[13.5px] font-semibold text-neo-burgundy-800 underline-offset-4 hover:underline"
-                          >
-                            Abrir prontuário
-                          </Link>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </section>
+      <TodayAppointmentsCard
+        appointments={appointments}
+        dentists={dentists}
+        remindersByAppointmentId={remindersByAppointmentId}
+      />
 
       {isAdmin ? <ReminderFailuresPanel failures={failedReminders} /> : null}
 

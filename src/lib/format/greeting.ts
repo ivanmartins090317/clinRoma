@@ -1,8 +1,10 @@
-import { format } from "date-fns";
+import { formatInTimeZone } from "date-fns-tz";
 import { ptBR } from "date-fns/locale";
 
+const CLINIC_TIMEZONE = "America/Sao_Paulo";
+
 export function getTimeGreeting(date = new Date()): string {
-  const hour = date.getHours();
+  const hour = Number(formatInTimeZone(date, CLINIC_TIMEZONE, "H"));
 
   if (hour < 12) {
     return "Bom dia";
@@ -16,9 +18,12 @@ export function getTimeGreeting(date = new Date()): string {
 }
 
 export function formatHeroDate(date = new Date()): string {
-  const formatted = format(date, "EEEE, d 'de' MMMM 'de' yyyy", {
-    locale: ptBR,
-  });
+  const formatted = formatInTimeZone(
+    date,
+    CLINIC_TIMEZONE,
+    "EEEE, d 'de' MMMM 'de' yyyy",
+    { locale: ptBR },
+  );
 
   return formatted.charAt(0).toUpperCase() + formatted.slice(1);
 }
