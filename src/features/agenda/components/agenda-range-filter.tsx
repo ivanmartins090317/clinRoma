@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { buildAgendaHref } from "@/features/agenda/domain/agenda-range";
 
@@ -13,6 +12,32 @@ interface AgendaRangeFilterProps {
   to: string;
   dentistFilter: string;
   wasClamped: boolean;
+}
+
+function AgendaDateField({
+  id,
+  label,
+  value,
+  onChange,
+}: {
+  id: string;
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+}) {
+  return (
+    <div className="min-w-0 space-y-1.5">
+      <Label htmlFor={id}>{label}</Label>
+      <input
+        id={id}
+        type="date"
+        required
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        className="agenda-date-field box-border h-11 w-full min-w-0 cursor-pointer rounded-md border border-input bg-background px-3 text-base text-foreground shadow-xs"
+      />
+    </div>
+  );
 }
 
 export function AgendaRangeFilter({
@@ -49,26 +74,18 @@ export function AgendaRangeFilter({
   return (
     <form onSubmit={search} className="space-y-3">
       <div className="grid grid-cols-2 gap-3">
-        <div className="space-y-1.5">
-          <Label htmlFor="agenda-range-from">De</Label>
-          <Input
-            id="agenda-range-from"
-            type="date"
-            required
-            value={fromValue}
-            onChange={(event) => setFromValue(event.target.value)}
-          />
-        </div>
-        <div className="space-y-1.5">
-          <Label htmlFor="agenda-range-to">Até</Label>
-          <Input
-            id="agenda-range-to"
-            type="date"
-            required
-            value={toValue}
-            onChange={(event) => setToValue(event.target.value)}
-          />
-        </div>
+        <AgendaDateField
+          id="agenda-range-from"
+          label="De"
+          value={fromValue}
+          onChange={setFromValue}
+        />
+        <AgendaDateField
+          id="agenda-range-to"
+          label="Até"
+          value={toValue}
+          onChange={setToValue}
+        />
       </div>
       <div className="grid grid-cols-2 gap-3">
         <Button type="submit" className="min-h-11">
