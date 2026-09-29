@@ -51,6 +51,15 @@ No celular (mesma Wi‑Fi): `https://<IP-local>:3000` e confiar no certificado d
 
 ---
 
+## Espera no miolo (fatia 2026-09-29)
+
+O shell desta fase ganhou espera sem mudar o que a Hoje mostra. Registro: [`docs/implementation/loader-montagem.md`](../implementation/loader-montagem.md). Não é capítulo de fase nova.
+
+- `src/app/(app)/loading.tsx` mostra o símbolo dourado só no miolo. O menu continua clicável.
+- A Hoje desenha a saudação e os lugares na hora. Cada bloco entra quando o dado daquele bloco chega.
+- Dentistas ativos e o chip de WhatsApp entram depois, no cabeçalho. Não seguram o menu e não mostram zero provisório.
+- `prefers-reduced-motion: reduce` deixa o símbolo parado e os blocos sem subida.
+
 ## Limitações intencionais (corrigidas na F1)
 
 - Sem login nem guarda por papel.

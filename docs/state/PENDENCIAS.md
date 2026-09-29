@@ -2,7 +2,23 @@
 
 Fonte viva do que **ainda falta implementar ou validar**. Atualizar ao concluir cada fase.
 
-Última revisão: **2026-09-29** (editar e apagar insumo em código).
+Última revisão: **2026-09-29** (loader da marca e montagem da Hoje, em código; não fecha fase).
+
+---
+
+## Fatia · Loader da marca (2026-09-29)
+
+Spec: `specs/2026-09-29-loader-montagem.md`. Registro: `docs/implementation/loader-montagem.md`.
+
+Não reabre e não fecha fase do `docs/PLANO.md`. O conteúdo da Hoje não mudou.
+
+- [x] Menu visível com a sessão. Símbolo dourado só no miolo enquanto a próxima tela não chegou
+- [x] Hoje monta por bloco, com lugar reservado e aviso **Não foi possível carregar agora.**
+- [x] Troca de página mantém o menu. Celular: símbolo acima da dock
+- [x] `prefers-reduced-motion: reduce`: símbolo parado, blocos sem subida
+- [x] Visualizador sem card de WhatsApp e sem falhas. Chip de WhatsApp só para admin e recepção
+- [x] Sessão, dentistas ativos e estado do WhatsApp lidos no máximo uma vez por abertura (`React.cache`)
+- [ ] Conta dentista desta máquina não entrou com a senha de desenvolvimento documentada. O papel está coberto por teste; o card ao vivo do dentista ainda não foi visto neste navegador
 
 ---
 

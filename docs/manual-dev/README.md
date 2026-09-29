@@ -11,7 +11,7 @@ Guia de arquitetura, fases implementadas e operação do ambiente de desenvolvim
 | Documento                                                                                | Conteúdo                                                  |
 | ---------------------------------------------------------------------------------------- | --------------------------------------------------------- |
 | [01-arquitetura.md](./01-arquitetura.md)                                                 | Visão geral, pastas, fluxos, padrões de código            |
-| [02-fase-0-fundacao.md](./02-fase-0-fundacao.md)                                         | Fase 0: shell, HTTPS, shadcn, middleware base             |
+| [02-fase-0-fundacao.md](./02-fase-0-fundacao.md)                                         | Fase 0: shell, HTTPS, shadcn, middleware base. A espera no miolo (2026-09-29) está numa seção deste capítulo |
 | [03-fase-1-dados-auth-papeis.md](./03-fase-1-dados-auth-papeis.md)                       | Fase 1: banco, auth, papéis, **contas de teste**          |
 | [06-fase-4-fila-kanban.md](./06-fase-4-fila-kanban.md)                                   | Fase 4: fila Kanban, link paciente, cron                  |
 | [07-fase-5-insumos-estoque.md](./07-fase-5-insumos-estoque.md)                           | Fase 5: estoque, QR, scan mobile, PWA                     |

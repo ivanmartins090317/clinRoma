@@ -32,9 +32,7 @@ interface AppShellProps {
   allowedModuleIds: readonly string[];
   displayName: string;
   role: UserRole;
-  activeDentistCount: number;
-  whatsappSessionStatus?: string | null;
-  showWhatsAppChip?: boolean;
+  chips?: ReactNode;
 }
 
 const NAV_ICONS: Record<string, LucideIcon> = {
@@ -81,75 +79,6 @@ function isNavActive(pathname: string, href: string): boolean {
   }
 
   return pathname === href || pathname.startsWith(`${href}/`);
-}
-
-function EnvChips({
-  activeDentistCount,
-  showWhatsAppChip = false,
-  whatsappSessionStatus = null,
-}: {
-  activeDentistCount: number;
-  showWhatsAppChip?: boolean;
-  whatsappSessionStatus?: string | null;
-}) {
-  const whatsappWorking = whatsappSessionStatus === "WORKING";
-
-  return (
-    <div
-      aria-label="Estado do sistema"
-      className="flex flex-wrap items-center gap-2"
-    >
-      <span
-        className="inline-flex shrink-0 items-center rounded-full border border-[#e5c98d] bg-neo-gold-soft px-2.5 py-1 text-[12.5px] font-bold tracking-[0.04em] text-[#6e4e0e]"
-        title="Este ambiente é o piloto do projeto"
-      >
-        PILOTO
-      </span>
-      <span
-        className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-neo-cream-line bg-neo-cream-soft px-2.5 py-1 text-[12.5px] text-muted-foreground"
-        title="Dentistas ativos na clínica"
-      >
-        <b className="font-semibold text-foreground">{activeDentistCount}</b>
-        dentistas ativos
-      </span>
-      <span
-        className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-neo-cream-line bg-neo-cream-soft px-2.5 py-1 text-[12.5px] text-muted-foreground"
-        title="Tempo de validade dos links de oferta de horário"
-      >
-        SLA da fila: <b className="font-semibold text-foreground">40 min</b>
-      </span>
-      <span
-        className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-neo-cream-line bg-neo-cream-soft px-2.5 py-1 text-[12.5px] text-muted-foreground"
-        title="Leitura de QR de estoque habilitada"
-      >
-        <span
-          aria-hidden
-          className="size-1.75 rounded-full bg-priority-green"
-        />
-        QR estoque ativo
-      </span>
-      {showWhatsAppChip ? (
-        <span
-          className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-neo-cream-line bg-neo-cream-soft px-2.5 py-1 text-[12.5px] text-muted-foreground"
-          title={
-            whatsappWorking
-              ? "WhatsApp da clínica conectado"
-              : "WhatsApp da clínica desconectado"
-          }
-        >
-          <span
-            aria-hidden
-            className={
-              whatsappWorking
-                ? "size-1.75 rounded-full bg-priority-green"
-                : "size-1.75 animate-pulse rounded-full bg-priority-red"
-            }
-          />
-          {whatsappWorking ? "WhatsApp ligado" : "WhatsApp desligado"}
-        </span>
-      ) : null}
-    </div>
-  );
 }
 
 const SIDEBAR_STORAGE_KEY = "clinroma-sidebar-collapsed";
@@ -213,9 +142,7 @@ export function AppShell({
   allowedModuleIds,
   displayName,
   role,
-  activeDentistCount,
-  whatsappSessionStatus = null,
-  showWhatsAppChip = false,
+  chips = null,
 }: AppShellProps) {
   const pathname = usePathname();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(
@@ -336,13 +263,7 @@ export function AppShell({
       <div className="flex min-w-0 flex-1 flex-col pb-[calc(5.5rem+env(safe-area-inset-bottom))] md:pb-0">
         <header className="safe-area-top hidden border-b border-neo-cream-line bg-neo-white md:block">
           <div className="flex items-center justify-between gap-4 px-7 py-2.5">
-            <div className="flex min-w-0 items-center gap-3">
-              <EnvChips
-                activeDentistCount={activeDentistCount}
-                showWhatsAppChip={showWhatsAppChip}
-                whatsappSessionStatus={whatsappSessionStatus}
-              />
-            </div>
+            <div className="flex min-w-0 items-center gap-3">{chips}</div>
             <div className="flex shrink-0 items-center gap-2.5 text-sm text-muted-foreground">
               <span>{displayName}</span>
               <UserAvatar displayName={displayName} variant="topbar" />

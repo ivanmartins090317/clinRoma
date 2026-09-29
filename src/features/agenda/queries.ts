@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { toZonedTime } from "date-fns-tz";
 import { parseISO } from "date-fns";
 
@@ -55,24 +56,26 @@ function mapAppointmentRow(row: AppointmentRow): AgendaAppointment {
   };
 }
 
-export async function getActiveDentists(): Promise<AgendaDentist[]> {
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("dentists")
-    .select("id, full_name, calendar_color")
-    .eq("active", true)
-    .order("full_name");
+export const getActiveDentists = cache(
+  async function getActiveDentists(): Promise<AgendaDentist[]> {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from("dentists")
+      .select("id, full_name, calendar_color")
+      .eq("active", true)
+      .order("full_name");
 
-  if (error) {
-    throw new Error("Não foi possível carregar os dentistas");
-  }
+    if (error) {
+      throw new Error("Não foi possível carregar os dentistas");
+    }
 
-  return (data ?? []).map((dentist) => ({
-    id: dentist.id,
-    fullName: dentist.full_name,
-    calendarColor: dentist.calendar_color,
-  }));
-}
+    return (data ?? []).map((dentist) => ({
+      id: dentist.id,
+      fullName: dentist.full_name,
+      calendarColor: dentist.calendar_color,
+    }));
+  },
+);
 
 export async function getLinkedDentistId(
   profileId: string,
