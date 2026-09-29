@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ClinRoma · Apresentação · Clínica Neo Roma</title>
+    <style>
+      :root {
+        --bg: #f8efe9;
+        --card: #ffffff;
+        --primary: #3d1118;
+        --primary-mid: #6b2737;
+        --accent: #d9a441;
+        --text: #231512;
+        --muted: #5f4c44;
+        --border: #eadcd4;
+        --font: system-ui, "Segoe UI", sans-serif;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        -webkit-text-size-adjust: 100%;
+      }
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        font-family: var(--font);
+        background: var(--bg);
+        color: var(--text);
+      }
+      @media (min-width: 901px) {
+        body {
+          overflow: hidden;
+        }
+      }
+      .deck {
+        height: 100vh;
+        height: 100dvh;
+        display: flex;
+        flex-direction: column;
+      }
+      .toolbar {
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        padding: 8px 12px;
+        padding-top: max(8px, env(safe-area-inset-top));
+        background: var(--primary);
+        color: #f6e9e2;
+        font-size: 0.8rem;
+      }
+      .toolbar-title {
+        min-width: 0;
+        line-height: 1.3;
+      }
+      .toolbar-title #slideCounter {
+        display: block;
+        opacity: 0.85;
+        font-size: 0.75rem;
+        margin-top: 2px;
+      }
+      .toolbar-nav {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-shrink: 0;
+      }
+      .toolbar kbd {
+        background: rgba(255, 255, 255, 0.12);
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 0.75rem;
+      }
+      .progress {
+        flex: 1;
+        max-width: 200px;
+        height: 4px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 2px;
+        overflow: hidden;
+      }
+      .progress-fill {
+        height: 100%;
+        background: var(--accent);
+        width: 0%;
+        transition: width 0.2s ease;
+      }
+      .slide-viewport {
+        flex: 1;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 16px 16px 24px;
+        padding-bottom: max(24px, env(safe-area-inset-bottom));
+        min-height: 0;
+        overflow-y: auto;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-y: contain;
+      }
+      @media (min-width: 901px) {
+        .slide-viewport {
+          align-items: center;
+        }
+      }
+      .slide {
+        display: none;
+        width: min(1200px, 100%);
+        animation: fade 0.25s ease;
+      }
+      .slide.active {
+        display: grid;
+        gap: 20px;
+        align-content: start;
+      }
+      .slide.layout-cover.active {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        min-height: min(60vh, 100%);
+      }
+      .slide.layout-split.active {
+        grid-template-columns: 1fr 1.15fr;
+        align-items: start;
+      }
+      .slide.layout-split-reverse.active {
+        grid-template-columns: 1.15fr 1fr;
+      }
+      .slide.layout-duo.active {
+        grid-template-columns: 1fr 1fr;
+      }
+      @media (max-width: 900px) {
+        .slide.layout-split.active,
+        .slide.layout-split-reverse.active,
+        .slide.layout-duo.active {
+          grid-template-columns: 1fr;
+        }
+        .slide.layout-cover.active {
+          justify-content: flex-start;
+          min-height: auto;
+          padding-top: 8px;
+          padding-bottom: 32px;
+        }
+        .slide {
+          max-height: none;
+        }
+        figure img {
+          max-height: none;
+        }
+        .toolbar {
+          flex-wrap: wrap;
+        }
+        .toolbar .progress {
+          order: 3;
+          flex: 1 1 100%;
+          max-width: none;
+          margin-top: 4px;
+        }
+        .toolbar-hints {
+          display: none;
+        }
+        .nav-btn {
+          padding: 10px 16px;
+          min-height: 44px;
+        }
+        h2 {
+          font-size: 1.25rem;
+        }
+        .copy ul,
+        .copy p,
+        .speaker {
+          font-size: 0.9rem;
+        }
+        table.roles {
+          font-size: 0.72rem;
+        }
+        table.roles th,
+        table.roles td {
+          padding: 6px 6px;
+        }
+      }
+      @keyframes fade {
+        from {
+          opacity: 0;
+          transform: translateY(6px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      h2 {
+        margin: 0 0 8px;
+        font-size: clamp(1.35rem, 2.5vw, 1.85rem);
+        color: var(--primary);
+        line-height: 1.2;
+      }
+      .tag {
+        display: inline-block;
+        font-size: 0.7rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--primary-mid);
+        background: #f3e2c2;
+        padding: 4px 10px;
+        border-radius: 999px;
+        margin-bottom: 10px;
+      }
+      .copy ul {
+        margin: 0;
+        padding-left: 1.2rem;
+        line-height: 1.55;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+      .copy li {
+        margin-bottom: 0.45rem;
+      }
+      .copy p {
+        margin: 0 0 10px;
+        color: var(--muted);
+        line-height: 1.55;
+        font-size: 0.95rem;
+      }
+      .speaker {
+        margin-top: 14px;
+        padding: 12px 14px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-left: 4px solid var(--accent);
+        border-radius: 10px;
+        font-size: 0.88rem;
+        line-height: 1.5;
+        color: var(--text);
+      }
+      .speaker strong {
+        display: block;
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--primary-mid);
+        margin-bottom: 6px;
+      }
+      figure {
+        margin: 0;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(42, 13, 19, 0.08);
+      }
+      figure img {
+        display: block;
+        width: 100%;
+        height: auto;
+        max-height: min(58vh, 520px);
+        object-fit: contain;
+        object-position: top center;
+        background: #faf6f3;
+      }
+      figcaption {
+        padding: 8px 12px;
+        font-size: 0.78rem;
+        color: var(--muted);
+        border-top: 1px solid var(--border);
+      }
+      .logo-mark {
+        width: 120px;
+        height: auto;
+        margin-bottom: 20px;
+      }
+      .cover-title {
+        font-size: clamp(2rem, 5vw, 2.75rem);
+        color: var(--primary);
+        margin: 0 0 12px;
+        font-weight: 700;
+      }
+      .cover-sub {
+        font-size: 1.15rem;
+        color: var(--muted);
+        margin: 0 0 28px;
+        max-width: 36ch;
+      }
+      .cover-meta {
+        font-size: 0.9rem;
+        color: var(--primary-mid);
+      }
+      table.roles {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.82rem;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+      }
+      table.roles th,
+      table.roles td {
+        padding: 8px 10px;
+        border-bottom: 1px solid var(--border);
+        text-align: center;
+      }
+      table.roles th:first-child,
+      table.roles td:first-child {
+        text-align: left;
+      }
+      table.roles th {
+        background: #f6e9e2;
+        color: var(--primary);
+        font-weight: 600;
+      }
+      table.roles tr:last-child td {
+        border-bottom: none;
+      }
+      .yes {
+        color: #2c6547;
+        font-weight: 600;
+      }
+      .nav-btn {
+        background: rgba(255, 255, 255, 0.15);
+        border: none;
+        color: inherit;
+        padding: 6px 14px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 0.85rem;
+      }
+      .nav-btn:hover {
+        background: rgba(255, 255, 255, 0.25);
+      }
+      .nav-btn:disabled {
+        opacity: 0.4;
+        cursor: default;
+      }
+      @media print {
+        .toolbar {
+          display: none;
+        }
+        body {
+          overflow: visible;
+        }
+        .slide-viewport {
+          display: block;
+          padding: 0;
+        }
+        .slide {
+          display: block !important;
+          page-break-after: always;
+          max-height: none;
+          margin-bottom: 24px;
+        }
+        figure img {
+          max-height: 420px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="deck" id="deck">
+      <div class="toolbar">
+        <div class="toolbar-title">
+          <strong>ClinRoma</strong> · Neo Roma
+          <span id="slideCounter">1 / 18</span>
+        </div>
+        <div class="progress" aria-hidden="true">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="toolbar-nav">
+          <span class="toolbar-hints" aria-hidden="true">
+            <kbd>←</kbd> <kbd>→</kbd> navegar · <kbd>F</kbd> tela cheia
+          </span>
+          <button type="button" class="nav-btn" id="prevBtn">Anterior</button>
+          <button type="button" class="nav-btn" id="nextBtn">Próximo</button>
+        </div>
+      </div>
+
+      <div class="slide-viewport" id="slideViewport">
+        <!-- 1 Capa -->
+        <section class="slide layout-cover active" data-slide="1">
+          <img
+            class="logo-mark"
+            src="assets/logo-black.webp"
+            alt="Neo Roma"
+            width="240"
+            height="80"
+          />
+          <h1 class="cover-title">ClinRoma</h1>
+          <p class="cover-sub">
+            Agenda, prontuário, fila de encaixe e estoque da clínica em um só
+            lugar. Pensado para celular e computador.
+          </p>
+          <p class="cover-meta">
+            Apresentação para <strong>Dr. Felipe Roma</strong><br />
+            Clínica Neo Roma · setembro/2026
+          </p>
+        </section>
+
+        <!-- 2 Visão -->
+        <section class="slide" data-slide="2">
+          <span class="tag">Visão geral</span>
+          <h2>O que o sistema resolve no dia a dia</h2>
+          <div class="copy">
+            <ul>
+              <li>
+                <strong>Hoje:</strong> resumo das consultas, fila e alertas de
+                estoque numa tela.
+              </li>
+              <li>
+                <strong>Agenda:</strong> até cinco dentistas, marcação e
+                remarcação na recepção.
+              </li>
+              <li>
+                <strong>Prontuário:</strong> cadastro com LGPD, anamnese,
+                odontograma e evolução com foto e áudio transcrito.
+              </li>
+              <li>
+                <strong>Fila:</strong> prioridade por cores, oferta de horário
+                por WhatsApp, resposta em 40 minutos.
+              </li>
+              <li>
+                <strong>Estoque:</strong> compra, etiqueta QR e retirada pela
+                auxiliar no celular.
+              </li>
+              <li>
+                <strong>Comunicação:</strong> e-mail pós-consulta ao dentista,
+                cuidados pós-cirurgia por WhatsApp, aviso de estoque ao
+                financeiro.
+              </li>
+            </ul>
+            <div class="speaker">
+              <strong>Roteiro de fala</strong>
+              Felipe, o ClinRoma não é só agenda. É o fluxo inteiro da clínica:
+              da recepção marcando horário até a auxiliar baixando insumo e você
+              recebendo o resumo do atendimento no e-mail.
+            </div>
+          </div>
+        </section>
+
+        <!-- 3 Hoje -->
+        <section class="slide layout-split" data-slide="3">
+          <div class="copy">
+            <span class="tag">Módulo · Hoje</span>
+            <h2>Painel do dia</h2>
+            <p>
+              Primeira tela após o login. Consultas do dia, fila, ofertas perto
+              de vencer e estoque crítico. Atalhos para nova consulta e scan
+              QR.
+            </p>
+            <div class="speaker">
+              <strong>Roteiro de fala</strong>
+              Quem abre a clínica entra aqui e vê o que importa em um minuto.
+              Não precisa abrir quatro telas diferentes.
+            </div>
+          </div>
+          <figure>
+            <img src="assets/01-hoje.png" alt="Tela Hoje do ClinRoma" />
+            <figcaption>Resumo operacional · perfil administração</figcaption>
+          </figure>
+        </section>
+
+        <!-- 4 Agenda desktop -->
+        <section class="slide layout-split-reverse" data-slide="4">
+          <figure>
+            <img
+              src="assets/02-agenda-desktop.png"
+              alt="Agenda multi-dentista no computador"
+            />
+            <figcaption>Visão dia · uma coluna por dentista</figcaption>
+          </figure>
+          <div class="copy">
+            <span class="tag">Módulo · Agenda</span>
+            <h2>Recepção no computador</h2>
+            <ul>
+              <li>Calendário com coluna por profissional.</li>
+              <li>Nova consulta, editar, cancelar e remarcar arrastando.</li>
+              <li>Bloqueio automático se dois pacientes no mesmo horário.</li>
+            </ul>
+            <div class="speaker">
+              <strong>Roteiro de fala</strong>
+              A recepção opera a agenda. Você e os colegas só consultam no
+              celular, sem risco de remarcar sem querer.
+            </div>
+          </div>
+        </section>
+
+        <!-- 5 Agenda mobile -->
+        <section class="slide layout-split" data-slide="5">
+          <div class="copy">
+            <span class="tag">Módulo · Agenda</span>
+            <h2>Dentista no celular</h2>
+            <p>
+              Lista do dia filtrada por profissional. Toque na consulta para
+              detalhes e atalho ao prontuário.
+            </p>
+            <div class="speaker">
+              <strong>Roteiro de fala</strong>
+              Na sala, você abre o celular, vê só sua agenda e entra na ficha
+              do paciente em dois toques.
+            </div>
+          </div>
+          <figure>
+            <img
+              src="assets/03-agenda-celular.png"
+              alt="Agenda no celular do dentista"
+            />
+            <figcaption>Mobile first · Dr. Felipe Roma</figcaption>
+          </figure>
+        </section>
+
+        <!-- 6 Prontuário intro -->
+        <section class="slide" data-slide="6">
+          <span class="tag">Módulo · Pacientes</span>
+          <h2>Prontuário completo na ficha</h2>
+          <div class="copy">
+            <ul>
+              <li>Cadastro com consentimento LGPD registrado.</li>
+              <li>
+                Card na ficha: anamnese vigente e último procedimento sem abrir
+                todas as abas.
+              </li>
+              <li>
+                Abas: Resumo, Anamnese, Odontograma, Evoluções e Pós-cirurgia.
+              </li>
+              <li>
+                Evolução clínica só dentista e administração (recepção não
+                registra evolução).
+              </li>
+            </ul>
+            <div class="speaker">
+              <strong>Roteiro de fala</strong>
+              O prontuário segue o que a clínica já faz no papel, só que com
+              histórico, busca e mídia no mesmo lugar.
+            </div>
+          </div>
+        </section>
+
+        <!-- 7 Odontograma -->
+        <section class="slide layout-split-reverse" data-slide="7">
+          <figure>
+            <img src="assets/04-odontograma.png" alt="Odontograma em cruz" />
+            <figcaption>Formato em cruz · dente, face e condição</figcaption>
+          </figure>
+          <div class="copy">
+            <span class="tag">Odontograma</span>
+            <h2>Mapa dos dentes</h2>
+            <p>
+              Seleção do dente, face e condição. Achados ficam visíveis no
+              gráfico e no histórico do paciente.
+            </p>
+            <div class="speaker">
+              <strong>Roteiro de fala</strong>
+              Pedido seu na demo: odontograma em cruz, familiar para a equipe e
+              legível no desktop.
+            </div>
+          </div>
+        </section>
+
+        <!-- 8 Evolução -->
+        <section class="slide layout-split" data-slide="8">
+          <div class="copy">
+            <span class="tag">Evoluções</span>
+            <h2>Áudio, foto e transcrição editável</h2>
+            <ul>
+              <li>Gravação no celular durante o atendimento.</li>
+              <li>Transcrição automática; você corrige antes de salvar.</li>
+              <li>Foto clínica anexada à mesma evolução.</li>
+              <li>Busca no histórico por palavra ou dente.</li>
+            </ul>
+            <div class="speaker">
+              <strong>Roteiro de fala</strong>
+              Você fala na sala, o sistema transcreve e você ajusta o texto. Menos
+              tempo digitando depois do procedimento.
+            </div>
+          </div>
+          <figure>
+            <img
+              src="assets/05-evolucao.jpg"
+              alt="Evolução com foto, áudio e transcrição"
+            />
+            <figcaption>Evolução clínica · Maria Silva</figcaption>
+          </figure>
+        </section>
+
+        <!-- 9 Fila -->
+        <section class="slide layout-split-reverse" data-slide="9">
+          <figure>
+            <img src="assets/06-fila-aguardando.png" alt="Fila Kanban aguardando" />
+            <figcaption>Prioridade vermelho, amarelo e verde</figcaption>
+          </figure>
+          <div class="copy">
+            <span class="tag">Módulo · Fila</span>
+            <h2>Encaixe organizado</h2>
+            <p>
+              Kanban: Aguardando, Oferta enviada e Agendado. A recepção prioriza
+              por urgência e preferência de dentista.
+            </p>
+            <div class="speaker">
+              <strong>Roteiro de fala</strong>
+              Quando cancela uma consulta, o horário vira oportunidade. A fila
+              mostra quem está esperando e com qual prioridade.
+            </div>
+          </div>
+        </section>
+
+        <!-- 10 Oferta -->
+        <section class="slide layout-duo" data-slide="10">
+          <div class="copy" style="grid-column: 1 / -1">
+            <span class="tag">Fila · Oferta</span>
+            <h2>Horário liberado → WhatsApp → consulta confirmada</h2>
+            <p>
+              A recepção oferece o slot; o paciente recebe link com validade de
+              <strong>40 minutos</strong>. Aceitou, a consulta entra confirmada na
+              agenda.
+            </p>
+          </div>
+          <figure>
+            <img src="assets/07-fila-oferta.png" alt="Oferta enviada na fila" />
+            <figcaption>Painel · contagem regressiva da oferta</figcaption>
+          </figure>
+          <figure>
+            <img src="assets/08-whatsapp-oferta.png" alt="WhatsApp com link da fila" />
+            <figcaption>Mensagem automática ao paciente</figcaption>
+          </figure>
+          <div class="speaker" style="grid-column: 1 / -1">
+            <strong>Roteiro de fala</strong>
+            Menos ligação para encaixe. O paciente responde pelo celular e a
+            recepção acompanha no quadro se aceitou ou se o link expirou.
+          </div>
+        </section>
+
+        <!-- 11 Estoque -->
+        <section class="slide layout-split" data-slide="11">
+          <div class="copy">
+            <span class="tag">Módulo · Estoque</span>
+            <h2>Insumos com saldo e alerta</h2>
+            <ul>
+              <li>Lista com unidade, saldo, mínimo e situação (OK ou abaixo).</li>
+              <li>Registrar compra, novo insumo e scan de retirada.</li>
+              <li>E-mail automático ao financeiro quando fica abaixo do mínimo.</li>
+            </ul>
+            <div class="speaker">
+              <strong>Roteiro de fala</strong>
+              A auxiliar e a administração enxergam o que está acabando antes de
+              faltar na sala.
+            </div>
+          </div>
+          <figure>
+            <img src="assets/09-estoque.png" alt="Lista de estoque" />
+            <figcaption>Controle de insumos e alertas</figcaption>
+          </figure>
+        </section>
+
+        <!-- 12 QR -->
+        <section class="slide layout-split-reverse" data-slide="12">
+          <figure>
+            <img src="assets/10-estoque-qr.png" alt="Etiqueta QR do pacote" />
+            <figcaption>Etiqueta por pacote · movimentações rastreáveis</figcaption>
+          </figure>
+          <div class="copy">
+            <span class="tag">Estoque · QR</span>
+            <h2>Uma etiqueta por embalagem</h2>
+            <p>
+              Na compra, gera QR para colar no pacote. A auxiliar escaneia na
+              retirada; o saldo e o histórico atualizam na hora.
+            </p>
+            <div class="speaker">
+              <strong>Roteiro de fala</strong>
+              Fluxo pensado para o celular na sala: apontou a câmera, confirmou
+              a quantidade, próximo pacote.
+            </div>
+          </div>
+        </section>
+
+        <!-- 13 Pós-consulta -->
+        <section class="slide layout-split" data-slide="13">
+          <div class="copy">
+            <span class="tag">Automático</span>
+            <h2>Lembrete pós-consulta</h2>
+            <p>
+              Quando a recepção marca a consulta como <strong>Concluída</strong>,
+              você recebe e-mail com nome parcial do paciente e link para o
+              prontuário.
+            </p>
+            <div class="speaker">
+              <strong>Roteiro de fala</strong>
+              É um gancho para revisar o caso depois do dia, sem o paciente ver
+              dados sensíveis no assunto do e-mail.
+            </div>
+          </div>
+          <figure>
+            <img
+              src="assets/14-email-pos-consulta.png"
+              alt="E-mail pós-consulta ao dentista"
+            />
+            <figcaption>E-mail ao Dr. Felipe Roma</figcaption>
+          </figure>
+        </section>
+
+        <!-- 14 Pós-cirurgia -->
+        <section class="slide layout-duo" data-slide="14">
+          <div class="copy" style="grid-column: 1 / -1">
+            <span class="tag">Pós-cirurgia</span>
+            <h2>Cuidados ao paciente por WhatsApp</h2>
+            <p>
+              Na ficha, aba Pós-cirurgia: texto padrão editável, agendar envio ou
+              enviar agora. Mensagem assinada pela clínica e pelo dentista.
+            </p>
+          </div>
+          <figure>
+            <img
+              src="assets/12-pos-cirurgia.png"
+              alt="Agendamento de mensagem pós-cirurgia"
+            />
+            <figcaption>Agendar ou enviar agora</figcaption>
+          </figure>
+          <figure>
+            <img
+              src="assets/13-whatsapp-pos-cirurgia.png"
+              alt="WhatsApp com cuidados pós-cirurgia"
+            />
+            <figcaption>Recebido no celular do paciente</figcaption>
+          </figure>
+          <div class="speaker" style="grid-column: 1 / -1">
+            <strong>Roteiro de fala</strong>
+            Padroniza o pós-operatório e reduz ligação de dúvida simples. Você
+            personaliza o texto quando o caso pedir.
+          </div>
+        </section>
+
+        <!-- 15 Financeiro -->
+        <section class="slide layout-split-reverse" data-slide="15">
+          <figure>
+            <img
+              src="assets/15-email-estoque-baixo.png"
+              alt="E-mail de estoque baixo"
+            />
+            <figcaption>Aviso ao financeiro</figcaption>
+          </figure>
+          <div class="copy">
+            <span class="tag">Estoque · Financeiro</span>
+            <h2>Reposição sem surpresa</h2>
+            <p>
+              Insumo abaixo do mínimo dispara e-mail para o financeiro com saldo
+              atual e link para abrir o estoque.
+            </p>
+            <div class="speaker">
+              <strong>Roteiro de fala</strong>
+              Quem compra recebe o aviso sem depender da auxiliar lembrar de
+              avisar no fim do dia.
+            </div>
+          </div>
+        </section>
+
+        <!-- 16 Equipe -->
+        <section class="slide layout-split" data-slide="16">
+          <div class="copy">
+            <span class="tag">Administração</span>
+            <h2>Equipe e perfis</h2>
+            <p>
+              Cinco perfis: administração, recepção, dentista, auxiliar de sala
+              e visualização. Cada um vê só o menu permitido.
+            </p>
+            <div class="speaker">
+              <strong>Roteiro de fala</strong>
+              Na entrega, vocês cadastram a equipe real aqui. Contas de teste
+              saem; ficam os acessos da clínica.
+            </div>
+          </div>
+          <figure>
+            <img src="assets/11-equipe.png" alt="Gestão de equipe" />
+            <figcaption>Convites, papéis e último acesso</figcaption>
+          </figure>
+        </section>
+
+        <!-- 17 Papéis tabela -->
+        <section class="slide" data-slide="17">
+          <span class="tag">Segurança</span>
+          <h2>Quem faz o quê (resumo)</h2>
+          <table class="roles" aria-label="Matriz de perfis">
+            <thead>
+              <tr>
+                <th>Ação</th>
+                <th>Recepção</th>
+                <th>Dentista</th>
+                <th>Auxiliar</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Marcar / remarcar consulta</td>
+                <td class="yes">Sim</td>
+                <td>—</td>
+                <td>—</td>
+              </tr>
+              <tr>
+                <td>Prontuário e evolução</td>
+                <td>Leitura + cadastro</td>
+                <td class="yes">Sim</td>
+                <td>—</td>
+              </tr>
+              <tr>
+                <td>Fila e oferta WhatsApp</td>
+                <td class="yes">Sim</td>
+                <td>Consulta</td>
+                <td>—</td>
+              </tr>
+              <tr>
+                <td>Scan QR retirada</td>
+                <td>—</td>
+                <td>—</td>
+                <td class="yes">Sim</td>
+              </tr>
+              <tr>
+                <td>Gestão de equipe</td>
+                <td>—</td>
+                <td>—</td>
+                <td>—</td>
+              </tr>
+            </tbody>
+          </table>
+          <p class="copy" style="margin-top: 12px; font-size: 0.85rem; color: var(--muted)">
+            Administração: acesso total. Visualizador: só leitura de agenda e
+            cadastro básico.
+          </p>
+          <div class="speaker">
+            <strong>Roteiro de fala</strong>
+            Isso protege o prontuário e evita que alguém mexa em módulo que não
+            é da função. Detalhes no manual que entregamos com o sistema.
+          </div>
+        </section>
+
+        <!-- 18 Fechamento -->
+        <section class="slide layout-cover" data-slide="18">
+          <span class="tag">Próximos passos</span>
+          <h2 class="cover-title" style="font-size: 2rem">Piloto pronto para uso</h2>
+          <div class="copy" style="max-width: 52ch; text-align: left">
+            <ul>
+              <li>Endereço de produção: <strong>neo-roma.vercel.app</strong></li>
+              <li>Manual da equipe em <code>docs/manual-usuario/</code></li>
+              <li>Limpeza dos dados de teste e contas reais na Equipe</li>
+              <li>Treino curto: recepção (agenda + fila), você (prontuário mobile), auxiliar (scan)</li>
+            </ul>
+          </div>
+          <div class="speaker" style="max-width: 52ch; text-align: left">
+            <strong>Roteiro de fala</strong>
+            Felipe, o MVP que combinamos está funcionando. Próximo passo é
+            operar na clínica com dados reais, ajustar o que aparecer no dia a
+            dia e fechar o treino de cada perfil. Obrigado pela confiança no
+            piloto Neo Roma.
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        const slides = Array.from(document.querySelectorAll(".slide"));
+        const viewport = document.getElementById("slideViewport");
+        const counter = document.getElementById("slideCounter");
+        const progressFill = document.getElementById("progressFill");
+        const prevBtn = document.getElementById("prevBtn");
+        const nextBtn = document.getElementById("nextBtn");
+        let index = 0;
+
+        function show(i) {
+          index = Math.max(0, Math.min(slides.length - 1, i));
+          slides.forEach((s, j) => s.classList.toggle("active", j === index));
+          counter.textContent = `${index + 1} / ${slides.length}`;
+          progressFill.style.width = `${((index + 1) / slides.length) * 100}%`;
+          prevBtn.disabled = index === 0;
+          nextBtn.disabled = index === slides.length - 1;
+          if (viewport) {
+            viewport.scrollTop = 0;
+          }
+        }
+
+        function next() {
+          show(index + 1);
+        }
+        function prev() {
+          show(index - 1);
+        }
+
+        prevBtn.addEventListener("click", prev);
+        nextBtn.addEventListener("click", next);
+
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "ArrowRight" || e.key === "PageDown" || e.key === " ") {
+            e.preventDefault();
+            next();
+          }
+          if (e.key === "ArrowLeft" || e.key === "PageUp") {
+            e.preventDefault();
+            prev();
+          }
+          if (e.key === "f" || e.key === "F") {
+            if (!document.fullscreenElement) {
+              document.documentElement.requestFullscreen?.();
+            } else {
+              document.exitFullscreen?.();
+            }
+          }
+          if (e.key === "Home") show(0);
+          if (e.key === "End") show(slides.length - 1);
+        });
+
+        let touchStartX = 0;
+        let touchStartY = 0;
+        document.addEventListener(
+          "touchstart",
+          (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+          },
+          { passive: true },
+        );
+        document.addEventListener(
+          "touchend",
+          (e) => {
+            const dx = e.changedTouches[0].screenX - touchStartX;
+            const dy = e.changedTouches[0].screenY - touchStartY;
+            if (Math.abs(dx) < 56 || Math.abs(dx) < Math.abs(dy)) return;
+            const el = viewport;
+            const atTop = !el || el.scrollTop <= 4;
+            const atBottom =
+              !el ||
+              el.scrollTop + el.clientHeight >= el.scrollHeight - 4;
+            if (dx < 0 && atBottom) next();
+            else if (dx > 0 && atTop) prev();
+          },
+          { passive: true },
+        );
+
+        show(0);
+      })();
+    </script>
+  </body>
+</html>
