@@ -11,6 +11,10 @@ import { getWaitlistPriorityLabel } from "@/features/waitlist/domain/waitlist-pr
 import type { WaitlistBoardEntry } from "@/features/waitlist/queries";
 import { SlotOfferCountdown } from "@/features/waitlist/components/slot-offer-link";
 import { formatClinicDateTime } from "@/features/agenda/types";
+import {
+  PatientWhatsAppChatButton,
+  useCanOpenPatientWhatsAppChat,
+} from "@/features/whatsapp/components/patient-whatsapp-chat-button";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -157,6 +161,7 @@ export function WaitlistCard({
   onChanged,
   dragHandle,
 }: WaitlistCardProps) {
+  const canOpenWhatsApp = useCanOpenPatientWhatsAppChat();
   const priorityColor = WAITLIST_COLORS[entry.priority];
 
   return (
@@ -206,6 +211,12 @@ export function WaitlistCard({
               dentistName={entry.pendingOffer.dentistName}
             />
           ) : null}
+
+          <PatientWhatsAppChatButton
+            patientId={entry.patientId}
+            canOpen={canOpenWhatsApp}
+            className="w-full"
+          />
 
           {canWrite && entry.status === "waiting" ? (
             <Button

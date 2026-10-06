@@ -10,11 +10,14 @@ import {
   PATIENT_CARD_COPY,
   type PatientCardSummary,
 } from "@/features/records/domain/patient-card-summary";
+import { PatientWhatsAppChatButton } from "@/features/whatsapp/components/patient-whatsapp-chat-button";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 interface PatientSummaryProps {
   patient: PatientDetail;
   clinicalSummary?: PatientCardSummary | null;
+  canOpenWhatsApp?: boolean;
   onOpenAnamnesis?: () => void;
   onOpenEvolutions?: () => void;
 }
@@ -33,16 +36,19 @@ function ClinicalCardBlock({
   children,
 }: ClinicalCardBlockProps) {
   return (
-    <button
-      type="button"
-      onClick={onOpen}
-      aria-label={shortcut}
-      className="flex min-h-11 w-full flex-col items-start gap-1.5 rounded-lg border border-border bg-background p-3 text-left transition-colors hover:bg-muted/40"
-    >
+    <div className="flex w-full flex-col items-start gap-1.5 rounded-lg border border-border bg-background p-3 text-left">
       <span className="text-sm font-semibold">{title}</span>
       {children}
-      <span className="text-base text-primary">{shortcut}</span>
-    </button>
+      <Button
+        type="button"
+        variant="secondary"
+        size="sm"
+        onClick={onOpen}
+        className="mt-1 min-h-11"
+      >
+        {shortcut}
+      </Button>
+    </div>
   );
 }
 
@@ -57,6 +63,7 @@ function formatDate(value: string | null): string {
 export function PatientSummary({
   patient,
   clinicalSummary,
+  canOpenWhatsApp = false,
   onOpenAnamnesis,
   onOpenEvolutions,
 }: PatientSummaryProps) {
@@ -75,6 +82,11 @@ export function PatientSummary({
           <Badge variant="destructive">Sem consentimento</Badge>
         )}
       </div>
+
+      <PatientWhatsAppChatButton
+        patientId={patient.id}
+        canOpen={canOpenWhatsApp}
+      />
 
       <dl className="grid gap-2 text-sm sm:grid-cols-2">
         <div>

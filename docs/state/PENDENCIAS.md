@@ -2,7 +2,26 @@
 
 Fonte viva do que **ainda falta implementar ou validar**. Atualizar ao concluir cada fase.
 
-Última revisão: **2026-09-29** (loader da marca e montagem da Hoje, em código; não fecha fase).
+Última revisão: **2026-10-06** (conversar com o paciente no WhatsApp, em código; não fecha a Fase 7).
+
+---
+
+## Fatia · Conversar com o paciente no WhatsApp (2026-10-06)
+
+Spec: `specs/2026-10-06-conversar-whatsapp-paciente.md`. Registro: `docs/implementation/conversar-whatsapp-paciente.md`. Manual: `docs/manual-dev/24-conversar-whatsapp-paciente.md`.
+
+Não fecha a Fase 7. O clique não dispara mensagem pelo número da clínica.
+
+- [x] **Conversar** no modal da consulta, na ficha, na lista do dia (intervalo incluso) e no card da fila, para quem já lê o status da sessão
+- [x] Visualizador e auxiliar recusados no servidor, sem consulta ao canal (teste). Na fila, leitura basta para o dentista (teste de papel + botão no card sem `canWrite`)
+- [x] Sessão fora de operação, número ausente, sem telefone, falha de canal e sessão parada na consulta (testes)
+- [x] Endereço sem texto clínico. Agenda e fila sem telefone no payload
+- [x] Nota em `docs/SECURITY.md`
+- [x] Recepção, celular 390 px: botão nas quatro superfícies; clique na lista não abre o modal; um número existente abriu o WhatsApp (2026-10-06)
+- [ ] Homologar número que não existe no WhatsApp: **Este número não está no WhatsApp.**
+- [ ] Homologar sessão da clínica deslogada: **WhatsApp não está logado.**
+- [ ] Homologar segundo contato: **Abrindo conversa com o segundo contato.**
+- [ ] Homologar visualizador sem o botão na agenda e na ficha, e dentista na fila sem escrita no card
 
 ---
 

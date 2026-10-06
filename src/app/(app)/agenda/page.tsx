@@ -13,6 +13,7 @@ import {
   parseClinicDateParam,
 } from "@/features/agenda/queries";
 import { getRemindersByAppointmentIds } from "@/features/reminders/queries";
+import { canReadWhatsAppSessionStatus } from "@/features/whatsapp/permissions";
 import { getModuleAccess } from "@/lib/auth/roles";
 import { requireAuthSession } from "@/lib/auth/session";
 
@@ -31,6 +32,7 @@ export default async function AgendaPage({ searchParams }: AgendaPageProps) {
   const params = await searchParams;
   const session = await requireAuthSession("/agenda");
   const canWrite = getModuleAccess(session.profile.role, "agenda") === "write";
+  const canOpenWhatsApp = canReadWhatsAppSessionStatus(session.profile.role);
   const linkedDentistId = await getLinkedDentistId(session.userId);
   const selectedDate = parseClinicDateParam(params.date);
   const formattedDate = formatClinicDate(selectedDate);
@@ -63,6 +65,7 @@ export default async function AgendaPage({ searchParams }: AgendaPageProps) {
   return (
     <AgendaView
       canWrite={canWrite}
+      canOpenWhatsApp={canOpenWhatsApp}
       linkedDentistId={linkedDentistId}
       dentists={dentists}
       selectedDate={formatClinicDate(calendarMoment)}

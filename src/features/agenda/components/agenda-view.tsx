@@ -41,6 +41,7 @@ const AgendaCalendar = dynamic(
 
 interface AgendaViewProps {
   canWrite: boolean;
+  canOpenWhatsApp?: boolean;
   linkedDentistId: string | null;
   dentists: AgendaDentist[];
   selectedDate: string;
@@ -62,6 +63,7 @@ interface AgendaViewProps {
 
 export function AgendaView({
   canWrite,
+  canOpenWhatsApp = false,
   linkedDentistId,
   dentists,
   selectedDate,
@@ -217,7 +219,11 @@ export function AgendaView({
       </div>
 
       <div className="md:hidden">
-        <AgendaRangeList days={rangeDays} onSelectAppointment={openDetail} />
+        <AgendaRangeList
+          days={rangeDays}
+          onSelectAppointment={openDetail}
+          canOpenWhatsApp={canOpenWhatsApp}
+        />
       </div>
 
       <div className="hidden md:block">
@@ -240,6 +246,7 @@ export function AgendaView({
         open={detailOpen}
         onOpenChange={setDetailOpen}
         canWrite={canWrite}
+        canOpenWhatsApp={canOpenWhatsApp}
         dentists={dentists}
         reminder={
           selectedAppointment

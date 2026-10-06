@@ -1,6 +1,8 @@
 import { getActiveDentists } from "@/features/agenda/queries";
 import { WaitlistBoard } from "@/features/waitlist/components/waitlist-board";
 import { getWaitlistBoardEntries } from "@/features/waitlist/queries";
+import { PatientWhatsAppChatAccess } from "@/features/whatsapp/components/patient-whatsapp-chat-button";
+import { canReadWhatsAppSessionStatus } from "@/features/whatsapp/permissions";
 import { getModuleAccess } from "@/lib/auth/roles";
 import { requireAuthSession } from "@/lib/auth/session";
 import { WAITLIST_COLORS } from "@/types/clinroma";
@@ -27,11 +29,15 @@ export default async function FilaPage() {
         </p>
       </div>
 
-      <WaitlistBoard
-        entries={entries}
-        dentists={dentists}
-        canWrite={canWrite}
-      />
+      <PatientWhatsAppChatAccess
+        canOpen={canReadWhatsAppSessionStatus(session.profile.role)}
+      >
+        <WaitlistBoard
+          entries={entries}
+          dentists={dentists}
+          canWrite={canWrite}
+        />
+      </PatientWhatsAppChatAccess>
 
       <div className="flex flex-wrap gap-3">
         {Object.entries(WAITLIST_COLORS).map(([key, color]) => (
