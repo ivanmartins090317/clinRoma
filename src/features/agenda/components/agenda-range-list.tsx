@@ -5,17 +5,20 @@ import type { AgendaAppointment } from "@/features/agenda/types";
 interface AgendaRangeListProps {
   days: AgendaRangeDay[];
   onSelectAppointment: (appointment: AgendaAppointment) => void;
+  canOpenWhatsApp?: boolean;
 }
 
 export function AgendaRangeList({
   days,
   onSelectAppointment,
+  canOpenWhatsApp = false,
 }: AgendaRangeListProps) {
   if (days.length === 0) {
     return (
       <AgendaDayList
         groups={[]}
         onSelectAppointment={onSelectAppointment}
+        canOpenWhatsApp={canOpenWhatsApp}
         emptyMessage="Nenhuma consulta neste período"
       />
     );
@@ -29,6 +32,7 @@ export function AgendaRangeList({
           <AgendaDayList
             groups={day.groups}
             onSelectAppointment={onSelectAppointment}
+            canOpenWhatsApp={canOpenWhatsApp}
           />
         </section>
       ))}

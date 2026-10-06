@@ -23,6 +23,7 @@ import {
   canWriteClinicalChart,
 } from "@/features/records/permissions";
 import { PATIENT_MESSAGE_COPY } from "@/features/records/domain/patient-message";
+import { canReadWhatsAppSessionStatus } from "@/features/whatsapp/permissions";
 import { PatientSummary } from "@/features/patients/components/patient-summary";
 import type { PatientDetail } from "@/features/patients/queries";
 import { PatientForm } from "@/features/patients/components/patient-form";
@@ -99,6 +100,7 @@ export function PatientChart({
       <PatientSummary
         patient={patient}
         clinicalSummary={canViewClinical ? (cardSummary ?? null) : null}
+        canOpenWhatsApp={canReadWhatsAppSessionStatus(role)}
         onOpenAnamnesis={() => setActiveTab("anamnese")}
         onOpenEvolutions={() => setActiveTab("evolucoes")}
       />

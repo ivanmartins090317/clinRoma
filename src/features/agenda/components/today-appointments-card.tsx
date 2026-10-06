@@ -89,12 +89,18 @@ export function TodayAppointmentsCard({
                           reminder={remindersByAppointmentId[appointment.id]}
                         />
                       ) : null}
-                      <Link
-                        href={`/pacientes/${appointment.patientId}?consulta=${appointment.id}`}
-                        className="inline-flex min-h-11 items-center text-sm font-semibold text-neo-burgundy-800 underline-offset-4 hover:underline sm:min-h-0 sm:text-[13.5px]"
+                      <Button
+                        asChild
+                        variant="secondary"
+                        size="sm"
+                        className="min-h-11 w-full sm:w-auto"
                       >
-                        Abrir prontuário
-                      </Link>
+                        <Link
+                          href={`/pacientes/${appointment.patientId}?consulta=${appointment.id}`}
+                        >
+                          Abrir prontuário
+                        </Link>
+                      </Button>
                     </div>
                   </li>
                 ))}

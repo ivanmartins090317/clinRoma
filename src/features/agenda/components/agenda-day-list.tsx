@@ -6,12 +6,13 @@ import type {
   AgendaAppointment,
   AgendaDayGroup,
 } from "@/features/agenda/types";
+import { PatientWhatsAppChatButton } from "@/features/whatsapp/components/patient-whatsapp-chat-button";
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
 
 interface AgendaDayListProps {
   groups: AgendaDayGroup[];
   onSelectAppointment: (appointment: AgendaAppointment) => void;
+  canOpenWhatsApp?: boolean;
   emptyMessage?: string;
 }
 
@@ -34,6 +35,7 @@ function statusVariant(
 export function AgendaDayList({
   groups,
   onSelectAppointment,
+  canOpenWhatsApp = false,
   emptyMessage = "Nenhuma consulta neste dia",
 }: AgendaDayListProps) {
   if (groups.length === 0) {
@@ -61,34 +63,39 @@ export function AgendaDayList({
 
           <ul className="space-y-2">
             {group.appointments.map((appointment) => (
-              <li key={appointment.id}>
-                <button
-                  type="button"
-                  onClick={() => onSelectAppointment(appointment)}
-                  className={cn(
-                    "flex w-full flex-col gap-2 rounded-xl border border-border bg-card p-4 text-left shadow-sm transition hover:border-neo-gold-500/40",
-                  )}
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <p className="font-medium text-foreground">
-                        {appointment.patientName}
+              <li
+                key={appointment.id}
+                className="rounded-xl border border-border bg-card p-4 shadow-sm transition hover:border-neo-gold-500/40"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <button
+                    type="button"
+                    onClick={() => onSelectAppointment(appointment)}
+                    className="min-h-11 min-w-0 flex-1 text-left"
+                  >
+                    <p className="font-medium text-foreground">
+                      {appointment.patientName}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      {formatClinicTime(appointment.startsAt)} ·{" "}
+                      {formatClinicTime(appointment.endsAt)}
+                    </p>
+                    {appointment.procedureName ? (
+                      <p className="mt-2 text-sm text-muted-foreground">
+                        {appointment.procedureName}
                       </p>
-                      <p className="text-sm text-muted-foreground">
-                        {formatClinicTime(appointment.startsAt)} ·{" "}
-                        {formatClinicTime(appointment.endsAt)}
-                      </p>
-                    </div>
+                    ) : null}
+                  </button>
+                  <div className="flex shrink-0 flex-col items-end gap-2">
                     <Badge variant={statusVariant(appointment.status)}>
                       {getAppointmentStatusLabel(appointment.status)}
                     </Badge>
+                    <PatientWhatsAppChatButton
+                      patientId={appointment.patientId}
+                      canOpen={canOpenWhatsApp}
+                    />
                   </div>
-                  {appointment.procedureName ? (
-                    <p className="text-sm text-muted-foreground">
-                      {appointment.procedureName}
-                    </p>
-                  ) : null}
-                </button>
+                </div>
               </li>
             ))}
           </ul>

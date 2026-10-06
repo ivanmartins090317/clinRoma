@@ -11,6 +11,7 @@ import {
   type AgendaAppointment,
   type AgendaDentist,
 } from "@/features/agenda/types";
+import { PatientWhatsAppChatButton } from "@/features/whatsapp/components/patient-whatsapp-chat-button";
 import { WaitlistOfferAfterCancel } from "@/features/waitlist/components/waitlist-offer-after-cancel";
 import { ReminderStatusBadge } from "@/features/reminders/components/reminder-status-badge";
 import type { ReminderSummary } from "@/features/reminders/queries";
@@ -19,7 +20,6 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -29,6 +29,7 @@ interface AppointmentDetailProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   canWrite: boolean;
+  canOpenWhatsApp?: boolean;
   dentists: AgendaDentist[];
   reminder?: ReminderSummary | null;
   onEdit: (appointment: AgendaAppointment) => void;
@@ -40,6 +41,7 @@ export function AppointmentDetail({
   open,
   onOpenChange,
   canWrite,
+  canOpenWhatsApp = false,
   dentists,
   reminder,
   onEdit,
@@ -127,12 +129,6 @@ export function AppointmentDetail({
                   {appointment.notes}
                 </p>
               ) : null}
-              <Link
-                href={`/pacientes/${appointment.patientId}?consulta=${appointment.id}`}
-                className="inline-flex min-h-11 items-center text-sm font-medium text-primary underline-offset-4 hover:underline"
-              >
-                Abrir prontuário
-              </Link>
             </div>
 
             {confirmCancel ? (
@@ -144,9 +140,10 @@ export function AppointmentDetail({
                 {error ? (
                   <p className="mt-2 text-destructive">{error}</p>
                 ) : null}
-                <div className="mt-4 flex gap-2">
+                <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
                   <Button
                     variant="outline"
+                    className="w-full"
                     onClick={() => setConfirmCancel(false)}
                     disabled={isPending}
                   >
@@ -154,7 +151,7 @@ export function AppointmentDetail({
                   </Button>
                   <Button
                     variant="default"
-                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                    className="w-full bg-destructive text-destructive-foreground hover:bg-destructive/90"
                     onClick={handleCancel}
                     disabled={isPending}
                   >
@@ -163,24 +160,49 @@ export function AppointmentDetail({
                 </div>
               </div>
             ) : (
-              <DialogFooter>
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                <Button
+                  asChild
+                  variant="secondary"
+                  className={canOpenWhatsApp ? "w-full" : "w-full sm:col-span-2"}
+                >
+                  <Link
+                    href={`/pacientes/${appointment.patientId}?consulta=${appointment.id}`}
+                  >
+                    Abrir prontuário
+                  </Link>
+                </Button>
+                <PatientWhatsAppChatButton
+                  patientId={appointment.patientId}
+                  canOpen={canOpenWhatsApp}
+                  className="w-full"
+                />
                 {canWrite ? (
                   <>
                     <Button
                       variant="outline"
-                      className="text-destructive"
+                      className="w-full text-destructive"
                       onClick={() => setConfirmCancel(true)}
                     >
                       Cancelar consulta
                     </Button>
-                    <Button onClick={() => onEdit(appointment)}>Editar</Button>
+                    <Button
+                      className="w-full"
+                      onClick={() => onEdit(appointment)}
+                    >
+                      Editar
+                    </Button>
                   </>
                 ) : (
-                  <Button variant="outline" onClick={() => onOpenChange(false)}>
+                  <Button
+                    variant="outline"
+                    className="w-full sm:col-span-2"
+                    onClick={() => onOpenChange(false)}
+                  >
                     Fechar
                   </Button>
                 )}
-              </DialogFooter>
+              </div>
             )}
           </DialogContent>
         </Dialog>

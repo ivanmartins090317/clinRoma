@@ -58,6 +58,7 @@
 - Destino: telefone do cadastro se aproveitável; senão o segundo telefone. Sem flag "tem WhatsApp".
 - Agendamento pós-cirurgia: o job dispara o texto já gravado; destino mascarado; sem corpo em log. Cancelar só o pendente. Hospedagem Hobby: sem relógio nativo. O relógio é a VPS Campinas, a cada 5 minutos.
 - Oferta da fila: disparo imediato no `createSlotOfferAction`; falha grava `patient_messages` `slot_offer` pendente. O mesmo cron `/api/cron/process-patient-messages` retenta. Depois de 40 min o job cancela sem enviar link morto. Texto sem nome do paciente, CPF ou prontuário.
+- Conversar com o paciente: o clique não dispara mensagem pelo número da clínica. A chave continua no servidor. O registro, se houver, mascara o destino. Quem abre: admin, dentista e recepção. Visualizador e auxiliar: recusa na interface e no servidor.
 
 ## WhatsApp · tela de pareamento e aviso de sessão
 

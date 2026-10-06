@@ -189,12 +189,11 @@ export function PatientForm({ mode, patient }: PatientFormProps) {
         <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">
           <p>{error}</p>
           {existingPatientId ? (
-            <Link
-              href={`/pacientes/${existingPatientId}`}
-              className="mt-2 inline-block font-medium underline"
-            >
-              Abrir paciente existente
-            </Link>
+            <Button asChild variant="secondary" size="sm" className="mt-2 min-h-11">
+              <Link href={`/pacientes/${existingPatientId}`}>
+                Abrir paciente existente
+              </Link>
+            </Button>
           ) : null}
         </div>
       ) : null}
