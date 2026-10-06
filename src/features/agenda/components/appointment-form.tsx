@@ -6,6 +6,8 @@ import {
   createAppointmentAction,
   updateAppointmentAction,
 } from "@/features/agenda/actions";
+import { OverlapConfirmDialog } from "@/features/agenda/components/overlap-confirm-dialog";
+import type { OverlapPrompt } from "@/features/agenda/domain/appointment-conflict";
 import {
   getAppointmentStatusLabel,
   WRITABLE_APPOINTMENT_STATUSES,
@@ -108,12 +110,16 @@ export function AppointmentForm({
     buildInitialState(dentists, appointment, initialValues),
   );
   const [error, setError] = useState<string | null>(null);
+  const [overlap, setOverlap] = useState<OverlapPrompt | null>(null);
+  const [overlapOpen, setOverlapOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const isEditing = Boolean(appointment);
 
   function resetForm() {
     setForm(buildInitialState(dentists, appointment, initialValues));
     setError(null);
+    setOverlap(null);
+    setOverlapOpen(false);
   }
 
   function handleOpenChange(nextOpen: boolean) {
@@ -123,36 +129,52 @@ export function AppointmentForm({
     onOpenChange(nextOpen);
   }
 
-  function handleSubmit() {
+  function handleSubmit(partnerId?: string): Promise<void> {
     setError(null);
 
-    startTransition(async () => {
-      const payload = {
-        patientId: form.patientId,
-        dentistId: form.dentistId,
-        date: form.date,
-        startTime: form.startTime,
-        endTime: form.endTime,
-        status: form.status,
-        procedureName: form.procedureName || undefined,
-        notes: form.notes || undefined,
-      };
+    return new Promise((resolve) => {
+      startTransition(async () => {
+        try {
+          const payload = {
+            patientId: form.patientId,
+            dentistId: form.dentistId,
+            date: form.date,
+            startTime: form.startTime,
+            endTime: form.endTime,
+            status: form.status,
+            procedureName: form.procedureName || undefined,
+            notes: form.notes || undefined,
+            pairConfirmation: partnerId ? { partnerId } : undefined,
+          };
 
-      const result = isEditing
-        ? await updateAppointmentAction({ ...payload, id: appointment!.id })
-        : await createAppointmentAction(payload);
+          const result = isEditing
+            ? await updateAppointmentAction({ ...payload, id: appointment!.id })
+            : await createAppointmentAction(payload);
 
-      if (result.error) {
-        setError(result.error);
-        return;
-      }
+          if (result.overlap) {
+            setOverlap(result.overlap);
+            setOverlapOpen(true);
+            return;
+          }
 
-      onSuccess();
-      handleOpenChange(false);
+          if (result.error) {
+            setOverlapOpen(false);
+            setError(result.error);
+            return;
+          }
+
+          setOverlapOpen(false);
+          onSuccess();
+          handleOpenChange(false);
+        } finally {
+          resolve();
+        }
+      });
     });
   }
 
   return (
+    <>
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="max-h-[90vh] overflow-y-auto">
         <DialogHeader>
@@ -307,11 +329,18 @@ export function AppointmentForm({
           >
             Cancelar
           </Button>
-          <Button onClick={handleSubmit} disabled={isPending}>
+          <Button onClick={() => handleSubmit()} disabled={isPending}>
             {isPending ? "Salvando..." : "Salvar"}
           </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
+    <OverlapConfirmDialog
+      prompt={overlap}
+      open={overlapOpen}
+      onOpenChange={setOverlapOpen}
+      onConfirm={() => handleSubmit(overlap?.partnerId)}
+    />
+    </>
   );
 }

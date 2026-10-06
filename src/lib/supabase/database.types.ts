@@ -226,6 +226,9 @@ export type Database = {
           dentist_id: string;
           starts_at: string;
           ends_at: string;
+          induction_minutes: number;
+          busy_starts_at: string;
+          busy_ends_at: string;
           status: Database["public"]["Enums"]["appointment_status"];
           procedure_name: string | null;
           notes: string | null;
@@ -239,6 +242,7 @@ export type Database = {
           dentist_id: string;
           starts_at: string;
           ends_at: string;
+          induction_minutes?: number;
           status?: Database["public"]["Enums"]["appointment_status"];
           procedure_name?: string | null;
           notes?: string | null;
@@ -252,6 +256,7 @@ export type Database = {
           dentist_id?: string;
           starts_at?: string;
           ends_at?: string;
+          induction_minutes?: number;
           status?: Database["public"]["Enums"]["appointment_status"];
           procedure_name?: string | null;
           notes?: string | null;
@@ -720,9 +725,34 @@ export type Database = {
     };
     Views: Record<string, never>;
     Functions: {
+      appointment_busy_start: {
+        Args: {
+          p_starts_at: string;
+          p_induction_minutes: number;
+        };
+        Returns: string;
+      };
       expire_pending_slot_offers: {
         Args: Record<string, never>;
         Returns: number;
+      };
+      save_scheduled_appointment: {
+        Args: {
+          p_id?: string | null;
+          p_patient_id: string;
+          p_dentist_id: string;
+          p_starts_at: string;
+          p_ends_at: string;
+          p_status: Database["public"]["Enums"]["appointment_status"];
+          p_procedure_name?: string | null;
+          p_notes?: string | null;
+          p_created_by?: string | null;
+          p_induction_minutes?: number;
+          p_partner_id?: string | null;
+          p_partner_induction?: number | null;
+          p_release_partner_id?: string | null;
+        };
+        Returns: string;
       };
     };
     Enums: {

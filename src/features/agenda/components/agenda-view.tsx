@@ -2,10 +2,13 @@
 
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState, useTransition } from "react";
 
+import { previewRescheduleAction, rescheduleAppointmentAction } from "@/features/agenda/actions";
 import { AppointmentDetail } from "@/features/agenda/components/appointment-detail";
 import { AppointmentForm } from "@/features/agenda/components/appointment-form";
+import { OverlapConfirmDialog } from "@/features/agenda/components/overlap-confirm-dialog";
+import type { OverlapPrompt } from "@/features/agenda/domain/appointment-conflict";
 import { AgendaDateNav } from "@/features/agenda/components/agenda-date-nav";
 import { AgendaDentistFilter } from "@/features/agenda/components/agenda-dentist-filter";
 import { AgendaRangeFilter } from "@/features/agenda/components/agenda-range-filter";
@@ -16,6 +19,8 @@ import {
 } from "@/features/agenda/components/reschedule-confirm-dialog";
 import { groupAppointmentsByClinicDay } from "@/features/agenda/domain/agenda-range";
 import {
+  formatClinicTime,
+  splitClinicDateTime,
   toCalendarEvents,
   type AgendaAppointment,
   type AgendaCalendarEvent,
@@ -95,6 +100,13 @@ export function AgendaView({
   const [reschedulePayload, setReschedulePayload] =
     useState<ReschedulePayload | null>(null);
   const [rescheduleOpen, setRescheduleOpen] = useState(false);
+  const [overlapPrompt, setOverlapPrompt] = useState<OverlapPrompt | null>(
+    null,
+  );
+  const [overlapOpen, setOverlapOpen] = useState(false);
+  const [dragError, setDragError] = useState<string | null>(null);
+  const previewLock = useRef(false);
+  const [, startPreview] = useTransition();
 
   const mobileDentistFilter =
     dentistFilter !== "all"
@@ -163,6 +175,47 @@ export function AgendaView({
     setFormOpen(true);
   }
 
+  function scheduleFields(payload: ReschedulePayload) {
+    return {
+      id: payload.id,
+      dentistId: payload.dentistId,
+      date: splitClinicDateTime(payload.startsAt.toISOString()).date,
+      startTime: formatClinicTime(payload.startsAt.toISOString()),
+      endTime: formatClinicTime(payload.endsAt.toISOString()),
+    };
+  }
+
+  function handleRescheduleRequest(payload: ReschedulePayload) {
+    if (previewLock.current) {
+      return;
+    }
+
+    previewLock.current = true;
+    setDragError(null);
+    setReschedulePayload(payload);
+
+    startPreview(async () => {
+      try {
+        const result = await previewRescheduleAction(scheduleFields(payload));
+
+        if (result.overlap) {
+          setOverlapPrompt(result.overlap);
+          setOverlapOpen(true);
+          return;
+        }
+
+        if (result.error) {
+          setDragError(result.error);
+          return;
+        }
+
+        setRescheduleOpen(true);
+      } finally {
+        previewLock.current = false;
+      }
+    });
+  }
+
   function handleCalendarEventSelect(event: AgendaCalendarEvent) {
     const appointment = weekAppointments.find((item) => item.id === event.id);
 
@@ -220,6 +273,12 @@ export function AgendaView({
         <AgendaRangeList days={rangeDays} onSelectAppointment={openDetail} />
       </div>
 
+      {dragError ? (
+        <p className="text-sm text-destructive" role="alert">
+          {dragError}
+        </p>
+      ) : null}
+
       <div className="hidden md:block">
         <AgendaCalendar
           events={calendarEvents}
@@ -228,10 +287,7 @@ export function AgendaView({
           canWrite={canWrite}
           onSelectSlot={(slot) => openCreateForm(slot)}
           onSelectEvent={handleCalendarEventSelect}
-          onRescheduleRequest={(payload) => {
-            setReschedulePayload(payload);
-            setRescheduleOpen(true);
-          }}
+          onRescheduleRequest={handleRescheduleRequest}
         />
       </div>
 
@@ -268,6 +324,41 @@ export function AgendaView({
         onOpenChange={setRescheduleOpen}
         onSuccess={refreshAgenda}
         onCancel={refreshAgenda}
+        onOverlap={(overlap) => {
+          setRescheduleOpen(false);
+          setOverlapPrompt(overlap);
+          setOverlapOpen(true);
+        }}
+      />
+
+      <OverlapConfirmDialog
+        prompt={overlapPrompt}
+        open={overlapOpen}
+        onOpenChange={setOverlapOpen}
+        onConfirm={async () => {
+          if (!reschedulePayload || !overlapPrompt) {
+            return;
+          }
+
+          const result = await rescheduleAppointmentAction({
+            ...scheduleFields(reschedulePayload),
+            pairConfirmation: { partnerId: overlapPrompt.partnerId },
+          });
+
+          if (result.overlap) {
+            setOverlapPrompt(result.overlap);
+            return;
+          }
+
+          if (result.error) {
+            setDragError(result.error);
+            setOverlapOpen(false);
+            return;
+          }
+
+          setOverlapOpen(false);
+          refreshAgenda();
+        }}
       />
     </div>
   );

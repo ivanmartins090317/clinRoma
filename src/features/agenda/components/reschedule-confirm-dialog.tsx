@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 
 import { rescheduleAppointmentAction } from "@/features/agenda/actions";
+import type { OverlapPrompt } from "@/features/agenda/domain/appointment-conflict";
 import { formatClinicTime, splitClinicDateTime } from "@/features/agenda/types";
 import { Button } from "@/components/ui/button";
 import {
@@ -27,6 +28,7 @@ interface RescheduleConfirmDialogProps {
   onOpenChange: (open: boolean) => void;
   onSuccess: () => void;
   onCancel: () => void;
+  onOverlap?: (overlap: OverlapPrompt) => void;
 }
 
 export function RescheduleConfirmDialog({
@@ -35,6 +37,7 @@ export function RescheduleConfirmDialog({
   onOpenChange,
   onSuccess,
   onCancel,
+  onOverlap,
 }: RescheduleConfirmDialogProps) {
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
@@ -58,6 +61,12 @@ export function RescheduleConfirmDialog({
         startTime,
         endTime,
       });
+
+      if (result.overlap) {
+        onOverlap?.(result.overlap);
+        onOpenChange(false);
+        return;
+      }
 
       if (result.error) {
         setError(result.error);

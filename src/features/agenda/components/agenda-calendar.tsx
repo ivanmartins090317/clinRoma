@@ -177,7 +177,7 @@ export function AgendaCalendar({
             step={30}
             timeslots={2}
             min={toZonedTime(`${selectedDate}T07:00:00`, CLINIC_TIMEZONE)}
-            max={toZonedTime(`${selectedDate}T20:00:00`, CLINIC_TIMEZONE)}
+            max={toZonedTime(`${selectedDate}T22:00:00`, CLINIC_TIMEZONE)}
             selectable={canWrite}
             draggableAccessor={() => canWrite}
             resizable={false}

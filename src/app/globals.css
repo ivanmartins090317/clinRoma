@@ -288,8 +288,24 @@ input[type="date"].agenda-date-field::-webkit-datetime-edit-fields-wrapper {
   background: var(--neo-white);
 }
 
-.agenda-calendar .rbc-time-view .rbc-row {
+.agenda-calendar .rbc-time-header-content > .rbc-row {
   min-height: 2.875rem;
+}
+
+.agenda-calendar .rbc-allday-cell {
+  line-height: 0;
+}
+
+.agenda-calendar .rbc-allday-cell .rbc-row {
+  min-height: 0;
+}
+
+.agenda-calendar .rbc-allday-cell:not(:has(.rbc-event)) {
+  display: none;
+}
+
+.agenda-calendar .rbc-allday-cell .rbc-event {
+  line-height: 1.25;
 }
 
 .agenda-calendar .rbc-header {

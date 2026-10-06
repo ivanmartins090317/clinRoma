@@ -34,6 +34,7 @@ export interface AgendaAppointment {
   status: AppointmentStatus;
   procedureName: string | null;
   notes: string | null;
+  inductionMinutes?: number;
 }
 
 export interface AgendaCalendarEvent {

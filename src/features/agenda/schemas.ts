@@ -65,6 +65,11 @@ export const appointmentFormSchema = z
     status: appointmentStatusSchema,
     procedureName: z.string().trim().max(200).optional(),
     notes: z.string().trim().max(1000).optional(),
+    pairConfirmation: z
+      .object({
+        partnerId: z.string().uuid("Confirmação inválida"),
+      })
+      .optional(),
   })
   .superRefine(validateEndAfterStart);
 
@@ -83,6 +88,11 @@ export const rescheduleAppointmentSchema = z
     date: dateSchema,
     startTime: timeSchema,
     endTime: timeSchema,
+    pairConfirmation: z
+      .object({
+        partnerId: z.string().uuid("Confirmação inválida"),
+      })
+      .optional(),
   })
   .superRefine(validateEndAfterStart)
   .superRefine(validateNotInThePast);

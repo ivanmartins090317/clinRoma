@@ -2,6 +2,7 @@ import { cache } from "react";
 import { toZonedTime } from "date-fns-tz";
 import { parseISO } from "date-fns";
 
+import type { AppointmentInterval } from "@/features/agenda/domain/appointment-conflict";
 import { isActiveAppointmentStatus } from "@/features/agenda/domain/appointment-status";
 import {
   CLINIC_TIMEZONE,
@@ -19,6 +20,7 @@ interface AppointmentRow {
   dentist_id: string;
   starts_at: string;
   ends_at: string;
+  induction_minutes: number;
   status: AppointmentStatus;
   procedure_name: string | null;
   notes: string | null;
@@ -50,6 +52,7 @@ function mapAppointmentRow(row: AppointmentRow): AgendaAppointment {
     dentistColor: dentist?.calendar_color ?? "#6B2737",
     startsAt: row.starts_at,
     endsAt: row.ends_at,
+    inductionMinutes: row.induction_minutes ?? 0,
     status: row.status,
     procedureName: row.procedure_name,
     notes: row.notes,
@@ -147,6 +150,7 @@ export async function getAppointmentsInRange(
       dentist_id,
       starts_at,
       ends_at,
+      induction_minutes,
       status,
       procedure_name,
       notes,
@@ -193,6 +197,7 @@ export async function getAppointmentById(
       dentist_id,
       starts_at,
       ends_at,
+      induction_minutes,
       status,
       procedure_name,
       notes,
@@ -213,35 +218,43 @@ export async function getAppointmentById(
 export async function getActiveAppointmentsForDentist(
   dentistId: string,
   excludeId?: string,
-): Promise<
-  Array<{
-    id: string;
-    dentistId: string;
-    startsAt: Date;
-    endsAt: Date;
-    status: AppointmentStatus;
-  }>
-> {
+): Promise<AppointmentInterval[]> {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("appointments")
-    .select("id, dentist_id, starts_at, ends_at, status")
+    .select(
+      "id, dentist_id, starts_at, ends_at, status, induction_minutes, patients(full_name)",
+    )
     .eq("dentist_id", dentistId);
 
   if (error) {
     throw new Error("Não foi possível validar conflitos de horário");
   }
 
-  return (data ?? [])
+  return ((data ?? []) as unknown as Array<{
+    id: string;
+    dentist_id: string;
+    starts_at: string;
+    ends_at: string;
+    status: AppointmentStatus;
+    induction_minutes: number | null;
+    patients: { full_name: string } | Array<{ full_name: string }> | null;
+  }>)
     .filter((row) => row.id !== excludeId)
     .filter((row) => isActiveAppointmentStatus(row.status))
-    .map((row) => ({
-      id: row.id,
-      dentistId: row.dentist_id,
-      startsAt: parseISO(row.starts_at),
-      endsAt: parseISO(row.ends_at),
-      status: row.status,
-    }));
+    .map((row) => {
+      const patient = unwrapRelation(row.patients);
+
+      return {
+        id: row.id,
+        dentistId: row.dentist_id,
+        startsAt: parseISO(row.starts_at),
+        endsAt: parseISO(row.ends_at),
+        status: row.status,
+        inductionMinutes: row.induction_minutes ?? 0,
+        patientName: patient?.full_name ?? "Paciente",
+      };
+    });
 }
 
 export interface LatestCompletedAppointment {

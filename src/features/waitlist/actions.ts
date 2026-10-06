@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 
 import {
   formatConflictMessage,
-  hasAppointmentConflict,
+  hasPatientVisitConflict,
 } from "@/features/agenda/domain/appointment-conflict";
 import { getActiveAppointmentsForDentist } from "@/features/agenda/queries";
 import { toClinicIso } from "@/features/agenda/types";
@@ -302,7 +302,7 @@ export async function createSlotOfferAction(
     const existing = await getActiveAppointmentsForDentist(
       parsed.data.dentistId,
     );
-    const conflict = hasAppointmentConflict(
+    const conflict = hasPatientVisitConflict(
       {
         dentistId: parsed.data.dentistId,
         startsAt: new Date(startsAt),

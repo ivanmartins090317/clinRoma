@@ -1,6 +1,6 @@
 import {
   formatConflictMessage,
-  hasAppointmentConflict,
+  hasPatientVisitConflict,
 } from "@/features/agenda/domain/appointment-conflict";
 import { isSlotOfferExpired } from "@/features/waitlist/domain/slot-offer-expiry";
 import { hashSlotOfferToken } from "@/features/waitlist/domain/token-hash";
@@ -179,7 +179,7 @@ export async function acceptSlotOffer(
   }
 
   const appointments = await loadActiveAppointments(offer.dentist_id);
-  const conflict = hasAppointmentConflict(
+  const conflict = hasPatientVisitConflict(
     {
       dentistId: offer.dentist_id,
       startsAt: new Date(offer.offered_at),

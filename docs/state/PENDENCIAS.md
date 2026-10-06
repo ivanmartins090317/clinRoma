@@ -2,7 +2,7 @@
 
 Fonte viva do que **ainda falta implementar ou validar**. Atualizar ao concluir cada fase.
 
-Última revisão: **2026-09-29** (loader da marca e montagem da Hoje, em código; não fecha fase).
+Última revisão: **2026-10-06** (encaixe na meia hora de medicação, em código; não reabre a Fase 2).
 
 ---
 
@@ -82,6 +82,20 @@ Código entregue (ver `docs/implementation/F2-agenda.md`). Homologação manual 
 - [ ] Verificar bundle mobile sem `react-big-calendar` (dynamic import só em `md+`)
 
 **Pronto quando:** recepção marca/remarca/cancela consulta; dentista vê agenda do dia no celular.
+
+### Fatia · Encaixe na meia hora de medicação (2026-10-06)
+
+Spec: `specs/2026-10-06-agenda-encaixe-medicacao.md`. Registro: `docs/implementation/F2-agenda.md`.
+
+Código entregue. Homologação manual ainda depende de pessoa:
+
+- [x] Par pede confirmação. Sem **Marcar as duas**, nada grava. Com a confirmação, os minutos ficam só na mais longa
+- [x] Terceira, horário igual, início diferente com cruzamento e invasão do meio continuam bloqueados
+- [x] Oferta e aceite da fila ocupam a visita inteira, inclusive a janela da medicação
+- [ ] Recepção: criar a cirurgia e o curto no mesmo início; **Voltar** não grava; **Marcar as duas** grava
+- [ ] Recepção: editar e arrastar o par. No arraste, só o aviso de medicação. **Voltar** devolve o bloco
+- [ ] Recepção: tentar a terceira no mesmo início
+- [ ] Fila: a janela do início da cirurgia, inclusive 19:30 no exemplo, não aparece como vaga
 
 ---
 

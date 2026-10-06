@@ -87,3 +87,50 @@ Escrita revalidada server-side; RLS da Fase 1 intacta.
 ## Manual do dev
 
 Explicação e fluxos: [`docs/manual-dev/04-fase-2-agenda.md`](../manual-dev/04-fase-2-agenda.md)
+
+## Fatia · Encaixe na meia hora de medicação (2026-10-06)
+
+| Campo | Valor |
+| ----- | ----- |
+| **Status** | código entregue · homologação manual pendente |
+| **Spec** | `specs/2026-10-06-agenda-encaixe-medicacao.md` |
+| **Plano** | `docs/plans/plano-agenda-encaixe-medicacao.md` |
+
+Não reabre a Fase 2. A visita do paciente continua da chegada à saída. A trava do dentista passa a valer no trecho exclusivo. A fila segue ocupando a visita inteira.
+
+### Banco
+
+| Arquivo | Conteúdo |
+| ------- | -------- |
+| `031_appointment_induction.sql` | `induction_minutes` (padrão 0), `busy_starts_at` / `busy_ends_at`, constraint `appointments_no_active_overlap` reapontada para o trecho exclusivo e adiada na gravação do par. Consultas já gravadas entram com 0 |
+
+`timestamptz + interval` não é imutável no Postgres, então o início exclusivo nasce de `appointment_busy_start`, função imutável que só soma minutos.
+
+### Código
+
+| Arquivo | Papel |
+| ------- | ----- |
+| `domain/appointment-conflict.ts` | Par pede confirmação. Terceira, horário igual, início diferente com cruzamento e invasão do meio bloqueiam. Encostar no minuto do exclusivo passa sem aviso |
+| `actions.ts` | Criar, editar, arrastar e cancelar. Sem **Marcar as duas**, o par não grava. Com a confirmação, os minutos ficam só na mais longa. Cancelar ou afastar zera a que permanece |
+| `components/overlap-confirm-dialog.tsx` | Aviso no criar, no editar e no arraste. Botões com 44 px |
+| `queries.ts`, `types.ts`, `schemas.ts` | A agenda lê `induction_minutes`. A confirmação do par entra no que criar, editar e arrastar aceitam |
+| `waitlist/actions.ts`, `waitlist/lib/accept-slot-offer.ts` | Oferta e aceite ocupam `starts_at` até `ends_at`. Sem o aviso |
+
+O calendário não mudou: o algoritmo padrão já empilha o curto ao lado do topo do longo. A lista do dia já ordena pelo início e mostra as duas.
+
+### Testes
+
+- `appointment-conflict.test.ts`: par, terceira, horário igual, invasão, encoste, fila na visita inteira
+- `actions.test.ts`: sem confirmação não grava; com confirmação os minutos ficam na mais longa; a terceira não confirma
+- `schemas.test.ts`: confirmação ausente ou presente
+
+### Evidências
+
+| Comando | Resultado |
+| ------- | --------- |
+| `npm run lint` nos arquivos da fatia | 0 erros |
+| `npm run lint` no repo | 7 erros e 5 warnings pré-existentes fora da fatia (scanner, estoque, fila, env) |
+| `npm run test` | 482 passed, 26 skipped |
+| `npm run build` | OK |
+| `npm run db:push` | `031_appointment_induction.sql` aplicada |
+| `npm run db:types` | não rodou: Docker indisponível. `database.types.ts` alinhado à mão |

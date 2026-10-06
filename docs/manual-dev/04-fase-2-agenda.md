@@ -64,15 +64,29 @@ Exibição e formulários usam **`America/Sao_Paulo`**. Helpers em `types.ts` (`
 
 ## Regra de conflito
 
-Dois intervalos do **mesmo dentista** não podem se sobrepor enquanto ambos estiverem em status **ativo** (todos exceto `cancelled` e `rescheduled`).
+Dois trechos exclusivos do **mesmo dentista** não podem se cruzar enquanto as consultas estiverem ativas (todos os status exceto `cancelled` e `rescheduled`). Numa consulta comum o tempo de medicação é zero, então o trecho exclusivo é a visita inteira.
 
 | Camada    | Onde                                                    |
 | --------- | ------------------------------------------------------- |
-| Domínio   | `hasAppointmentConflict()` em `appointment-conflict.ts` |
+| Domínio   | `classifyAppointmentPlacement()` em `appointment-conflict.ts` |
 | Aplicação | `actions.ts` antes de persistir                         |
-| Banco     | `010_appointment_conflict.sql` (exclusion constraint)   |
+| Banco     | `010_appointment_conflict.sql` e `031_appointment_induction.sql` |
 
-Mensagem ao usuário: `Horário indisponível para {nome do dentista}`.
+Mensagem de bloqueio: `Horário indisponível para {nome do dentista}`.
+
+Terceira consulta no mesmo início: `Esse horário já tem duas consultas. Não é possível marcar outra.`
+
+### Encaixe na meia hora de medicação
+
+A recepção não preenche um campo de medicação. Ela marca a cirurgia, por exemplo 19:00 às 21:00, e em seguida o procedimento curto no mesmo início, até o fim que ela digitar. O aviso **Já existe uma consulta nesse horário** aparece. **Voltar** não grava. **Marcar as duas** grava as duas.
+
+A consulta mais longa guarda `induction_minutes` igual à duração da mais curta. No exemplo, a cirurgia fica com o paciente das 19:00 às 21:00 e o dentista exclusivo das 19:30 às 21:00. O curto fica com zero e ocupa das 19:00 às 19:30. Os trechos exclusivos se encostam às 19:30.
+
+Editar ou arrastar qualquer uma das duas passa de novo pela mesma conta. No arraste que forma o par, o aviso de medicação é a única confirmação. Afastar ou cancelar uma das duas zera o tempo de medicação da que permanece.
+
+A fila não usa esse aviso. Oferta e aceite continuam ocupando a visita inteira, inclusive a janela das 19:00 às 19:30. Lembrete e mensagem ao paciente seguem na chegada.
+
+O calendário (`agenda-calendar.tsx`) não foi alterado: o empilhamento padrão já coloca o curto ao lado do topo do longo. Na lista do dia as duas entram em ordem de início.
 
 ---
 
@@ -116,6 +130,15 @@ Após `npm run db:push`, migration `011_seed_agenda_dev.sql` inclui:
 
 1. Criar consulta 10:00–11:00 para dentista A
 2. Tentar 10:30–11:30 mesmo dentista → deve bloquear
+
+### Par de medicação
+
+1. Marcar uma consulta das 19:00 às 21:00
+2. Marcar outra das 19:00 às 19:30, mesmo dentista e outro paciente
+3. O aviso nomeia quem já está na agenda. **Voltar** mantém o formulário e não grava
+4. **Marcar as duas** grava. A mais longa fica com 30 minutos de medicação. A curta fica com zero
+5. Tentar uma terceira no mesmo início: `Esse horário já tem duas consultas. Não é possível marcar outra.`
+6. Na fila, oferecer 19:00–19:30 ou 19:30–20:00 nesse dentista continua indisponível, sem o aviso de medicação
 
 ### Dentista no celular
 
