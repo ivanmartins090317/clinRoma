@@ -56,6 +56,14 @@ src/app/api/records/
 2. Preenche dados + checkbox LGPD + nome da assinatura
 3. Redireciona para ficha do paciente
 
+A auditoria desse caminho continua com origem `lista-pacientes`.
+
+### O mesmo cadastro dentro de Nova consulta
+
+A recepção também cadastra sem sair do horário. Em **Agenda** → **Nova consulta**, com três caracteres ou mais e ninguém escolhido, o atalho **+ Novo paciente** abre os mesmos campos e o mesmo consentimento. **Cadastrar e marcar** grava a pessoa e a consulta e permanece na agenda. A ficha não abre. A auditoria registra origem `agenda-nova-consulta`.
+
+CPF repetido, horário recusado e **Marcar as duas** estão no manual da agenda: [`04-fase-2-agenda.md`](./04-fase-2-agenda.md). Esta fatia não muda anamnese, odontograma nem evolução.
+
 ### Dentista documenta atendimento (mobile)
 
 1. **Agenda** ou **Hoje** → consulta → **Abrir prontuário**

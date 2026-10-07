@@ -25,6 +25,18 @@ export interface PatientActionResult {
   error?: string;
   patientId?: string;
   existingPatientId?: string;
+  existingPatientName?: string;
+}
+
+const PATIENT_LIST_ORIGIN = "lista-pacientes";
+const NEW_APPOINTMENT_ORIGIN = "agenda-nova-consulta";
+
+function resolvePatientAuditOrigin(origin?: string): string {
+  if (origin === NEW_APPOINTMENT_ORIGIN) {
+    return NEW_APPOINTMENT_ORIGIN;
+  }
+
+  return PATIENT_LIST_ORIGIN;
 }
 
 function canWritePatients(role: UserRole): boolean {
@@ -64,6 +76,7 @@ async function logPatientAudit(
 
 export async function createPatientAction(
   input: unknown,
+  origin?: string,
 ): Promise<PatientActionResult> {
   try {
     await assertPatientWriteAccess();
@@ -84,6 +97,7 @@ export async function createPatientAction(
         return {
           error: `CPF já cadastrado para ${existing.fullName}.`,
           existingPatientId: existing.id,
+          existingPatientName: existing.fullName,
         };
       }
     }
@@ -119,7 +133,7 @@ export async function createPatientAction(
     }
 
     await logPatientAudit("create", data.id, {
-      origin: "lista-pacientes",
+      origin: resolvePatientAuditOrigin(origin),
       consentSignature: parsed.data.signatureName,
       secondaryContact: secondaryContactAuditState({
         previousPresent: null,

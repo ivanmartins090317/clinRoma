@@ -87,3 +87,14 @@ Prontuário eletrônico operacional: cadastro com LGPD, anamnese versionada, odo
 ## Fora desta fase (correto)
 
 - Painel admin de auditoria, edição pós-transcrição, bloqueio por anamnese expirada, manual-report formal (Fase 6)
+
+## Fatia · Cadastro também na nova consulta (2026-10-07)
+
+| Campo | Valor |
+| ----- | ----- |
+| **Status** | código entregue · não reabre a Fase 3 |
+| **Spec** | `specs/2026-10-07-agenda-cadastro-na-consulta.md` |
+
+A ficha **Novo paciente** (`/pacientes/novo`) não mudou de caminho. Nome, consentimento e assinatura continuam obrigatórios. O restante continua opcional, com as mesmas regras. Ao salvar pela lista, a tela segue para a ficha e a auditoria continua com origem `lista-pacientes`.
+
+O mesmo cadastro também nasce dentro de **Nova consulta**. Nesse caso a auditoria registra origem `agenda-nova-consulta`. O parâmetro tem default `lista-pacientes`, então a lista não muda de origem. Registro da agenda: [`docs/implementation/F2-agenda.md`](./F2-agenda.md).

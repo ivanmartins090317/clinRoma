@@ -2,7 +2,7 @@
 
 Fonte viva do que **ainda falta implementar ou validar**. Atualizar ao concluir cada fase.
 
-Última revisão: **2026-10-06** (encaixe na meia hora de medicação, em código, não reabre a Fase 2; conversar com o paciente no WhatsApp, em código, não fecha a Fase 7).
+Última revisão: **2026-10-07** (cadastro de paciente na nova consulta, em código, não reabre a Fase 2 nem a Fase 3).
 
 ---
 
@@ -115,6 +115,21 @@ Código entregue. Homologação manual ainda depende de pessoa:
 - [ ] Recepção: editar e arrastar o par. No arraste, só o aviso de medicação. **Voltar** devolve o bloco
 - [ ] Recepção: tentar a terceira no mesmo início
 - [ ] Fila: a janela do início da cirurgia, inclusive 19:30 no exemplo, não aparece como vaga
+
+### Fatia · Cadastro de paciente na nova consulta (2026-10-07)
+
+Spec: `specs/2026-10-07-agenda-cadastro-na-consulta.md`. Registro: `docs/implementation/F2-agenda.md` e `docs/implementation/F3-pacientes-prontuario.md`.
+
+Código entregue. Não reabre a Fase 2 nem a Fase 3. A lista de pacientes continua com origem `lista-pacientes`. Homologação manual ainda depende de pessoa:
+
+- [x] Atalho, painel, **Cadastrar e marcar**, CPF repetido, horário recusado e confirmação da medicação em código, com testes
+- [ ] Recepção, a partir do vão: cadastrar e marcar. O bloco entra na agenda e a ficha não abre
+- [ ] Homônimo: a lista e o atalho aparecem juntos. A consulta fica na pessoa recém-gravada
+- [ ] Paciente já existente: escolher na lista e **Salvar** só a consulta
+- [ ] CPF repetido: nenhuma pessoa nova. **Usar {nome}** e o **Salvar** seguinte grava só a consulta
+- [ ] Horário recusado depois do cadastro: a pessoa fica escolhida. **Salvar** tenta só a consulta. **Marcar as duas** não cadastra de novo. **Voltar** não grava a consulta
+- [ ] Edição de consulta sem atalho e sem painel
+- [ ] Celular: o mesmo diálogo em **Nova consulta**, sem clique em vão vazio
 
 ---
 

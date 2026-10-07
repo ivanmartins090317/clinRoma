@@ -88,6 +88,24 @@ A fila não usa esse aviso. Oferta e aceite continuam ocupando a visita inteira,
 
 O calendário (`agenda-calendar.tsx`) não foi alterado: o empilhamento padrão já coloca o curto ao lado do topo do longo. Na lista do dia as duas entram em ordem de início.
 
+### Cadastro na nova consulta
+
+A recepção pesquisa o nome no diálogo **Nova consulta**. A busca continua a partir de dois caracteres. Com três ou mais, e ninguém escolhido, aparece **+ Novo paciente:** seguido do texto, sem os espaços das pontas. Se a lista vier vazia, o atalho fica no lugar de **Nenhum paciente encontrado**. Se houver homônimos, a lista e o atalho aparecem juntos.
+
+O clique abre, no mesmo diálogo, os campos de **Novo paciente**: nome preenchido, nascimento, CPF, telefone, e-mail, segundo telefone, consentimento e nome da assinatura. Dentista, data, início, fim, situação, procedimento e observação continuam. **Usar paciente já cadastrado** fecha o painel, limpa esses campos e volta à busca, sem gravar.
+
+**Cadastrar e marcar** confere a pessoa e a consulta antes de escrever. Se os dois passam, grava a pessoa e depois a consulta nesse dentista e nesse horário. O diálogo fecha. O bloco entra na agenda. A ficha não abre. Enquanto grava, o botão fica **Salvando...** e desabilitado.
+
+Quem já escolheu um nome na lista segue em **Salvar**, só a consulta. A edição de uma consulta já marcada não mostra o atalho nem o painel.
+
+CPF já cadastrado não cria outra pessoa. A mensagem é **CPF já cadastrado para {nome}.** **Usar {nome}** escolhe essa pessoa. O **Salvar** seguinte grava só a consulta.
+
+Se a pessoa for gravada e o horário for recusado, ela permanece, o painel fecha, ela fica escolhida e o diálogo mostra o erro da agenda. O **Salvar** seguinte tenta só a consulta. Se o horário pedir **Marcar as duas**, a confirmação grava só a consulta. **Voltar** não grava a consulta e não cadastra outra pessoa.
+
+No celular não há clique no vão vazio. **Nova consulta** abre o mesmo diálogo, e o atalho entra nele.
+
+A auditoria do cadastro feito aqui registra origem `agenda-nova-consulta`. O cadastro em `/pacientes/novo` continua com origem `lista-pacientes`.
+
 ---
 
 ## Contas de teste (agenda)
@@ -139,6 +157,39 @@ Após `npm run db:push`, migration `011_seed_agenda_dev.sql` inclui:
 4. **Marcar as duas** grava. A mais longa fica com 30 minutos de medicação. A curta fica com zero
 5. Tentar uma terceira no mesmo início: `Esse horário já tem duas consultas. Não é possível marcar outra.`
 6. Na fila, oferecer 19:00–19:30 ou 19:30–20:00 nesse dentista continua indisponível, sem o aviso de medicação
+
+### Cadastrar e marcar a partir do vão
+
+1. Login `reception@clinroma.dev` no desktop → **Agenda**
+2. Clicar um horário livre. **Nova consulta** abre com dentista, data, início e fim
+3. Digitar um nome de pelo menos três caracteres que ninguém tem
+4. No lugar de **Nenhum paciente encontrado**, ver **+ Novo paciente:** seguido do texto
+5. Abrir o painel, marcar o consentimento, informar a assinatura e tocar **Cadastrar e marcar**
+6. O diálogo fecha. O bloco entra na coluna. A ficha não abre
+
+### Homônimo, paciente já existente e CPF repetido
+
+1. Buscar um nome parecido com alguém da lista. O atalho continua abaixo dos resultados
+2. Escolher o nome da lista. O atalho some. **Salvar** grava só a consulta
+3. No painel, informar um CPF que já existe. Nada de novo é gravado. **Usar {nome}** escolhe quem já tem esse CPF. **Salvar** grava só a consulta
+
+### Horário recusado depois do cadastro
+
+1. Cadastrar uma pessoa num horário que a agenda recusa, ou que peça **Marcar as duas**
+2. A pessoa permanece. O painel fecha. Ela fica escolhida
+3. Ajustar o horário e tocar **Salvar**, ou confirmar **Marcar as duas**. Só a consulta é gravada
+4. **Voltar** no aviso de medicação não grava a consulta e não cria outra pessoa
+
+### Edição sem atalho
+
+1. Abrir uma consulta já marcada
+2. A busca não mostra **+ Novo paciente** nem o painel. O botão é **Salvar**
+
+### O mesmo diálogo no celular
+
+1. Viewport estreito, login `reception@clinroma.dev`
+2. **Nova consulta** abre o mesmo diálogo, sem dentista vindo de um clique no calendário
+3. Escolher o dentista, usar o atalho e **Cadastrar e marcar**. A consulta aparece na lista do período
 
 ### Dentista no celular
 

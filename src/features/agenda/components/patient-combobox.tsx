@@ -8,10 +8,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 
+const NEW_PATIENT_SHORTCUT_MIN_LENGTH = 3;
+
 interface PatientComboboxProps {
   value: string;
   selectedLabel: string;
   onSelect: (patient: AgendaPatientOption) => void;
+  onCreatePatient?: (name: string) => void;
   disabled?: boolean;
 }
 
@@ -19,6 +22,7 @@ export function PatientCombobox({
   value,
   selectedLabel,
   onSelect,
+  onCreatePatient,
   disabled = false,
 }: PatientComboboxProps) {
   const [query, setQuery] = useState(selectedLabel);
@@ -26,6 +30,13 @@ export function PatientCombobox({
   const [isOpen, setIsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const debounceRef = useRef<number | null>(null);
+
+  const trimmedQuery = query.trim();
+  const canCreatePatient = Boolean(
+    onCreatePatient &&
+    !value &&
+    trimmedQuery.length >= NEW_PATIENT_SHORTCUT_MIN_LENGTH,
+  );
 
   function handleQueryChange(nextQuery: string) {
     setQuery(nextQuery);
@@ -58,9 +69,10 @@ export function PatientCombobox({
           value={query}
           disabled={disabled}
           placeholder="Buscar por nome ou CPF"
+          className="text-base md:text-base"
           onChange={(event) => handleQueryChange(event.target.value)}
           onFocus={() => {
-            if (results.length > 0) {
+            if (results.length > 0 || canCreatePatient) {
               setIsOpen(true);
             }
           }}
@@ -73,9 +85,11 @@ export function PatientCombobox({
                 Buscando...
               </p>
             ) : results.length === 0 ? (
-              <p className="px-3 py-2 text-sm text-muted-foreground">
-                Nenhum paciente encontrado
-              </p>
+              canCreatePatient ? null : (
+                <p className="px-3 py-2 text-sm text-muted-foreground">
+                  Nenhum paciente encontrado
+                </p>
+              )
             ) : (
               <ul>
                 {results.map((patient) => (
@@ -83,7 +97,7 @@ export function PatientCombobox({
                     <button
                       type="button"
                       className={cn(
-                        "flex w-full flex-col items-start px-3 py-2 text-left text-sm hover:bg-accent",
+                        "flex min-h-11 w-full flex-col items-start justify-center px-3 py-2 text-left text-sm hover:bg-accent",
                         value === patient.id && "bg-accent",
                       )}
                       onClick={() => {
@@ -103,6 +117,22 @@ export function PatientCombobox({
                 ))}
               </ul>
             )}
+            {!isPending && canCreatePatient ? (
+              <button
+                type="button"
+                className={cn(
+                  "flex min-h-11 w-full items-center px-3 text-left text-sm font-medium hover:bg-accent",
+                  results.length > 0 && "border-t border-border",
+                )}
+                disabled={disabled}
+                onClick={() => {
+                  onCreatePatient?.(trimmedQuery);
+                  setIsOpen(false);
+                }}
+              >
+                + Novo paciente: {trimmedQuery}
+              </button>
+            ) : null}
           </div>
         ) : null}
       </div>

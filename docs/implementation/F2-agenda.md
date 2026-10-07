@@ -134,3 +134,40 @@ O calendário não mudou: o algoritmo padrão já empilha o curto ao lado do top
 | `npm run build` | OK |
 | `npm run db:push` | `031_appointment_induction.sql` aplicada |
 | `npm run db:types` | não rodou: Docker indisponível. `database.types.ts` alinhado à mão |
+
+## Fatia · Cadastro de paciente na nova consulta (2026-10-07)
+
+| Campo | Valor |
+| ----- | ----- |
+| **Status** | código entregue · homologação manual pendente |
+| **Spec** | `specs/2026-10-07-agenda-cadastro-na-consulta.md` |
+| **Plano** | `docs/plans/plano-agenda-cadastro-na-consulta.md` |
+
+Não reabre a Fase 2. A recepção cadastra a pessoa no diálogo **Nova consulta** e marca o horário que já escolheu. Conflito, par de medicação, calendário, fila, arraste, lembrete e WhatsApp permanecem. Sem migration.
+
+### Código
+
+| Arquivo | Papel |
+| ------- | ----- |
+| `components/appointment-new-patient-panel.tsx` | Campos do cadastro atual, com consentimento, dentro do diálogo |
+| `create-patient-and-appointment.ts` | Confere pessoa e consulta antes de gravar. Grava a pessoa e, em seguida, a consulta |
+| `create-patient-and-appointment.test.ts` | Os dois gravados juntos, CPF repetido, horário recusado, paciente já escolhido e confirmação da medicação |
+| `components/patient-combobox.tsx` | Atalho **+ Novo paciente: {nome}**, só quando a criação pede |
+| `components/appointment-form.tsx` | Painel, **Cadastrar e marcar** e a troca para a pessoa já gravada quando o horário falha |
+| `patients/actions.ts` | Auditoria `agenda-nova-consulta` nesse fluxo. A lista continua `lista-pacientes` |
+
+O sucesso fecha o diálogo na agenda. A ficha não abre. CPF já usado não cria outra pessoa. Pessoa gravada não é apagada se o horário falhar. **Marcar as duas**, nesse caso, grava só a consulta.
+
+### Testes
+
+- `create-patient-and-appointment.test.ts`: pessoa e consulta juntas, com origem da nova consulta; nada gravado se um dos dois não passa antes; CPF duplicado devolve quem já existe; falha de horário mantém a pessoa; aviso de medicação não grava a consulta; a confirmação seguinte não cadastra de novo; paciente já escolhido e edição ficam só na consulta
+
+### Evidências
+
+| Comando | Resultado |
+| ------- | --------- |
+| `npm run lint` nos arquivos da fatia | 0 erros |
+| `npm run lint` no repo | 7 erros e 5 warnings pré-existentes fora da fatia (scanner, estoque, fila, lista de pacientes, env) |
+| `npm run build` | OK |
+| `npm run test` | 516 passed, 26 skipped |
+| `npm run db:push` | não rodou: sem migration |
